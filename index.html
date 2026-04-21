@@ -132,7 +132,36 @@
 </head>
 <body class="bg-background text-on-background font-body antialiased min-h-screen selection:bg-primary-fixed selection:text-on-primary-fixed">
 
-  <!-- NAV -->
+  <!-- ════ NAV ════ -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 md:px-12 py-5 bg-[#1C1B1B]/80 backdrop-blur-[24px]">
+  <a href="#" class="text-3xl md:text-4xl font-black tracking-tighter text-white italic font-headline" data-config-logo>MON_AGENCE</a>
+  <div class="hidden md:flex items-center gap-6">
+    <a href="#services"  class="nav-link">Services</a>
+    <a href="#pricing"   class="nav-link">Pricing</a>
+    <a href="#simulator" class="nav-link" style="text-decoration:underline;text-underline-offset:4px;color:#c3f400;">Simulator</a>
+  </div>
+  <a href="#" data-config="calendlyUrl" target="_blank"
+     class="hidden md:inline-flex items-center gap-2 bg-primary-fixed text-on-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75">
+    Start Project
+  </a>
+  <button id="burger-btn" class="md:hidden text-primary" aria-label="Menu">
+    <span class="material-symbols-outlined text-3xl">menu</span>
+  </button>
+</nav>
+
+<div id="mobile-menu" class="fixed inset-0 z-40 bg-surface-container-lowest flex flex-col items-center justify-center gap-10 hidden">
+  <button id="close-menu" class="absolute top-6 right-8 text-primary">
+    <span class="material-symbols-outlined text-3xl">close</span>
+  </button>
+  <a href="#services"  class="mobile-nav-link" onclick="closeMobileMenu()">Services</a>
+  <a href="#pricing"   class="mobile-nav-link" onclick="closeMobileMenu()">Pricing</a>
+  <a href="#simulator" class="mobile-nav-link" onclick="closeMobileMenu()">Simulator</a>
+  <a href="#" data-config="calendlyUrl" target="_blank"
+     class="bg-primary-fixed text-on-primary px-8 py-4 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75">
+    Start Project
+  </a>
+</div>
+<!-- ════ /NAV ════ -->
   <!-- MAIN -->
   <!-- FOOTER -->
 
