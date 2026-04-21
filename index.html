@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com" rel="preconnect"/>
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 
   <!-- ============================================================
@@ -34,7 +34,7 @@
 
       // Réseaux
       socialLinks: { instagram: "#", linkedin: "#" },
-      copyrightYear: "2025",
+      copyrightYear: new Date().getFullYear().toString(),
     };
   </script>
   <!-- ============================================================ -->
@@ -121,7 +121,7 @@
     .mobile-nav-link {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 2.25rem;
-      font-weight: 900;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: -0.05em;
       color: #ffffff;
@@ -130,7 +130,7 @@
     .mobile-nav-link:hover { color: #c3f400; }
   </style>
 </head>
-<body class="bg-background text-on-background font-body antialiased min-h-screen selection:bg-primary-fixed selection:text-on-primary">
+<body class="bg-background text-on-background font-body antialiased min-h-screen selection:bg-primary-fixed selection:text-on-primary-fixed">
 
   <!-- NAV -->
   <!-- MAIN -->
@@ -173,6 +173,12 @@
       // Calendly links
       document.querySelectorAll('[data-config="calendlyUrl"]').forEach(el => {
         el.href = SITE_CONFIG.calendlyUrl;
+      });
+
+      // notifEmail — used by simulator form submit
+      document.querySelectorAll('[data-config="notifEmail"]').forEach(el => {
+        if (el.tagName === 'A') el.href = 'mailto:' + SITE_CONFIG.notifEmail;
+        else el.textContent = SITE_CONFIG.notifEmail;
       });
 
       // Social links
