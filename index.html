@@ -470,7 +470,205 @@
     </div>
   </div>
 </section>
-<!-- SIMULATOR placeholder -->
+<!-- ═══════════════ SIMULATOR ═══════════════ -->
+<section id="simulator" class="py-24 px-6 md:px-12 bg-background">
+  <div class="max-w-7xl mx-auto">
+    <div class="bg-surface-container-lowest p-1 mb-6 inline-block">
+      <span class="bg-background text-primary-fixed font-headline font-bold uppercase tracking-widest px-4 py-2 text-sm">Qualification Initiale</span>
+    </div>
+    <h2 class="font-headline text-3xl md:text-5xl font-black uppercase tracking-tighter text-primary mb-12">Simulateur de Projet</h2>
+
+    <!-- Progress -->
+    <div class="w-full h-0.5 bg-surface-container-highest mb-12 relative">
+      <div id="sim-progress-bar" class="absolute top-0 left-0 h-full bg-primary-fixed transition-all duration-500" style="width:20%"></div>
+      <div class="absolute -top-5 right-0 font-label text-xs uppercase tracking-widest text-on-surface-variant" id="sim-progress-label">20%</div>
+    </div>
+
+    <div id="simulator-wrapper" class="border border-outline-variant/20">
+
+      <!-- ÉTAPE 1 — Objectif -->
+      <div class="sim-step active" id="step-1" style="grid-template-columns:1fr 1fr;">
+        <div class="bg-surface-container-low p-10 border-r border-outline-variant/20">
+          <div class="text-on-surface-variant font-label text-xs uppercase tracking-widest mb-6">Étape 01 / 05</div>
+          <h3 class="font-headline text-2xl md:text-4xl font-black uppercase tracking-tighter text-primary leading-tight mb-6">
+            Quel est<br/><span class="text-primary-fixed italic">l'objectif<br/>principal</span><br/>de votre<br/>plateforme ?
+          </h3>
+          <p class="font-body text-on-surface-variant text-sm leading-relaxed mb-10">Notre architecture dépend de vos ambitions. Sélectionnez l'orientation qui définit le mieux votre projet digital.</p>
+          <div class="w-24 h-24 bg-surface-container-high border-2 border-surface-container-highest flex items-center justify-center">
+            <span class="material-symbols-outlined text-4xl text-outline">category</span>
+          </div>
+        </div>
+        <div class="bg-surface-container p-10 grid grid-cols-1 gap-4">
+          <div class="sim-card p-5 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4" data-value="vitrine">
+            <span class="material-symbols-outlined text-2xl text-primary-fixed">storefront</span>
+            <div><div class="font-headline font-bold uppercase tracking-tight text-primary text-base">Présentation &amp; Vitrine</div><div class="font-body text-xs text-on-surface-variant mt-1">Site institutionnel sur l'image de marque et la génération de leads qualifiés.</div></div>
+            <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0 flex items-center justify-center"></div>
+          </div>
+          <div class="sim-card p-5 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4" data-value="ecommerce">
+            <span class="material-symbols-outlined text-2xl text-primary-fixed">shopping_cart</span>
+            <div><div class="font-headline font-bold uppercase tracking-tight text-primary text-base">Vente &amp; E-Commerce</div><div class="font-body text-xs text-on-surface-variant mt-1">Plateforme transactionnelle haute performance, conversion optimisée et gestion de catalogue.</div></div>
+            <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0 flex items-center justify-center"></div>
+          </div>
+          <div class="sim-card p-5 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4" data-value="saas">
+            <span class="material-symbols-outlined text-2xl text-primary-fixed">grid_view</span>
+            <div><div class="font-headline font-bold uppercase tracking-tight text-primary text-base">SaaS &amp; App Web</div><div class="font-body text-xs text-on-surface-variant mt-1">Application métier complexe, gestion utilisateurs, tableau de bord et traitement de données.</div></div>
+            <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0 flex items-center justify-center"></div>
+          </div>
+          <div class="sim-card p-5 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4" data-value="complexe">
+            <span class="material-symbols-outlined text-2xl text-primary-fixed">settings_suggest</span>
+            <div><div class="font-headline font-bold uppercase tracking-tight text-primary text-base">Autre / Complexe</div><div class="font-body text-xs text-on-surface-variant mt-1">Besoins spécifiques, architecture sur-mesure, intégration API lourde ou expérimentale.</div></div>
+            <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0 flex items-center justify-center"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 2 — Personnalisation -->
+      <div class="sim-step" id="step-2" style="grid-template-columns:1fr 1fr;">
+        <div class="bg-surface-container-low p-10 border-r border-outline-variant/20">
+          <div class="text-on-surface-variant font-label text-xs uppercase tracking-widest mb-6">Étape 02 / 05</div>
+          <h3 class="font-headline text-2xl md:text-4xl font-black uppercase tracking-tighter text-primary leading-tight mb-6">
+            Niveau de<br/><span class="text-primary-fixed italic">personnalisation</span><br/>souhaité ?
+          </h3>
+          <p class="font-body text-on-surface-variant text-sm leading-relaxed">Le niveau de personnalisation définit le temps de conception et les possibilités créatives de votre projet.</p>
+        </div>
+        <div class="bg-surface-container p-10 grid grid-cols-1 gap-4">
+          <div class="sim-card p-6 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4" data-value="template">
+            <span class="material-symbols-outlined text-2xl text-primary-fixed">bolt</span>
+            <div><div class="font-headline font-bold uppercase tracking-tight text-primary text-base">Template Rapide</div><div class="font-body text-xs text-on-surface-variant mt-1">Base optimisée pré-configurée. Livraison ultra-rapide (2–3 jours).</div></div>
+            <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0"></div>
+          </div>
+          <div class="sim-card p-6 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4" data-value="personnalise">
+            <span class="material-symbols-outlined text-2xl text-primary-fixed">tune</span>
+            <div><div class="font-headline font-bold uppercase tracking-tight text-primary text-base">Personnalisé</div><div class="font-body text-xs text-on-surface-variant mt-1">Design adapté à votre identité. Livraison 5–7 jours.</div></div>
+            <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0"></div>
+          </div>
+          <div class="sim-card p-6 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4" data-value="sur-mesure">
+            <span class="material-symbols-outlined text-2xl text-primary-fixed">architecture</span>
+            <div><div class="font-headline font-bold uppercase tracking-tight text-primary text-base">Sur-Mesure</div><div class="font-body text-xs text-on-surface-variant mt-1">Création intégrale de A à Z. Expérience unique et signature visuelle forte.</div></div>
+            <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 3 — Accompagnement -->
+      <div class="sim-step" id="step-3" style="grid-template-columns:1fr 1fr;">
+        <div class="bg-surface-container-low p-10 border-r border-outline-variant/20">
+          <div class="text-on-surface-variant font-label text-xs uppercase tracking-widest mb-6">Étape 03 / 05</div>
+          <h3 class="font-headline text-2xl md:text-4xl font-black uppercase tracking-tighter text-primary leading-tight mb-6">
+            Besoin<br/><span class="text-primary-fixed italic">d'accompagnement</span><br/>post-livraison ?
+          </h3>
+          <p class="font-body text-on-surface-variant text-sm leading-relaxed">Un site performant nécessite un entretien. Choisissez le niveau d'accompagnement adapté à vos ressources.</p>
+        </div>
+        <div class="bg-surface-container p-10 grid grid-cols-1 gap-4">
+          <div class="sim-card p-6 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4" data-value="aucun">
+            <span class="material-symbols-outlined text-2xl text-primary-fixed">handyman</span>
+            <div><div class="font-headline font-bold uppercase tracking-tight text-primary text-base">Aucun</div><div class="font-body text-xs text-on-surface-variant mt-1">Vous gérez en autonomie. Livraison avec documentation complète.</div></div>
+            <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0"></div>
+          </div>
+          <div class="sim-card p-6 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4" data-value="maintenance">
+            <span class="material-symbols-outlined text-2xl text-primary-fixed">build</span>
+            <div><div class="font-headline font-bold uppercase tracking-tight text-primary text-base">Maintenance</div><div class="font-body text-xs text-on-surface-variant mt-1">Hébergement + mises à jour + support. À partir de 40€/mois.</div></div>
+            <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0"></div>
+          </div>
+          <div class="sim-card p-6 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4" data-value="croissance">
+            <span class="material-symbols-outlined text-2xl text-primary-fixed">trending_up</span>
+            <div><div class="font-headline font-bold uppercase tracking-tight text-primary text-base">Croissance</div><div class="font-body text-xs text-on-surface-variant mt-1">SEO + Ads + contenu IA. Stratégie d'acquisition mensuelle.</div></div>
+            <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 4 — Résultat -->
+      <div class="sim-step" id="step-4" style="grid-template-columns:1fr 1fr;">
+        <div class="bg-surface-container-low p-10 border-r border-outline-variant/20">
+          <div class="text-on-surface-variant font-label text-xs uppercase tracking-widest mb-6">Étape 04 / 05</div>
+          <h3 class="font-headline text-2xl md:text-4xl font-black uppercase tracking-tighter text-primary leading-tight mb-8">
+            Votre offre<br/><span class="text-primary-fixed italic">recommandée</span>
+          </h3>
+          <div class="space-y-3 mb-8">
+            <div class="flex gap-4 items-start">
+              <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant w-32 flex-shrink-0">Objectif</span>
+              <span id="recap-objectif" class="font-body text-sm text-primary font-medium">—</span>
+            </div>
+            <div class="flex gap-4 items-start">
+              <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant w-32 flex-shrink-0">Personnalisation</span>
+              <span id="recap-perso" class="font-body text-sm text-primary font-medium">—</span>
+            </div>
+            <div class="flex gap-4 items-start">
+              <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant w-32 flex-shrink-0">Accompagnement</span>
+              <span id="recap-accomp" class="font-body text-sm text-primary font-medium">—</span>
+            </div>
+          </div>
+        </div>
+        <div class="bg-surface-container p-10 flex flex-col justify-center">
+          <div class="bg-surface-container-high p-8 border-l-4 border-primary-fixed relative overflow-hidden mb-6">
+            <div class="absolute -right-6 -top-6 font-headline text-8xl font-black text-background/30 pointer-events-none">★</div>
+            <div class="relative z-10">
+              <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant block mb-2">Offre recommandée</span>
+              <div class="font-headline text-4xl font-black text-primary uppercase mb-1" id="recap-tier-name">Business</div>
+              <div class="font-headline text-3xl font-black text-primary-fixed mb-2" id="recap-tier-price">1250€</div>
+              <div class="font-body text-xs text-on-surface-variant" id="recap-tier-sub">Paiement unique</div>
+            </div>
+          </div>
+          <p class="font-body text-sm text-on-surface-variant">Cette recommandation est basée sur vos réponses. L'étape suivante vous permet de prendre contact directement.</p>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 5 — Contact -->
+      <div class="sim-step" id="step-5" style="grid-template-columns:1fr 1fr;">
+        <div class="bg-surface-container-low p-10 border-r border-outline-variant/20">
+          <div class="text-on-surface-variant font-label text-xs uppercase tracking-widest mb-6">Étape 05 / 05</div>
+          <h3 class="font-headline text-2xl md:text-4xl font-black uppercase tracking-tighter text-primary leading-tight mb-6">
+            Lançons<br/><span class="text-primary-fixed italic">votre projet</span>
+          </h3>
+          <p class="font-body text-on-surface-variant text-sm leading-relaxed mb-6">Réservez un créneau de 30 minutes. Nous analyserons votre projet et vous ferons une proposition détaillée sous 24h.</p>
+          <div class="bg-surface-container-high p-4 border-l-2 border-primary-fixed">
+            <div class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-1">Rappel de votre offre</div>
+            <div class="font-headline font-bold uppercase text-primary-fixed" id="recap-tier-final">Business — 1250€</div>
+          </div>
+        </div>
+        <div class="bg-surface-container p-10">
+          <form id="sim-contact-form" class="space-y-5" onsubmit="handleSimSubmit(event)">
+            <div>
+              <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant block mb-2">Nom complet</label>
+              <input type="text" id="sim-name" required placeholder="Jean Dupont"
+                class="w-full bg-surface-container-low border-2 border-outline text-on-surface font-body px-4 py-3 focus:outline-none focus:border-primary-fixed placeholder:text-on-surface-variant/50"/>
+            </div>
+            <div>
+              <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant block mb-2">Email</label>
+              <input type="email" id="sim-email" required placeholder="vous@domaine.com"
+                class="w-full bg-surface-container-low border-2 border-outline text-on-surface font-body px-4 py-3 focus:outline-none focus:border-primary-fixed placeholder:text-on-surface-variant/50"/>
+            </div>
+            <div>
+              <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant block mb-2">Message</label>
+              <textarea id="sim-message" rows="4"
+                class="w-full bg-surface-container-low border-2 border-outline text-on-surface font-body px-4 py-3 focus:outline-none focus:border-primary-fixed resize-none placeholder:text-on-surface-variant/50"></textarea>
+            </div>
+            <button type="submit"
+              class="w-full bg-primary-fixed text-on-primary px-8 py-4 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75 flex items-center justify-center gap-2">
+              Réserver mon créneau
+              <span class="material-symbols-outlined">calendar_today</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Nav steps -->
+      <div class="flex justify-between items-center p-6 bg-surface-container-lowest border-t border-outline-variant/20">
+        <button id="sim-prev" onclick="simPrev()"
+          class="hidden items-center gap-2 font-headline font-bold uppercase tracking-tighter text-on-surface-variant hover:text-primary transition-colors">
+          <span class="material-symbols-outlined">arrow_back</span> Retour
+        </button>
+        <div class="flex-1"></div>
+        <button id="sim-next" onclick="simNext()"
+          class="flex items-center gap-2 bg-primary-fixed text-on-primary px-8 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75">
+          Continuer <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</section>
 <!-- PROCESSUS placeholder -->
 </main>
 <!-- ════ /MAIN ════ -->
@@ -543,7 +741,152 @@
         closeMenuBtn.addEventListener('click', () => mobileMenu.classList.add('hidden'));
       }
       window.closeMobileMenu = () => mobileMenu && mobileMenu.classList.add('hidden');
+
+      // Card selection
+      document.querySelectorAll('.sim-card').forEach(function(card) {
+        card.addEventListener('click', function() {
+          const step = card.closest('.sim-step');
+          step.querySelectorAll('.sim-card').forEach(function(c) {
+            c.classList.remove('selected');
+            const check = c.querySelector('.sim-check');
+            if (check) check.innerHTML = '';
+          });
+          card.classList.add('selected');
+          const check = card.querySelector('.sim-check');
+          if (check) check.innerHTML = '<span class="material-symbols-outlined text-primary-fixed text-sm">check</span>';
+        });
+      });
+
+      // Init simulator
+      showSimStep(1);
     });
+
+    // ═══════════════════════════════════════════
+    // SIMULATOR STATE MACHINE
+    // ═══════════════════════════════════════════
+    const simState = {
+      currentStep: 1,
+      totalSteps: 5,
+      answers: { objectif: null, perso: null, accomp: null },
+    };
+
+    const SIM_LABELS = {
+      objectif: { vitrine: 'Présentation & Vitrine', ecommerce: 'Vente & E-Commerce', saas: 'SaaS & App Web', complexe: 'Autre / Complexe' },
+      perso:    { template: 'Template Rapide', personnalise: 'Personnalisé', 'sur-mesure': 'Sur-Mesure' },
+      accomp:   { aucun: 'Aucun', maintenance: 'Maintenance', croissance: 'Croissance (SEO/Ads)' },
+    };
+
+    function classifyOffer() {
+      const { objectif, perso, accomp } = simState.answers;
+      if (objectif === 'complexe') return 'enterprise';
+      if (perso === 'sur-mesure' && (accomp === 'croissance' || objectif === 'saas')) return 'enterprise';
+      if (perso === 'sur-mesure' || objectif === 'saas' || (accomp === 'croissance' && objectif !== 'vitrine')) return 'premium';
+      if (objectif === 'ecommerce' || perso === 'personnalise') return 'business';
+      if (objectif === 'vitrine' && perso === 'template' && accomp === 'aucun') return 'starter';
+      return 'business';
+    }
+
+    function updateSimProgress() {
+      const pct = Math.round((simState.currentStep / simState.totalSteps) * 100);
+      const bar = document.getElementById('sim-progress-bar');
+      const label = document.getElementById('sim-progress-label');
+      if (bar) bar.style.width = pct + '%';
+      if (label) label.textContent = pct + '%';
+    }
+
+    function showSimStep(n) {
+      document.querySelectorAll('.sim-step').forEach(el => el.classList.remove('active'));
+      const step = document.getElementById('step-' + n);
+      if (step) step.classList.add('active');
+      const prevBtn = document.getElementById('sim-prev');
+      const nextBtn = document.getElementById('sim-next');
+      if (prevBtn) {
+        if (n > 1) { prevBtn.classList.remove('hidden'); prevBtn.classList.add('flex'); }
+        else { prevBtn.classList.add('hidden'); prevBtn.classList.remove('flex'); }
+      }
+      if (nextBtn) {
+        if (n === 5) { nextBtn.classList.add('hidden'); }
+        else { nextBtn.classList.remove('hidden'); }
+      }
+      updateSimProgress();
+      const simSection = document.getElementById('simulator');
+      if (simSection) window.scrollTo({ top: simSection.offsetTop - 80, behavior: 'smooth' });
+    }
+
+    function getSelectedSimValue(stepId) {
+      const selected = document.querySelector('#step-' + stepId + ' .sim-card.selected');
+      return selected ? selected.dataset.value : null;
+    }
+
+    function buildSimRecap() {
+      const { objectif, perso, accomp } = simState.answers;
+      const el1 = document.getElementById('recap-objectif');
+      const el2 = document.getElementById('recap-perso');
+      const el3 = document.getElementById('recap-accomp');
+      if (el1) el1.textContent = SIM_LABELS.objectif[objectif] || objectif;
+      if (el2) el2.textContent = SIM_LABELS.perso[perso]       || perso;
+      if (el3) el3.textContent = SIM_LABELS.accomp[accomp]     || accomp;
+
+      const tier = classifyOffer();
+      const tierNames = { starter: 'Starter', business: 'Business', premium: 'Premium', enterprise: 'Enterprise' };
+      const tierData  = SITE_CONFIG.pricing[tier];
+      const tierName  = tierNames[tier];
+
+      const nameEl  = document.getElementById('recap-tier-name');
+      const priceEl = document.getElementById('recap-tier-price');
+      const subEl   = document.getElementById('recap-tier-sub');
+      const finalEl = document.getElementById('recap-tier-final');
+      if (nameEl)  nameEl.textContent  = tierName;
+      if (priceEl) priceEl.textContent = tierData.price;
+      if (subEl)   subEl.textContent   = tierData.sub;
+      if (finalEl) finalEl.textContent = tierName + ' — ' + tierData.price;
+
+      const msgEl = document.getElementById('sim-message');
+      if (msgEl) {
+        msgEl.value =
+          'Bonjour,\n\nJe souhaite lancer mon projet web.\n\n' +
+          'Objectif : ' + (SIM_LABELS.objectif[objectif] || objectif) + '\n' +
+          'Personnalisation : ' + (SIM_LABELS.perso[perso] || perso) + '\n' +
+          'Accompagnement : ' + (SIM_LABELS.accomp[accomp] || accomp) + '\n' +
+          'Offre recommandée : ' + tierName + ' (' + tierData.price + ')\n\n' +
+          'Merci de me proposer un créneau.';
+      }
+    }
+
+    window.simNext = function() {
+      const s = simState.currentStep;
+      if (s === 1) {
+        const val = getSelectedSimValue(1);
+        if (!val) { alert('Sélectionnez une option pour continuer.'); return; }
+        simState.answers.objectif = val;
+      } else if (s === 2) {
+        const val = getSelectedSimValue(2);
+        if (!val) { alert('Sélectionnez une option pour continuer.'); return; }
+        simState.answers.perso = val;
+      } else if (s === 3) {
+        const val = getSelectedSimValue(3);
+        if (!val) { alert('Sélectionnez une option pour continuer.'); return; }
+        simState.answers.accomp = val;
+        buildSimRecap();
+      }
+      simState.currentStep = Math.min(simState.currentStep + 1, simState.totalSteps);
+      showSimStep(simState.currentStep);
+    };
+
+    window.simPrev = function() {
+      simState.currentStep = Math.max(simState.currentStep - 1, 1);
+      showSimStep(simState.currentStep);
+    };
+
+    window.handleSimSubmit = function(e) {
+      e.preventDefault();
+      const name  = document.getElementById('sim-name')    ? document.getElementById('sim-name').value    : '';
+      const msg   = document.getElementById('sim-message') ? document.getElementById('sim-message').value : '';
+      window.open(SITE_CONFIG.calendlyUrl, '_blank');
+      const subject = encodeURIComponent('[Nouveau Projet] ' + name);
+      const body    = encodeURIComponent(msg);
+      window.location.href = 'mailto:' + SITE_CONFIG.notifEmail + '?subject=' + subject + '&body=' + body;
+    };
   </script>
 </body>
 </html>
