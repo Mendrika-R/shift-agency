@@ -758,7 +758,7 @@
       });
 
       // Init simulator
-      showSimStep(1);
+      showSimStep(1, { noScroll: true });
     });
 
     // ═══════════════════════════════════════════
@@ -794,12 +794,13 @@
       if (label) label.textContent = pct + '%';
     }
 
-    function showSimStep(n) {
-      document.querySelectorAll('.sim-step').forEach(el => el.classList.remove('active'));
-      const step = document.getElementById('step-' + n);
+    function showSimStep(n, opts) {
+      var noScroll = opts && opts.noScroll;
+      document.querySelectorAll('.sim-step').forEach(function(el) { el.classList.remove('active'); });
+      var step = document.getElementById('step-' + n);
       if (step) step.classList.add('active');
-      const prevBtn = document.getElementById('sim-prev');
-      const nextBtn = document.getElementById('sim-next');
+      var prevBtn = document.getElementById('sim-prev');
+      var nextBtn = document.getElementById('sim-next');
       if (prevBtn) {
         if (n > 1) { prevBtn.classList.remove('hidden'); prevBtn.classList.add('flex'); }
         else { prevBtn.classList.add('hidden'); prevBtn.classList.remove('flex'); }
@@ -809,8 +810,10 @@
         else { nextBtn.classList.remove('hidden'); }
       }
       updateSimProgress();
-      const simSection = document.getElementById('simulator');
-      if (simSection) window.scrollTo({ top: simSection.offsetTop - 80, behavior: 'smooth' });
+      if (!noScroll) {
+        var simSection = document.getElementById('simulator');
+        if (simSection) window.scrollTo({ top: simSection.offsetTop - 80, behavior: 'smooth' });
+      }
     }
 
     function getSelectedSimValue(stepId) {
@@ -880,12 +883,14 @@
 
     window.handleSimSubmit = function(e) {
       e.preventDefault();
-      const name  = document.getElementById('sim-name')    ? document.getElementById('sim-name').value    : '';
-      const msg   = document.getElementById('sim-message') ? document.getElementById('sim-message').value : '';
+      var name  = document.getElementById('sim-name')    ? document.getElementById('sim-name').value    : '';
+      var msg   = document.getElementById('sim-message') ? document.getElementById('sim-message').value : '';
+      var subject = encodeURIComponent('[Nouveau Projet] ' + name);
+      var body    = encodeURIComponent(msg);
+      // Open Calendly in new tab
       window.open(SITE_CONFIG.calendlyUrl, '_blank');
-      const subject = encodeURIComponent('[Nouveau Projet] ' + name);
-      const body    = encodeURIComponent(msg);
-      window.location.href = 'mailto:' + SITE_CONFIG.notifEmail + '?subject=' + subject + '&body=' + body;
+      // Open mailto in new tab (does not navigate away from page)
+      window.open('mailto:' + SITE_CONFIG.notifEmail + '?subject=' + subject + '&body=' + body, '_blank');
     };
   </script>
 </body>
