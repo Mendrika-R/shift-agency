@@ -1,0 +1,23 @@
+name: Deploy to Hostinger
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: hostinger-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Trigger Hostinger deploy webhook
+        run: |
+          curl -fsSL --max-time 30 --retry 3 --retry-delay 5 \
+            -X POST "$HOSTINGER_DEPLOY_URL" \
+            -w "\nHTTP %{http_code}\n"
+        env:
+          HOSTINGER_DEPLOY_URL: ${{ secrets.HOSTINGER_DEPLOY_URL }}
