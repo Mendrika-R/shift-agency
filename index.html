@@ -35,14 +35,6 @@
       agencyName: "Velos",
       logoSvg: null,  // Collez votre SVG ici en string, ex: '<svg>...</svg>'
 
-      // Pricing
-      pricing: {
-        starter: { price: "500€", sub: "+ maintenance mensuelle" },
-        business: { price: "1500€", sub: "Paiement unique" },
-        premium: { price: "2500€", sub: "Paiement unique" },
-        enterprise: { price: "SUR DEVIS", sub: "Architecture Custom" },
-      },
-
       // Liens — remplacez avant mise en ligne
       calendlyUrl: "https://calendly.com/TON_LIEN",
       notifEmail: "ton@email.com",
@@ -134,10 +126,10 @@
           subtitle: "Des solutions tarifaires agressives pour des entités exigeantes. Pas de coûts cachés. Que de la performance.",
           recommended: "Recommandé",
           tiers: {
-            starter:    { name: "Starter",    tagline: "Pour les concepts émergents nécessitant une fondation solide.", features: ["Architecture Core", "Design System Basique", "Déploiement Standard"], cta: "Sélectionner" },
-            business:   { name: "Business",   tagline: "Pour les entités établies visant l'expansion digitale.",        features: ["Starter +", "Optimisation SEO Core", "Intégration CMS Avancée", "Analytique Intégrée"], cta: "Propulser" },
-            premium:    { name: "Premium",    tagline: "Pour une performance d'élite et une domination de marché.",     features: ["Business +", "Animations Complexes (WebGL)", "E-commerce Haute Performance", "Support Prioritaire 24/7"], cta: "Sélectionner" },
-            enterprise: { name: "Enterprise", tagline: "Solutions sur-mesure pour infrastructures massives.",            features: ["Développement Spécifique", "Migration de Données", "Sécurité Renforcée"], cta: "Contacter" },
+            starter:    { name: "Starter",    tagline: "Pour les concepts émergents nécessitant une fondation solide.", price: "500€",    sub: "+ maintenance mensuelle", features: ["Architecture Core", "Design System Basique", "Déploiement Standard"], cta: "Sélectionner" },
+            business:   { name: "Business",   tagline: "Pour les entités établies visant l'expansion digitale.",        price: "1500€",   sub: "Paiement unique",         features: ["Starter +", "Optimisation SEO Core", "Intégration CMS Avancée", "Analytique Intégrée"], cta: "Propulser" },
+            premium:    { name: "Premium",    tagline: "Pour une performance d'élite et une domination de marché.",     price: "2500€",   sub: "Paiement unique",         features: ["Business +", "Animations Complexes (WebGL)", "E-commerce Haute Performance", "Support Prioritaire 24/7"], cta: "Sélectionner" },
+            enterprise: { name: "Enterprise", tagline: "Solutions sur-mesure pour infrastructures massives.",            price: "SUR DEVIS", sub: "Architecture Custom",   features: ["Développement Spécifique", "Migration de Données", "Sécurité Renforcée"], cta: "Contacter" },
           },
         },
         simulator: {
@@ -305,10 +297,10 @@
           subtitle: "Aggressive pricing for demanding teams. No hidden fees. Pure performance.",
           recommended: "Recommended",
           tiers: {
-            starter:    { name: "Starter",    tagline: "For emerging concepts that need a solid foundation.",            features: ["Core Architecture", "Basic Design System", "Standard Deployment"], cta: "Select" },
-            business:   { name: "Business",   tagline: "For established entities aiming for digital expansion.",         features: ["Starter +", "Core SEO Optimization", "Advanced CMS Integration", "Built-in Analytics"], cta: "Boost" },
-            premium:    { name: "Premium",    tagline: "For elite performance and market dominance.",                    features: ["Business +", "Complex Animations (WebGL)", "High-Performance E-commerce", "24/7 Priority Support"], cta: "Select" },
-            enterprise: { name: "Enterprise", tagline: "Custom solutions for massive infrastructures.",                  features: ["Custom Development", "Data Migration", "Hardened Security"], cta: "Contact us" },
+            starter:    { name: "Starter",    tagline: "For emerging concepts that need a solid foundation.",            price: "€500",     sub: "+ monthly maintenance", features: ["Core Architecture", "Basic Design System", "Standard Deployment"], cta: "Select" },
+            business:   { name: "Business",   tagline: "For established entities aiming for digital expansion.",         price: "€1,500",   sub: "One-time payment",      features: ["Starter +", "Core SEO Optimization", "Advanced CMS Integration", "Built-in Analytics"], cta: "Boost" },
+            premium:    { name: "Premium",    tagline: "For elite performance and market dominance.",                    price: "€2,500",   sub: "One-time payment",      features: ["Business +", "Complex Animations (WebGL)", "High-Performance E-commerce", "24/7 Priority Support"], cta: "Select" },
+            enterprise: { name: "Enterprise", tagline: "Custom solutions for massive infrastructures.",                  price: "ON QUOTE", sub: "Custom Architecture",   features: ["Custom Development", "Data Migration", "Hardened Security"], cta: "Contact us" },
           },
         },
         simulator: {
@@ -651,13 +643,15 @@
       <a href="#services" class="nav-link" data-i18n="nav.services">Services</a>
       <a href="#pricing" class="nav-link" data-i18n="nav.pricing">Pricing</a>
       <a href="#simulator" class="nav-link nav-link-active" data-i18n="nav.simulator">Simulator</a>
+    </div>
+    <div class="hidden md:flex items-center gap-4">
+      <a href="#" data-config="calendlyUrl" target="_blank"
+        class="inline-flex items-center gap-2 bg-primary-fixed text-on-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75"
+        data-i18n="nav.cta">
+        Start Project
+      </a>
       <a href="/en/" data-lang-switch class="nav-link" data-i18n="nav.langSwitch">EN</a>
     </div>
-    <a href="#" data-config="calendlyUrl" target="_blank"
-      class="hidden md:inline-flex items-center gap-2 bg-primary-fixed text-on-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75"
-      data-i18n="nav.cta">
-      Start Project
-    </a>
     <button id="burger-btn" class="md:hidden text-primary" data-i18n-attr="aria-label:nav.menuOpen" aria-label="Menu">
       <span class="material-symbols-outlined text-3xl">menu</span>
     </button>
@@ -935,8 +929,8 @@
                 solide.</p>
             </div>
             <div class="mb-6">
-              <div class="font-headline text-4xl font-black text-primary" data-price="starter">500 €</div>
-              <div class="font-body text-xs text-on-surface-variant mt-1" data-price-sub="starter">+ maintenance
+              <div class="font-headline text-4xl font-black text-primary" data-i18n="pricing.tiers.starter.price">500€</div>
+              <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="pricing.tiers.starter.sub">+ maintenance
                 mensuelle</div>
             </div>
             <ul class="space-y-3 mb-8 flex-1">
@@ -972,8 +966,8 @@
                 digitale.</p>
             </div>
             <div class="mb-6">
-              <div class="font-headline text-4xl font-black text-primary-fixed" data-price="business">1 500 €</div>
-              <div class="font-body text-xs text-on-surface-variant mt-1" data-price-sub="business">Paiement unique
+              <div class="font-headline text-4xl font-black text-primary-fixed" data-i18n="pricing.tiers.business.price">1500€</div>
+              <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="pricing.tiers.business.sub">Paiement unique
               </div>
             </div>
             <ul class="space-y-3 mb-8 flex-1">
@@ -1008,8 +1002,8 @@
                 marché.</p>
             </div>
             <div class="mb-6">
-              <div class="font-headline text-4xl font-black text-primary" data-price="premium">2 500 €</div>
-              <div class="font-body text-xs text-on-surface-variant mt-1" data-price-sub="premium">Paiement unique</div>
+              <div class="font-headline text-4xl font-black text-primary" data-i18n="pricing.tiers.premium.price">2500€</div>
+              <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="pricing.tiers.premium.sub">Paiement unique</div>
             </div>
             <ul class="space-y-3 mb-8 flex-1">
               <li class="flex items-start gap-2 font-body text-sm text-on-surface">
@@ -1042,8 +1036,8 @@
               </p>
             </div>
             <div class="mb-6">
-              <div class="font-headline text-4xl font-black text-primary" data-price="enterprise">SUR DEVIS</div>
-              <div class="font-body text-xs text-on-surface-variant mt-1" data-price-sub="enterprise">Architecture
+              <div class="font-headline text-4xl font-black text-primary" data-i18n="pricing.tiers.enterprise.price">SUR DEVIS</div>
+              <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="pricing.tiers.enterprise.sub">Architecture
                 Custom</div>
             </div>
             <ul class="space-y-3 mb-8 flex-1">
@@ -1547,16 +1541,6 @@
         }
       });
 
-      // Pricing
-      Object.entries(SITE_CONFIG.pricing).forEach(([tier, data]) => {
-        document.querySelectorAll(`[data-price="${tier}"]`).forEach(el => {
-          el.textContent = data.price;
-        });
-        document.querySelectorAll(`[data-price-sub="${tier}"]`).forEach(el => {
-          el.textContent = data.sub;
-        });
-      });
-
       // Calendly links
       document.querySelectorAll('[data-config="calendlyUrl"]').forEach(el => {
         el.href = SITE_CONFIG.calendlyUrl;
@@ -1681,17 +1665,18 @@
       if (el3) el3.textContent = simLabel('accomp', accomp);
 
       const tier = classifyOffer();
-      const tierData = SITE_CONFIG.pricing[tier];
       const tierLabel = tierName(tier);
+      const tierPrice = window.t ? window.t('pricing.tiers.' + tier + '.price') : '';
+      const tierSub   = window.t ? window.t('pricing.tiers.' + tier + '.sub')   : '';
 
       const nameEl = document.getElementById('recap-tier-name');
       const priceEl = document.getElementById('recap-tier-price');
       const subEl = document.getElementById('recap-tier-sub');
       const finalEl = document.getElementById('recap-tier-final');
       if (nameEl) nameEl.textContent = tierLabel;
-      if (priceEl) priceEl.textContent = tierData.price;
-      if (subEl) subEl.textContent = tierData.sub;
-      if (finalEl) finalEl.textContent = tierLabel + ' — ' + tierData.price;
+      if (priceEl) priceEl.textContent = tierPrice;
+      if (subEl) subEl.textContent = tierSub;
+      if (finalEl) finalEl.textContent = tierLabel + ' — ' + tierPrice;
 
       const msgEl = document.getElementById('sim-message');
       if (msgEl) {
@@ -1701,7 +1686,7 @@
           e('simulator.email.objectifLabel') + ' : ' + simLabel('objectif', objectif) + '\n' +
           e('simulator.email.persoLabel')    + ' : ' + simLabel('perso', perso)       + '\n' +
           e('simulator.email.accompLabel')   + ' : ' + simLabel('accomp', accomp)     + '\n' +
-          e('simulator.email.recommendedLabel') + ' : ' + tierLabel + ' (' + tierData.price + ')' +
+          e('simulator.email.recommendedLabel') + ' : ' + tierLabel + ' (' + tierPrice + ')' +
           e('simulator.email.outro');
       }
     }
