@@ -7,6 +7,8 @@
   <title>Velos | Agence Digitale</title>
   <meta name="description" content="Votre business en ligne en quelques jours, pas en mois." />
 
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg" />
+
   <!-- i18n alternates -->
   <link rel="alternate" hreflang="fr" href="/" />
   <link rel="alternate" hreflang="en" href="/en/" />
@@ -14,7 +16,42 @@
 
   <!-- No-FOUC: hide body until i18n applied -->
   <style>
-    html:not(.i18n-ready) body { visibility: hidden; }
+    html:not(.i18n-ready) body > *:not(#splash) { visibility: hidden; }
+
+    #splash {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #1C1B1B;
+      animation: splashFadeOut 0.6s ease-in 2.6s forwards;
+    }
+    #splash img {
+      width: min(42vw, 320px);
+      height: auto;
+    }
+    @keyframes splashFadeOut {
+      to { opacity: 0; visibility: hidden; }
+    }
+    .nav-logo-icon {
+      height: 3.2rem;
+      width: auto;
+      flex-shrink: 0;
+    }
+    @media (min-width: 768px) {
+      .nav-logo-icon { height: 4rem; }
+    }
+
+    @keyframes footerMarquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    .footer-marquee {
+      width: max-content;
+      animation: footerMarquee 30s linear infinite;
+    }
   </style>
 
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -634,11 +671,20 @@
 <body
   class="bg-background text-on-background font-body antialiased min-h-screen selection:bg-primary-fixed selection:text-on-primary-fixed">
 
+  <!-- ════ SPLASH ════ -->
+  <div id="splash" aria-hidden="true">
+    <img src="../assets/velos-logo.svg" alt="" />
+  </div>
+  <!-- ════ /SPLASH ════ -->
+
   <!-- ════ NAV ════ -->
   <nav
     class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 md:px-12 py-5 bg-[#1C1B1B]/80 backdrop-blur-[24px]">
-    <a href="#" class="text-3xl md:text-4xl font-black tracking-tighter text-white italic font-headline"
-      data-config-logo>Velos</a>
+    <a href="#"
+      class="flex items-center gap-2 md:gap-3 text-3xl md:text-4xl font-black tracking-tighter text-white italic font-headline">
+      <img src="../assets/velos-logo.svg" alt="" class="nav-logo-icon" aria-hidden="true" />
+      <span>VeloS</span>
+    </a>
     <div class="hidden md:flex items-center gap-6">
       <a href="#services" class="nav-link" data-i18n="nav.services">Services</a>
       <a href="#pricing" class="nav-link" data-i18n="nav.pricing">Pricing</a>
@@ -1479,10 +1525,17 @@
   <!-- ════ /MAIN ════ -->
   <!-- ════ FOOTER ════ -->
   <footer class="bg-surface-container-lowest w-full py-20 px-8 md:px-12 relative overflow-hidden">
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-0 whitespace-nowrap">
-      <span
-        class="text-[18vw] font-black font-headline text-primary-fixed opacity-[0.04] tracking-tighter uppercase select-none"
-        data-config="agencyName">Velos</span>
+    <div class="absolute top-1/2 -translate-y-1/2 inset-x-0 pointer-events-none z-0 overflow-hidden">
+      <div class="footer-marquee flex">
+        <span
+          class="text-[14vw] font-black font-headline text-primary-fixed opacity-[0.04] tracking-tighter uppercase select-none whitespace-nowrap pr-[8vw]">VELOS</span>
+        <span
+          class="text-[14vw] font-black font-headline text-primary-fixed opacity-[0.04] tracking-tighter uppercase select-none whitespace-nowrap pr-[8vw]">AGENCY</span>
+        <span aria-hidden="true"
+          class="text-[14vw] font-black font-headline text-primary-fixed opacity-[0.04] tracking-tighter uppercase select-none whitespace-nowrap pr-[8vw]">VELOS</span>
+        <span aria-hidden="true"
+          class="text-[14vw] font-black font-headline text-primary-fixed opacity-[0.04] tracking-tighter uppercase select-none whitespace-nowrap pr-[8vw]">AGENCY</span>
+      </div>
     </div>
     <div class="relative z-10 flex flex-col md:flex-row justify-between items-end w-full gap-8">
       <div class="flex flex-col gap-3">
