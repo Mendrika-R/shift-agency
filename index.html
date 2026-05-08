@@ -18,19 +18,29 @@
   <style>
     html:not(.i18n-ready) body > *:not(#splash) { visibility: hidden; }
 
+    html, body {
+      overflow-x: clip;
+      max-width: 100vw;
+    }
+
     #splash {
       position: fixed;
       inset: 0;
+      width: 100vw;
+      height: 100dvh;
       z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: grid;
+      place-items: center;
       background: #1C1B1B;
       animation: splashFadeOut 0.6s ease-in 2.6s forwards;
     }
     #splash img {
+      display: block;
       width: min(42vw, 320px);
+      aspect-ratio: 1 / 1;
       height: auto;
+      flex-shrink: 0;
+      transform: translateZ(0);
     }
     @keyframes splashFadeOut {
       to { opacity: 0; visibility: hidden; }
@@ -617,15 +627,44 @@
 
     .sim-step {
       display: none;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     }
 
     .sim-step.active {
       display: grid;
     }
 
+    @media (max-width: 768px) {
+      .sim-step {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1rem;
+      }
+    }
+
+    .sim-card {
+      min-width: 0;
+    }
+
+    .sim-card > div {
+      min-width: 0;
+      flex: 1 1 auto;
+      word-break: break-word;
+      hyphens: auto;
+    }
+
+    .sim-check {
+      flex-shrink: 0;
+    }
+
     .sim-card.selected {
       border-color: #c3f400;
       background-color: #353534;
+    }
+
+    @supports not (backdrop-filter: blur(24px)) {
+      nav {
+        background: #1C1B1B;
+      }
     }
 
     .nav-link {
@@ -682,7 +721,7 @@
     class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 md:px-12 py-5 bg-[#1C1B1B]/80 backdrop-blur-[24px]">
     <a href="#"
       class="flex items-center gap-2 md:gap-3 text-3xl md:text-4xl font-black tracking-tighter text-white italic font-headline">
-      <img src="assets/velos-logo.svg" alt="" class="nav-logo-icon" aria-hidden="true" />
+      <img src="assets/velos-logo.svg" alt="VeloS" width="64" height="64" class="nav-logo-icon" />
       <span>VeloS</span>
     </a>
     <div class="hidden md:flex items-center gap-6">
@@ -735,7 +774,7 @@
               data-i18n="hero.eyebrow">Agence digital</span>
           </div>
           <h1
-            class="font-headline font-black uppercase tracking-tighter leading-[0.88] text-5xl md:text-8xl text-primary">
+            class="font-headline font-black uppercase tracking-tighter leading-[0.88] text-4xl sm:text-5xl md:text-8xl text-primary break-words">
             <span data-i18n="hero.titleLine1">VOTRE BUSINESS</span><br /><span data-i18n="hero.titleLine2">EN
               LIGNE.</span><br />
             <span class="text-primary-fixed" data-i18n="hero.titleLine3">DÈS DEMAIN.</span>
@@ -1189,7 +1228,7 @@
         <div id="simulator-wrapper" class="border border-outline-variant/20">
 
           <!-- ÉTAPE 1 — Objectif -->
-          <div class="sim-step active" id="step-1" style="grid-template-columns:1fr 1fr;">
+          <div class="sim-step active" id="step-1">
             <div class="bg-surface-container-low p-10 border-r border-outline-variant/20">
               <div class="text-on-surface-variant font-label text-xs uppercase tracking-widest mb-6"
                 data-i18n="simulator.stepCounter" data-i18n-vars='{"current":"01","total":"05"}'>Étape 01 / 05</div>
@@ -1276,7 +1315,7 @@
           </div>
 
           <!-- ÉTAPE 2 — Personnalisation -->
-          <div class="sim-step" id="step-2" style="grid-template-columns:1fr 1fr;">
+          <div class="sim-step" id="step-2">
             <div class="bg-surface-container-low p-10 border-r border-outline-variant/20">
               <div class="text-on-surface-variant font-label text-xs uppercase tracking-widest mb-6"
                 data-i18n="simulator.stepCounter" data-i18n-vars='{"current":"02","total":"05"}'>Étape 02 / 05</div>
@@ -1335,7 +1374,7 @@
           </div>
 
           <!-- ÉTAPE 3 — Accompagnement -->
-          <div class="sim-step" id="step-3" style="grid-template-columns:1fr 1fr;">
+          <div class="sim-step" id="step-3">
             <div class="bg-surface-container-low p-10 border-r border-outline-variant/20">
               <div class="text-on-surface-variant font-label text-xs uppercase tracking-widest mb-6"
                 data-i18n="simulator.stepCounter" data-i18n-vars='{"current":"03","total":"05"}'>Étape 03 / 05</div>
@@ -1392,7 +1431,7 @@
           </div>
 
           <!-- ÉTAPE 4 — Résultat -->
-          <div class="sim-step" id="step-4" style="grid-template-columns:1fr 1fr;">
+          <div class="sim-step" id="step-4">
             <div class="bg-surface-container-low p-10 border-r border-outline-variant/20">
               <div class="text-on-surface-variant font-label text-xs uppercase tracking-widest mb-6"
                 data-i18n="simulator.stepCounter" data-i18n-vars='{"current":"04","total":"05"}'>Étape 04 / 05</div>
@@ -1442,7 +1481,7 @@
           </div>
 
           <!-- ÉTAPE 5 — Contact -->
-          <div class="sim-step" id="step-5" style="grid-template-columns:1fr 1fr;">
+          <div class="sim-step" id="step-5">
             <div class="bg-surface-container-low p-10 border-r border-outline-variant/20">
               <div class="text-on-surface-variant font-label text-xs uppercase tracking-widest mb-6"
                 data-i18n="simulator.stepCounter" data-i18n-vars='{"current":"05","total":"05"}'>Étape 05 / 05</div>
