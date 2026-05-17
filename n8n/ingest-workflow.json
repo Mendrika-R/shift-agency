@@ -1,0 +1,69 @@
+{
+  "name": "Velos — Document Ingestion",
+  "nodes": [
+    {
+      "parameters": { "path": "velos-ingest", "responseMode": "responseNode", "options": {} },
+      "id": "webhook-ingest",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": { "operation": "text", "binaryPropertyName": "data" },
+      "id": "extract-text",
+      "name": "Extract Document Text",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $input.first().json.text || '';\nconst chunkSize = 1600;\nconst overlap = 200;\nconst lang = $input.first().json.lang || 'fr';\nconst source = $input.first().json.source || 'docx';\nconst chunks = [];\nlet i = 0, idx = 0;\nwhile (i < text.length) {\n  const end = Math.min(i + chunkSize, text.length);\n  chunks.push({ content: text.slice(i, end).trim(), source, lang, chunk_index: idx++ });\n  i += chunkSize - overlap;\n}\nreturn [{ json: { chunks: chunks.filter(c => c.content.length > 50) } }];"
+      },
+      "id": "chunk-text",
+      "name": "Chunk Text",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=REMPLACER_PAR_WORKER_URL/ingest",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "X-Ingest-Secret", "value": "=REMPLACER_PAR_INGEST_SECRET" },
+            { "name": "Origin", "value": "https://velos.agency" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": { "parameters": [{ "name": "chunks", "value": "={{ $json.chunks }}" }] },
+        "options": {}
+      },
+      "id": "http-ingest",
+      "name": "POST to Worker /ingest",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [960, 300]
+    },
+    {
+      "parameters": { "respondWith": "json", "responseBody": "={{ $json }}", "options": {} },
+      "id": "respond-ingest",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1200, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": { "main": [[{ "node": "Extract Document Text", "type": "main", "index": 0 }]] },
+    "Extract Document Text": { "main": [[{ "node": "Chunk Text", "type": "main", "index": 0 }]] },
+    "Chunk Text": { "main": [[{ "node": "POST to Worker /ingest", "type": "main", "index": 0 }]] },
+    "POST to Worker /ingest": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "pinData": {}
+}
