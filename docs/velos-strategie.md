@@ -5,6 +5,18 @@
 
 ---
 
+## Session 2026-05-17 — Chatbot RAG
+
+- Conception et implémentation du chatbot IA bilingue FR/EN
+- Architecture : Cloudflare Worker (RAG) + Qdrant + OpenRouter Llama 3.3 70B + n8n
+- Widget panel latéral, design Hyper-Digital Brutalism, streaming SSE
+- Base de connaissance : 20 chunks réels du site (10 FR + 10 EN)
+- Lead capture après 3 échanges → n8n → Gmail + Google Sheets
+- Déploiement différé (comptes à créer : Cloudflare, Qdrant, OpenRouter, n8n)
+- Fichiers : `chatbot.js`, `worker/`, `scripts/ingest.js`, `n8n/`, `docs/chatbot-deploy.md`
+
+---
+
 ## Sommaire
 
 1. [Repo gtm-agents : analyse et plugins utiles](#1-repo-gtm-agents)
