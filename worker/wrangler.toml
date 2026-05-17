@@ -1,0 +1,15 @@
+name = "shift-chatbot"
+main = "index.js"
+compatibility_date = "2024-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+[ai]
+binding = "AI"
+
+# Secrets à configurer avec : wrangler secret put NOM_SECRET
+# OPENROUTER_API_KEY
+# QDRANT_URL
+# QDRANT_API_KEY
+# N8N_LEAD_WEBHOOK
+# INGEST_SECRET
+# ALLOWED_ORIGIN
