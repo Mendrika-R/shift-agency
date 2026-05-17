@@ -1,0 +1,62 @@
+[
+  {
+    "content": "Velos est une agence digitale spécialisée pour les marchés africains. Promesse principale : votre business en ligne en quelques jours, pas en mois. Livraison Flash disponible en 48h. 3x plus rapide que la concurrence. Zéro coût caché. Code sur-mesure uniquement, pas de templates lourds. Contact : contact@velos.agency. Prise de rendez-vous via Calendly pour un créneau de 30 minutes.",
+    "source": "hero",
+    "lang": "fr",
+    "chunk_index": 0
+  },
+  {
+    "content": "Services web Velos — 4 types de projets : 1) Présentation & Vitrine : site institutionnel axé sur l'image de marque et la génération de leads qualifiés. 2) Vente & E-Commerce : plateforme transactionnelle haute performance, conversion optimisée et gestion de catalogue avancée. 3) SaaS & App Web : application métier complexe, gestion utilisateurs, tableau de bord et traitement de données. 4) Autre / Complexe : besoins spécifiques, architecture sur-mesure ou intégration API lourde ou expérimentale.",
+    "source": "services",
+    "lang": "fr",
+    "chunk_index": 1
+  },
+  {
+    "content": "Tarifs web Velos — 4 paliers : Starter à 500€ (+ maintenance mensuelle) inclut Architecture Core, Design System Basique, Déploiement Standard. Business à 1500€ paiement unique inclut Starter + SEO Core, CMS Avancée, Analytique Intégrée. Premium à 2500€ paiement unique inclut Business + Animations WebGL, E-commerce Haute Performance, Support Prioritaire 24/7. Enterprise sur devis avec Architecture Custom pour Développement Spécifique, Migration de Données, Sécurité Renforcée.",
+    "source": "pricing_web",
+    "lang": "fr",
+    "chunk_index": 2
+  },
+  {
+    "content": "Packs Automatisation & IA Velos — 3 packs : Connect à 1500€ (délai 7-10 jours) inclut 1 workflow d'automatisation, 1 intégration entre 2 outils, hébergement n8n 3 mois, documentation + 1h formation. Commerce à 3500€ (délai 14 jours) inclut bot IA WhatsApp ou web, qualification automatique des leads, notifications temps réel équipe, synchronisation CRM, hébergement 6 mois. Système à 7000€ (délai 21 jours) inclut 3 workflows intégrés, bot IA multicanal WhatsApp + email + web, tableau de bord de pilotage, intégration sur-mesure 3 outils, hébergement 12 mois + monitoring.",
+    "source": "pricing_ia",
+    "lang": "fr",
+    "chunk_index": 3
+  },
+  {
+    "content": "Retainer Velos — 2 formules : Velos Keep à 50€/mois (engagement 3 mois, clients web) inclut hébergement, mises à jour techniques, sauvegardes hebdomadaires, support email 48h. Velos Care à 150€/mois (engagement 6 mois, réservé aux packs IA — autres sur devis) inclut monitoring 24/7 workflows, ajustements mineurs ≤2h/mois, rapport mensuel de performance, support prioritaire <4h ouvrées.",
+    "source": "pricing_retainer",
+    "lang": "fr",
+    "chunk_index": 4
+  },
+  {
+    "content": "Processus Velos en 5 étapes, paiement 30/40/30% : Étape 1 Découverte — simulateur puis rendez-vous d'analyse. Étape 2 Commande — signature devis, acompte 30%, kick-off. Étape 3 Cadrage — validation maquette web ou config IA + tests réels, paiement 40%. Étape 4 Livraison — démo complète, solde 30%, mise en ligne. Étape 5 Récurrence — maintenance à partir de 50€/mois, SEO/Ads/contenu IA pour clients Growth.",
+    "source": "process",
+    "lang": "fr",
+    "chunk_index": 5
+  },
+  {
+    "content": "Garantie Velos : vous obtenez exactement ce qui est validé dans les délais contractuels. Pénalité appliquée en cas de retard de notre côté. Pas de coûts cachés. Transparence absolue sur toute la durée du projet.",
+    "source": "guarantee",
+    "lang": "fr",
+    "chunk_index": 6
+  },
+  {
+    "content": "Extensions architecturales Velos — 3 modules : Intégrations Mobile Money (opérateurs financiers africains, transactions instantanées, sécurité bancaire). Automatisation WhatsApp (bots IA, notifications transactionnelles, routing intelligent, Cloud API). Synchronisation CRM (bidirectionnelle temps réel entre vitrine, back-office et outils de vente, zéro double saisie).",
+    "source": "extensions",
+    "lang": "fr",
+    "chunk_index": 7
+  },
+  {
+    "content": "Services automatisation Velos — 3 domaines : Workflows & Automatisations (tâches répétitives supprimées, devis automatiques, relances, reporting, qualification leads). Bots conversationnels IA (agents WhatsApp, web et email 24/7, qualifient prospects, notifient équipe en temps réel). Intégrations & Pipelines (CRM, ERP, marketing automation, comptabilité — synchronisation bidirectionnelle, zéro double saisie).",
+    "source": "automation",
+    "lang": "fr",
+    "chunk_index": 8
+  },
+  {
+    "content": "Contact Velos : email contact@velos.agency, réservation créneau 30 min via Calendly. Après réservation, analyse du projet et proposition détaillée sous 24h. Instagram : @velos.agency. LinkedIn : Velos Agency.",
+    "source": "contact",
+    "lang": "fr",
+    "chunk_index": 9
+  }
+]
