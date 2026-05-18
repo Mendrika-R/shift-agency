@@ -1,7 +1,11 @@
 (function () {
   'use strict';
 
-  var WORKER_URL = 'https://shift-chatbot.velos.workers.dev';
+  var IS_PREPROD = location.hostname.indexOf('staging.') === 0 ||
+    location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+  var WORKER_URL = IS_PREPROD
+    ? 'https://shift-chatbot-preprod.velos.workers.dev'
+    : 'https://shift-chatbot.velos.workers.dev';
   var MAX_MESSAGES = 30;
   var LEAD_AFTER_EXCHANGES = 3;
 
