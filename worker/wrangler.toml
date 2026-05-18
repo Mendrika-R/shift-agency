@@ -6,10 +6,12 @@ compatibility_flags = ["nodejs_compat"]
 [ai]
 binding = "AI"
 
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "shift-knowledge"
+
 # Secrets à configurer avec : wrangler secret put NOM_SECRET
 # OPENROUTER_API_KEY
-# QDRANT_URL
-# QDRANT_API_KEY
 # N8N_LEAD_WEBHOOK
 # INGEST_SECRET
 # ALLOWED_ORIGIN

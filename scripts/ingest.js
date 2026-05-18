@@ -1,11 +1,9 @@
 #!/usr/bin/env node
 /**
- * Populates Qdrant via the deployed Worker /ingest endpoint.
+ * Populates Cloudflare Vectorize via the deployed Worker /ingest endpoint.
  * Usage:
  *   WORKER_URL=https://shift-chatbot.workers.dev \
  *   INGEST_SECRET=your_secret \
- *   QDRANT_URL=https://cluster.qdrant.io \
- *   QDRANT_API_KEY=your_key \
  *   node scripts/ingest.js
  */
 
@@ -22,20 +20,8 @@ const EN_CHUNKS = require('../worker/knowledge/en.json');
 const ALL_CHUNKS = [...FR_CHUNKS, ...EN_CHUNKS];
 
 async function createCollection() {
-  const QDRANT_URL = process.env.QDRANT_URL;
-  const QDRANT_API_KEY = process.env.QDRANT_API_KEY;
-  if (!QDRANT_URL || !QDRANT_API_KEY) {
-    console.log('Skipping direct collection creation — set QDRANT_URL and QDRANT_API_KEY to auto-create.');
-    console.log('Make sure collection "shift_knowledge" exists (size: 768, distance: Cosine) before ingesting.\n');
-    return;
-  }
-  console.log('Creating Qdrant collection shift_knowledge...');
-  const res = await fetch(`${QDRANT_URL}/collections/shift_knowledge`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', 'api-key': QDRANT_API_KEY },
-    body: JSON.stringify({ vectors: { size: 768, distance: 'Cosine' } }),
-  });
-  console.log('Collection response:', res.status, res.ok ? '(ok)' : await res.text());
+  console.log('Prérequis : index Vectorize "shift-knowledge" doit exister.');
+  console.log('Crée-le avec : wrangler vectorize create shift-knowledge --dimensions=768 --metric=cosine\n');
 }
 
 async function ingest(chunks, batchSize = 5) {
