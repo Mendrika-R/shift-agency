@@ -16,3 +16,17 @@ index_name = "shift-knowledge"
 # N8N_LEAD_WEBHOOK
 # INGEST_SECRET
 # ALLOWED_ORIGIN
+
+# --- Environnement preprod ---
+# Déploiement : wrangler deploy --env preprod
+# Secrets     : wrangler secret put NOM_SECRET --env preprod
+[env.preprod]
+name = "shift-chatbot-preprod"
+workers_dev = true
+
+[env.preprod.ai]
+binding = "AI"
+
+[[env.preprod.vectorize]]
+binding = "VECTORIZE"
+index_name = "shift-knowledge-preprod"

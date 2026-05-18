@@ -5,31 +5,40 @@
 # ou du system prompt du Worker.
 #
 # Usage:
-#   ./scripts/reindex.sh                 # ré-ingère les chunks (upsert)
-#   ./scripts/reindex.sh --deploy        # redéploie le Worker puis ré-ingère
-#   ./scripts/reindex.sh --fresh         # recrée l'index Vectorize de zéro, puis ré-ingère
-#   ./scripts/reindex.sh --deploy --fresh
+#   ./scripts/reindex.sh                      # prod : ré-ingère les chunks (upsert)
+#   ./scripts/reindex.sh --deploy             # prod : redéploie le Worker puis ré-ingère
+#   ./scripts/reindex.sh --fresh              # prod : recrée l'index Vectorize puis ré-ingère
+#   ./scripts/reindex.sh --env preprod        # preprod : ré-ingère
+#   ./scripts/reindex.sh --env preprod --deploy --fresh
 #
 # Config : crée un fichier .env à la racine du repo (voir .env.example) avec
-#   WORKER_URL=...
-#   INGEST_SECRET=...
+#   WORKER_URL / INGEST_SECRET                (prod)
+#   WORKER_URL_PREPROD / INGEST_SECRET_PREPROD (preprod)
 
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
-INDEX_NAME="shift-knowledge"
+ENV="prod"
 DO_DEPLOY=false
 DO_FRESH=false
 
-for arg in "$@"; do
-  case "$arg" in
-    --deploy) DO_DEPLOY=true ;;
-    --fresh)  DO_FRESH=true ;;
-    *) echo "Argument inconnu : $arg" >&2; exit 1 ;;
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --deploy)  DO_DEPLOY=true ;;
+    --fresh)   DO_FRESH=true ;;
+    --env)     ENV="${2:-}"; shift ;;
+    --env=*)   ENV="${1#--env=}" ;;
+    *) echo "Argument inconnu : $1" >&2; exit 1 ;;
   esac
+  shift
 done
+
+if [[ "$ENV" != "prod" && "$ENV" != "preprod" ]]; then
+  echo "ERREUR : --env doit valoir 'prod' ou 'preprod' (reçu : '$ENV')." >&2
+  exit 1
+fi
 
 # --- Charge .env si présent ---
 if [[ -f .env ]]; then
@@ -39,8 +48,22 @@ if [[ -f .env ]]; then
   set +a
 fi
 
+# --- Sélectionne la cible selon l'environnement ---
+if [[ "$ENV" == "preprod" ]]; then
+  INDEX_NAME="shift-knowledge-preprod"
+  WRANGLER_ENV=(--env preprod)
+  WORKER_URL="${WORKER_URL_PREPROD:-}"
+  INGEST_SECRET="${INGEST_SECRET_PREPROD:-}"
+else
+  INDEX_NAME="shift-knowledge"
+  WRANGLER_ENV=()
+fi
+export WORKER_URL INGEST_SECRET
+
+echo "Environnement : $ENV (index : $INDEX_NAME)"
+
 if [[ -z "${INGEST_SECRET:-}" ]]; then
-  echo "ERREUR : INGEST_SECRET manquant. Renseigne-le dans .env (voir .env.example)." >&2
+  echo "ERREUR : secret d'ingestion manquant pour '$ENV'. Renseigne-le dans .env (voir .env.example)." >&2
   exit 1
 fi
 
@@ -53,8 +76,8 @@ echo "  JSON OK"
 
 # --- Redéploie le Worker si demandé ---
 if [[ "$DO_DEPLOY" == true ]]; then
-  echo "Déploiement du Worker..."
-  ( cd worker && npx wrangler deploy )
+  echo "Déploiement du Worker ($ENV)..."
+  ( cd worker && npx wrangler deploy "${WRANGLER_ENV[@]}" )
 fi
 
 # --- Recrée l'index Vectorize si demandé ---
