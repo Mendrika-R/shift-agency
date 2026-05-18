@@ -1,127 +1,129 @@
 # Guide de déploiement — Chatbot RAG Velos
 
-## Prérequis comptes
-- Cloudflare (gratuit) : https://dash.cloudflare.com
-- Qdrant Cloud (gratuit) : https://cloud.qdrant.io
-- OpenRouter (gratuit) : https://openrouter.io
-- n8n Cloud (gratuit) : https://app.n8n.io
+> Stack : Cloudflare Worker + Vectorize + Workers AI · OpenRouter · n8n
 
 ---
 
-## Étape 1 — Cloudflare Worker
+## Architecture
 
-### Installer Wrangler et déployer
+```
+index.html → chatbot.js → Worker (shift-chatbot.velos.workers.dev)
+                               ├── /chat   → Vectorize (RAG) + OpenRouter (LLM)
+                               ├── /ingest → Vectorize (ingestion knowledge)
+                               └── /lead   → n8n webhook (capture lead)
+```
+
+---
+
+## Étape 1 — Déployer le Worker Cloudflare
+
+### Via Cloudflare MCP (recommandé — depuis Claude Code)
+Le MCP Cloudflare est configuré dans ce projet. Après redémarrage de Claude Code
+avec le token, les commandes de déploiement s'exécutent directement depuis
+l'assistant.
+
+### Via Wrangler CLI (alternative)
 ```bash
 npm install -g wrangler
 wrangler login
 cd worker
 wrangler deploy
 ```
-→ Note l'URL affichée : `https://shift-chatbot.workers.dev`
-
-### Configurer les secrets
-```bash
-wrangler secret put OPENROUTER_API_KEY
-# Valeur : clé OpenRouter obtenue à l'étape 4
-
-wrangler secret put QDRANT_URL
-# Valeur : https://TON_CLUSTER.qdrant.io
-
-wrangler secret put QDRANT_API_KEY
-# Valeur : clé API Qdrant
-
-wrangler secret put N8N_LEAD_WEBHOOK
-# Valeur : URL webhook n8n (obtenue à l'étape 5)
-
-wrangler secret put INGEST_SECRET
-# Valeur : une chaîne aléatoire, ex: openssl rand -hex 16
-
-wrangler secret put ALLOWED_ORIGIN
-# Valeur : https://ton-domaine.com
-```
+→ URL : `https://shift-chatbot.velos.workers.dev`
 
 ---
 
-## Étape 2 — Qdrant Cloud
+## Étape 2 — Créer l'index Vectorize
 
-### Créer le cluster
-1. https://cloud.qdrant.io → Create cluster → Free Tier
-2. Note l'URL et la clé API
-
-### Créer la collection
 ```bash
-curl -X PUT https://TON_CLUSTER.qdrant.io/collections/shift_knowledge \
-  -H "api-key: TON_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"vectors":{"size":768,"distance":"Cosine"}}'
+cd worker
+wrangler vectorize create shift-knowledge --dimensions=768 --metric=cosine
 ```
+
+Ou via le MCP Cloudflare directement depuis Claude Code.
 
 ---
 
-## Étape 3 — Ingestion de la base de connaissance
+## Étape 3 — Configurer les secrets Worker
 
 ```bash
-WORKER_URL=https://shift-chatbot.workers.dev \
-INGEST_SECRET=ton_ingest_secret \
-QDRANT_URL=https://TON_CLUSTER.qdrant.io \
-QDRANT_API_KEY=ta_cle_qdrant \
-node scripts/ingest.js
+cd worker
+wrangler secret put OPENROUTER_API_KEY   # clé OpenRouter
+wrangler secret put N8N_LEAD_WEBHOOK     # URL webhook n8n
+wrangler secret put INGEST_SECRET        # secret aléatoire: openssl rand -hex 16
+wrangler secret put ALLOWED_ORIGIN       # https://velos.agency
 ```
-Résultat attendu : `Total inserted: 20 / 20 chunks.`
 
 ---
 
 ## Étape 4 — OpenRouter
 
-1. https://openrouter.io → Sign up → API Keys → Create key
-2. Modèle utilisé : `meta-llama/llama-3.3-70b-instruct:free` (gratuit, rate limited)
-3. Mettre la clé : `wrangler secret put OPENROUTER_API_KEY`
+1. https://openrouter.io → API Keys → Create key
+2. Modèle : `meta-llama/llama-3.3-70b-instruct:free` (gratuit)
+3. `wrangler secret put OPENROUTER_API_KEY`
 
 ---
 
-## Étape 5 — n8n Cloud
+## Étape 5 — Ingestion de la base de connaissance
+
+Les fichiers sources sont dans `worker/knowledge/fr.json` et `worker/knowledge/en.json`.
+
+### Configuration (une seule fois)
+Copier le gabarit et renseigner le secret :
+```bash
+cp .env.example .env
+# puis éditer .env : renseigner INGEST_SECRET (identique au secret du Worker)
+```
+
+### Réindexer (à chaque modification de la base de connaissance)
+```bash
+./scripts/reindex.sh            # ré-ingère les chunks (upsert)
+./scripts/reindex.sh --deploy   # redéploie le Worker, puis ré-ingère
+./scripts/reindex.sh --fresh    # recrée l'index Vectorize à vide, puis ré-ingère
+```
+Résultat attendu : `Done. Total inserted: 20 / 20 chunks.`
+
+Les IDs des vecteurs sont déterministes (`lang-source-chunk_index`) : une
+ré-ingestion **écrase** la version précédente de chaque chunk, sans créer de
+doublon. Utiliser `--fresh` uniquement après un changement du nombre ou de la
+structure des chunks.
+
+---
+
+## Étape 6 — n8n Cloud (capture leads)
 
 1. https://app.n8n.io → New workflow → Import → `n8n/lead-workflow.json`
-2. Configurer les credentials Gmail et Google Sheets dans n8n
-3. Créer un Google Sheet avec les colonnes : Date, Nom, Contact, Projet, Langue, Session
-4. Remplacer `REMPLACER_PAR_SPREADSHEET_ID` par l'ID de ton sheet
-5. Activer le workflow → noter l'URL du webhook production
+2. Configurer credentials Gmail + Google Sheets
+3. Créer un Google Sheet : colonnes Date, Nom, Contact, Projet, Langue, Session
+4. Remplacer `REMPLACER_PAR_SPREADSHEET_ID` par l'ID du sheet
+5. Activer le workflow → copier l'URL webhook production
 6. `wrangler secret put N8N_LEAD_WEBHOOK` avec cette URL
 
-### Workflow d'ingestion docx (optionnel)
-1. Importer `n8n/ingest-workflow.json`
-2. Remplacer `REMPLACER_PAR_WORKER_URL` par l'URL du Worker
-3. Remplacer `REMPLACER_PAR_INGEST_SECRET` par le secret d'ingestion
+### Ingestion depuis docx (optionnel)
+1. Importer `n8n/ingest-workflow.json` dans n8n
+2. Remplacer `REMPLACER_PAR_WORKER_URL` et `REMPLACER_PAR_INGEST_SECRET`
 
 ---
 
-## Étape 6 — Mettre à jour chatbot.js avec l'URL réelle
-
-Dans `chatbot.js`, ligne 4, remplacer si nécessaire :
-```javascript
-var WORKER_URL = 'https://shift-chatbot.workers.dev';
-```
-Par l'URL exacte retournée par `wrangler deploy` (si différente).
-
-Redéployer le site sur Hostinger.
-
----
-
-## Étape 7 — Ajouter un document docx ultérieurement
-
-```bash
-curl -X POST https://TON_N8N.app.n8n.io/webhook/velos-ingest \
-  -F "data=@offres_commerciales_agence.docx" \
-  -F "lang=fr" \
-  -F "source=offres_commerciales"
-```
-
----
-
-## Vérification finale
+## Étape 7 — Vérification finale
 
 1. Ouvrir le site dans le navigateur
 2. Cliquer sur le bouton vert bas-droite
 3. Poser : "Quels sont vos tarifs web ?"
 4. Vérifier que la réponse cite les vrais tarifs (500€, 1500€, 2500€)
 5. Envoyer un lead test → vérifier Gmail et Google Sheets
+
+---
+
+## État du déploiement
+
+| Composant | Statut |
+|---|---|
+| Worker code | ✅ Déployé (`shift-chatbot.velos.workers.dev`) |
+| wrangler.toml | ✅ Configuré (`shift-knowledge`, binding AI + VECTORIZE) |
+| Cloudflare MCP | ✅ Configuré (token injecté, redémarrage requis) |
+| Index Vectorize | ✅ Créé (`shift-knowledge`) |
+| Secrets Worker | ✅ Configurés |
+| Ingestion knowledge | ⏳ Lancer `./scripts/reindex.sh --fresh` |
+| n8n lead webhook | ⏳ À configurer |
+| Frontend chatbot.js | ✅ Intégré dans index.html |

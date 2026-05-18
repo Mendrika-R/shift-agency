@@ -8,7 +8,12 @@ Si une information demandée n'est pas dans le contexte, réponds EXACTEMENT cet
 
 Ne mentionne jamais que tu es une IA ou un LLM. Tu es l'assistant Velos.
 Ne propose jamais de tarifs ou délais autres que ceux présents dans le contexte.
-Sois concis et direct. Après 3 échanges, propose naturellement de laisser un email ou WhatsApp.
+RÈGLE DÉLAIS : quand tu mentionnes un délai (7-10j, 14j, 21j), précise TOUJOURS qu'il s'agit de jours de développement PUR, et que le décompte ne démarre qu'APRÈS la phase 3 de cadrage — une fois les workflows validés et les accès fournis. La phase de cadrage elle-même, de durée variable, n'est PAS incluse dans ces délais.
+TON : adopte un ton naturel et humain — varie tes formulations, montre que tu as compris la question avant de répondre. Évite les réponses robotiques ou trop scolaires. Quand tu présentes plusieurs familles d'offres distinctes, ajoute une courte phrase de transition entre elles.
+Sois concis (6-8 lignes max). Pas de conclusion ni de signature.
+FORMATAGE : utilise **gras** pour les noms de packs, prix et délais clés. Utilise des listes "- item" pour les énumérations de 3 éléments ou plus.
+ANTI-HALLUCINATION : ne crée JAMAIS de nom de pack, de prix ou de délai qui n'est pas mot pour mot dans le CONTEXTE. Si une information n'est pas dans le contexte, dis-le.
+Après 3 échanges, propose naturellement de laisser un email ou WhatsApp.
 Ne sois jamais insistant sur la capture de contact.
 
 --- CONTEXTE ---
@@ -24,7 +29,12 @@ If requested information is not in the context, reply EXACTLY this sentence and 
 
 Never mention that you are an AI or LLM. You are the Velos assistant.
 Never suggest prices or timelines other than those in the context.
-Be concise and direct. After 3 exchanges, naturally offer to collect an email or WhatsApp.
+DELAY RULE: whenever you mention a timeline (7-10d, 14d, 21d), ALWAYS specify these are PURE development days, and that the count only starts AFTER the Phase 3 scoping — once workflows are validated and accesses provided. The scoping phase itself, of variable duration, is NOT included in these timelines.
+TONE: keep a natural, human tone — vary your phrasing, show you understood the question before answering. Avoid robotic or mechanical responses. When presenting multiple distinct offer families, add a short transition sentence between them.
+Be concise (6-8 lines max). No conclusion or sign-off.
+FORMATTING: use **bold** for pack names, prices and key timelines. Use "- item" lists for enumerations of 3 or more elements.
+ANTI-HALLUCINATION: NEVER invent a pack name, price, or timeline that is not word-for-word in the CONTEXT. If information is not in context, say so.
+After 3 exchanges, naturally offer to collect an email or WhatsApp.
 Never be pushy about lead capture.
 
 --- CONTEXT ---
@@ -59,13 +69,13 @@ async function handleChat(request, env) {
     const queryVector = embedResult.data[0];
 
     const results = await env.VECTORIZE.query(queryVector, {
-      topK: 3,
-      filter: { lang: safeLang },
+      topK: 5,
       returnMetadata: 'all',
     });
 
     chunks = (results.matches || [])
-      .filter(m => m.score >= 0.3)
+      .filter(m => m.metadata?.lang === safeLang)
+      .filter(m => m.score >= 0.35)
       .map(m => m.metadata?.content)
       .filter(Boolean);
   } catch (e) {
@@ -77,28 +87,33 @@ async function handleChat(request, env) {
     chunks.join('\n\n') || 'Aucun contexte disponible.'
   );
 
-  const llmRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${env.OPENROUTER_API_KEY}`,
-      'Content-Type': 'application/json',
-      'HTTP-Referer': env.ALLOWED_ORIGIN || 'https://velos.agency',
-      'X-Title': 'Velos Chatbot',
-    },
-    body: JSON.stringify({
-      model: 'meta-llama/llama-3.3-70b-instruct:free',
-      messages: [{ role: 'system', content: systemContent }, ...messages],
-      stream: true,
-      max_tokens: 512,
-    }),
+  const aiStream = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+    messages: [{ role: 'system', content: systemContent }, ...messages],
+    stream: true,
+    max_tokens: 350,
   });
 
-  if (!llmRes.ok) {
-    const err = await llmRes.text();
-    return Response.json({ error: 'LLM error', detail: err }, { status: 502 });
-  }
+  // Convert CF Workers AI SSE format {"response":"..."} to OpenRouter format
+  const { readable, writable } = new TransformStream({
+    transform(chunk, controller) {
+      const text = new TextDecoder().decode(chunk);
+      const lines = text.split('\n');
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) { controller.enqueue(new TextEncoder().encode(line + '\n')); continue; }
+        const raw = line.slice(6).trim();
+        if (raw === '[DONE]') { controller.enqueue(new TextEncoder().encode('data: [DONE]\n\n')); continue; }
+        try {
+          const parsed = JSON.parse(raw);
+          const content = parsed.response ?? '';
+          const out = JSON.stringify({ choices: [{ delta: { content }, finish_reason: null }] });
+          controller.enqueue(new TextEncoder().encode(`data: ${out}\n\n`));
+        } catch { controller.enqueue(new TextEncoder().encode(line + '\n')); }
+      }
+    },
+  });
+  aiStream.pipeTo(writable);
 
-  return new Response(llmRes.body, {
+  return new Response(readable, {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
@@ -135,7 +150,7 @@ async function handleIngest(request, env) {
     const chunk = chunks[i];
     const embedResult = await env.AI.run('@cf/baai/bge-base-en-v1.5', { text: chunk.content });
     vectors.push({
-      id: `${Date.now()}-${i}`,
+      id: `${chunk.lang}-${chunk.source}-${chunk.chunk_index ?? i}`,
       values: embedResult.data[0],
       metadata: {
         content: chunk.content,

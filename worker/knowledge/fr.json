@@ -1,5 +1,11 @@
 [
   {
+    "content": "Velos propose 2 familles d'offres distinctes : (1) Offres Web — 4 paliers de sites (Starter 500€, Business 1500€, Premium 2500€, Enterprise sur devis) — sans délai fixe, durée selon projet. (2) Packs Automatisation & IA — 3 packs (Connect 1500€ / 7-10j dev, Commerce 3500€ / 14j dev, Système 7000€ / 21j dev). Les délais sont des jours de développement comptés à partir de la phase 3.",
+    "source": "offres_overview",
+    "lang": "fr",
+    "chunk_index": 10
+  },
+  {
     "content": "Velos est une agence digitale spécialisée pour les marchés africains. Promesse principale : votre business en ligne en quelques jours, pas en mois. Livraison Flash disponible en 48h. 3x plus rapide que la concurrence. Zéro coût caché. Code sur-mesure uniquement, pas de templates lourds. Contact : contact@velos.agency. Prise de rendez-vous via Calendly pour un créneau de 30 minutes.",
     "source": "hero",
     "lang": "fr",
@@ -12,13 +18,13 @@
     "chunk_index": 1
   },
   {
-    "content": "Tarifs web Velos — 4 paliers : Starter à 500€ (+ maintenance mensuelle) inclut Architecture Core, Design System Basique, Déploiement Standard. Business à 1500€ paiement unique inclut Starter + SEO Core, CMS Avancée, Analytique Intégrée. Premium à 2500€ paiement unique inclut Business + Animations WebGL, E-commerce Haute Performance, Support Prioritaire 24/7. Enterprise sur devis avec Architecture Custom pour Développement Spécifique, Migration de Données, Sécurité Renforcée.",
+    "content": "Tarifs web Velos — 4 paliers SANS délai fixe (durée selon projet) : Starter à 500€ (+ maintenance mensuelle) inclut Architecture Core, Design System Basique, Déploiement Standard. Business à 1500€ paiement unique inclut Starter + SEO Core, CMS Avancée, Analytique Intégrée. Premium à 2500€ paiement unique inclut Business + Animations WebGL, E-commerce Haute Performance, Support Prioritaire 24/7. Enterprise sur devis avec Architecture Custom pour Développement Spécifique, Migration de Données, Sécurité Renforcée. ATTENTION : les délais de 7-10j, 14j, 21j ne s'appliquent PAS aux paliers web — ils concernent uniquement les packs Automatisation & IA.",
     "source": "pricing_web",
     "lang": "fr",
     "chunk_index": 2
   },
   {
-    "content": "Packs Automatisation & IA Velos — 3 packs : Connect à 1500€ (délai 7-10 jours) inclut 1 workflow d'automatisation, 1 intégration entre 2 outils, hébergement n8n 3 mois, documentation + 1h formation. Commerce à 3500€ (délai 14 jours) inclut bot IA WhatsApp ou web, qualification automatique des leads, notifications temps réel équipe, synchronisation CRM, hébergement 6 mois. Système à 7000€ (délai 21 jours) inclut 3 workflows intégrés, bot IA multicanal WhatsApp + email + web, tableau de bord de pilotage, intégration sur-mesure 3 outils, hébergement 12 mois + monitoring.",
+    "content": "Packs Automatisation & IA Velos — 3 packs : Connect à 1500€ (7-10 jours de développement) inclut 1 workflow d'automatisation, 1 intégration entre 2 outils, hébergement n8n 3 mois, documentation + 1h formation. Commerce à 3500€ (14 jours de développement) inclut bot IA WhatsApp ou web, qualification automatique des leads, notifications temps réel équipe, synchronisation CRM, hébergement 6 mois. Système à 7000€ (21 jours de développement) inclut 3 workflows intégrés, bot IA multicanal WhatsApp + email + web, tableau de bord de pilotage, intégration sur-mesure 3 outils, hébergement 12 mois + monitoring. Ces délais (7-10j, 14j, 21j) sont des jours de développement pur. Le décompte ne démarre qu'après la phase 3 de cadrage, une fois tous les workflows validés et tous les accès fournis — le temps de cadrage lui-même, de durée variable, n'est pas inclus.",
     "source": "pricing_ia",
     "lang": "fr",
     "chunk_index": 3
@@ -30,7 +36,7 @@
     "chunk_index": 4
   },
   {
-    "content": "Processus Velos en 5 étapes, paiement 30/40/30% : Étape 1 Découverte — simulateur puis rendez-vous d'analyse. Étape 2 Commande — signature devis, acompte 30%, kick-off. Étape 3 Cadrage — validation maquette web ou config IA + tests réels, paiement 40%. Étape 4 Livraison — démo complète, solde 30%, mise en ligne. Étape 5 Récurrence — maintenance à partir de 50€/mois, SEO/Ads/contenu IA pour clients Growth.",
+    "content": "Processus Velos en 5 étapes, paiement 30/40/30% : Étape 1 Découverte — simulateur puis rendez-vous d'analyse. Étape 2 Commande — signature devis, acompte 30%, kick-off : on définit le périmètre exact et le planning. Étape 3 Cadrage & Préparation — on pose les fondations : validation maquette (web) ou conception et validation des workflows + transmission des accès nécessaires CRM/API/WhatsApp Business (IA), paiement 40%. La durée de cette phase dépend du projet et de la réactivité du client — elle n'est PAS comptée dans les délais annoncés. Étape 4 Développement & Livraison — c'est ici, et seulement ici, que démarre le décompte des jours de développement (7-10j, 14j, 21j selon le pack), du dev pur une fois le cadrage figé ; démo complète, solde 30%, mise en ligne. Étape 5 Récurrence — maintenance à partir de 50€/mois, SEO/Ads/contenu IA pour clients Growth.",
     "source": "process",
     "lang": "fr",
     "chunk_index": 5
