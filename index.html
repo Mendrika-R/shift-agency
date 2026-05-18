@@ -14,10 +14,40 @@
 
     <!-- No-FOUC: hide body until i18n applied -->
     <style>
-      html:not(.i18n-ready) body {
+      html:not(.i18n-ready) body > *:not(#splash) {
         visibility: hidden;
       }
 
+      #splash {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100dvh;
+        z-index: 9999;
+        display: grid;
+        place-items: center;
+        background: #1C1B1B;
+        animation: splashFadeOut 0.6s ease-in 2.6s forwards;
+      }
+      #splash img {
+        display: block;
+        width: min(42vw, 320px);
+        aspect-ratio: 1 / 1;
+        height: auto;
+        flex-shrink: 0;
+        transform: translateZ(0);
+      }
+      @keyframes splashFadeOut {
+        to { opacity: 0; visibility: hidden; }
+      }
+      .nav-logo-icon {
+        height: 3.2rem;
+        width: auto;
+        flex-shrink: 0;
+      }
+      @media (min-width: 768px) {
+        .nav-logo-icon { height: 4rem; }
+      }
     </style>
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -748,11 +778,20 @@
   <body
     class="bg-background text-on-background font-body antialiased min-h-screen selection:bg-primary-fixed selection:text-on-primary-fixed">
 
+    <!-- ════ SPLASH ════ -->
+    <div id="splash" aria-hidden="true">
+      <img src="/assets/velos-logo.svg" alt="" />
+    </div>
+    <!-- ════ /SPLASH ════ -->
+
     <!-- ════ NAV ════ -->
     <nav
       class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 md:px-12 py-5 bg-[#1C1B1B]/80 backdrop-blur-[24px]">
-      <a href="#" class="text-3xl md:text-4xl font-black tracking-tighter text-white italic font-headline"
-        data-config-logo>Velos</a>
+      <a href="#"
+        class="flex items-center gap-2 md:gap-3 text-3xl md:text-4xl font-black tracking-tighter text-white italic font-headline">
+        <img src="/assets/velos-logo.svg" alt="VeloS" width="64" height="64" class="nav-logo-icon" />
+        <span data-config-logo>Velos</span>
+      </a>
       <div class="hidden md:flex items-center gap-6">
         <a href="#services" class="nav-link" data-i18n="nav.services">Services</a>
         <a href="#automation" class="nav-link" data-i18n="nav.automation">Automation</a>
