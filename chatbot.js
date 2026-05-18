@@ -80,8 +80,8 @@
 
   var style = document.createElement('style');
   style.textContent = [
-    '#velos-chat-toggle{position:fixed;bottom:24px;right:24px;z-index:9998;width:52px;height:52px;background:#CCFF00;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:4px 4px 0 #000;transition:transform .15s,box-shadow .15s}',
-    '#velos-chat-toggle:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 #000}',
+    '#velos-chat-toggle{position:fixed;bottom:24px;right:24px;z-index:9998;width:52px;height:52px;background:#CCFF00;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:4px 4px 0 #000;transition:transform .075s,box-shadow .075s}',
+    '#velos-chat-toggle:hover{transform:translate(-4px,-4px);box-shadow:4px 4px 0 #FFFFFF}',
     '#velos-chat-toggle svg{width:24px;height:24px;fill:#131313}',
     '#velos-chat-panel{position:fixed;top:0;right:0;bottom:0;width:420px;max-width:100vw;background:#131313;z-index:9999;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);border-left:2px solid #353534}',
     '#velos-chat-panel.open{transform:translateX(0)}',
