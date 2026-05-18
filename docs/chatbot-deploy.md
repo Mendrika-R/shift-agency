@@ -81,7 +81,7 @@ cp .env.example .env
 ./scripts/reindex.sh --deploy   # redéploie le Worker, puis ré-ingère
 ./scripts/reindex.sh --fresh    # recrée l'index Vectorize à vide, puis ré-ingère
 ```
-Résultat attendu : `Done. Total inserted: 20 / 20 chunks.`
+Résultat attendu : `Done. Total inserted: 22 / 22 chunks.`
 
 Les IDs des vecteurs sont déterministes (`lang-source-chunk_index`) : une
 ré-ingestion **écrase** la version précédente de chaque chunk, sans créer de
