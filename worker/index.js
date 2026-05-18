@@ -58,22 +58,16 @@ async function handleChat(request, env) {
     const embedResult = await env.AI.run('@cf/baai/bge-base-en-v1.5', { text: lastUserMsg });
     const queryVector = embedResult.data[0];
 
-    const qdrantRes = await fetch(`${env.QDRANT_URL}/collections/shift_knowledge/points/search`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'api-key': env.QDRANT_API_KEY },
-      body: JSON.stringify({
-        vector: queryVector,
-        limit: 3,
-        filter: { must: [{ key: 'lang', match: { value: safeLang } }] },
-        with_payload: true,
-        score_threshold: 0.3,
-      }),
+    const results = await env.VECTORIZE.query(queryVector, {
+      topK: 3,
+      filter: { lang: safeLang },
+      returnMetadata: 'all',
     });
 
-    if (qdrantRes.ok) {
-      const qdrantData = await qdrantRes.json();
-      chunks = (qdrantData.result || []).map(r => r.payload?.content).filter(Boolean);
-    }
+    chunks = (results.matches || [])
+      .filter(m => m.score >= 0.3)
+      .map(m => m.metadata?.content)
+      .filter(Boolean);
   } catch (e) {
     console.error('RAG error:', e.message);
   }
@@ -136,34 +130,25 @@ async function handleIngest(request, env) {
     return Response.json({ error: 'chunks array required' }, { status: 400 });
   }
 
-  const points = [];
+  const vectors = [];
   for (let i = 0; i < chunks.length; i++) {
     const chunk = chunks[i];
     const embedResult = await env.AI.run('@cf/baai/bge-base-en-v1.5', { text: chunk.content });
-    points.push({
-      id: Date.now() * 1000 + i,
-      vector: embedResult.data[0],
-      payload: {
+    vectors.push({
+      id: `${Date.now()}-${i}`,
+      values: embedResult.data[0],
+      metadata: {
         content: chunk.content,
         source: chunk.source,
         lang: chunk.lang,
-        chunk_index: chunk.chunk_index ?? i,
+        chunk_index: String(chunk.chunk_index ?? i),
       },
     });
   }
 
-  const upsertRes = await fetch(`${env.QDRANT_URL}/collections/shift_knowledge/points`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', 'api-key': env.QDRANT_API_KEY },
-    body: JSON.stringify({ points }),
-  });
+  await env.VECTORIZE.upsert(vectors);
 
-  if (!upsertRes.ok) {
-    const err = await upsertRes.text();
-    return Response.json({ error: 'Qdrant upsert failed', detail: err }, { status: 502 });
-  }
-
-  return Response.json({ inserted: points.length }, { headers: corsHeaders(request.headers.get('Origin')) });
+  return Response.json({ inserted: vectors.length }, { headers: corsHeaders(request.headers.get('Origin')) });
 }
 
 export default {
