@@ -71,7 +71,7 @@ Installer les 67 plugins "au cas où" pollue le contexte Claude Code. Logique pr
 - **Ne pas mentionner** : les personnes de l'équipe, Madagascar (le mentionner uniquement lors des échanges directs avec le prospect si besoin)
 - **Cible** : France / Québec en premier
 - **Affichage des prix** : direct sur le site, pas de comparaison ni référence
-- **Chiffres** : ronds (1 500, 3 500, 7 000, 150)
+- **Chiffres** : ronds (1 500, 3 500, 7 000, 250)
 
 ### Sur le kit commercial
 - Besoin d'un **planning de publication de contenu** (carrousels, posts) pour LinkedIn et Instagram
@@ -220,7 +220,7 @@ Calibrés pour France/Québec TPE-PME, marge confortable.
 
 (L'actuel Enterprise reste)
 
-### Maintenance & Évolution — à partir de 150€/mois
+### Maintenance & Évolution — à partir de 250€/mois
 
 > Monitoring, mises à jour, ajustements mineurs, support prioritaire. Engagement 6 mois.
 
@@ -309,7 +309,7 @@ Pas de preuve sociale client → stratégie **"montrer qu'on construit + démont
 
 - ✅ Secteur prioritaire : agences immobilières indépendantes France/Québec
 - ✅ Site : refonte ciblée 80% existant conservé, automatisation devient service principal
-- ✅ Prix ronds : 1 500€ / 3 500€ / 7 000€ / 150€ MRR
+- ✅ Prix ronds : 1 500€ / 3 500€ / 7 000€ / 250€ MRR
 - ✅ Aucune mention Madagascar sur le site public
 - ✅ Pas de section équipe — focus sur les offres
 - ✅ Démos internes = contenu principal (pas de case studies clients pour l'instant)
