@@ -1,0 +1,65 @@
+CONFIGURATION ENVIRONNEMENT PREPROD — CE QU'IL RESTE A FAIRE
+=============================================================
+
+Sous-domaine cible : staging.velos.agency
+Branche git        : preprod
+Worker preprod     : shift-chatbot-preprod.velos.workers.dev
+
+
+DEJA FAIT (automatiquement)
+---------------------------
+- Code preprod poussé sur la branche "preprod"
+- Worker Cloudflare "shift-chatbot-preprod" déployé
+- Index Vectorize "shift-knowledge-preprod" créé + 22 chunks ingérés
+- Secrets Worker INGEST_SECRET et ALLOWED_ORIGIN configurés
+- Workflow CI deploy-preprod.yml (push preprod -> déploie staging)
+
+
+ETAPE 1 — CLOUDFLARE : 2 SECRETS MANQUANTS
+------------------------------------------
+Sans ces secrets, le bot ne répondra pas en preprod.
+Lancer dans le terminal, une commande a la fois
+(reutiliser les memes valeurs que la prod) :
+
+  cd "/Users/mendrika/Agence web/worker" && npx wrangler secret put OPENROUTER_API_KEY --env preprod
+  cd "/Users/mendrika/Agence web/worker" && npx wrangler secret put N8N_LEAD_WEBHOOK --env preprod
+
+
+ETAPE 2 — HOSTINGER (panneau hPanel)
+------------------------------------
+a) Sites -> Sous-domaines -> creer le sous-domaine :
+       staging.velos.agency
+
+b) Sur ce sous-domaine : Avance -> Git
+   - Connecter le depot : Mendrika-R/shift-agency
+   - Branche : preprod
+   - Activer le deploiement automatique
+
+c) Copier l'URL du webhook de deploiement fournie par Hostinger
+   (a utiliser a l'etape 3)
+
+
+ETAPE 3 — GITHUB : AJOUTER LE SECRET DU WEBHOOK
+-----------------------------------------------
+Depot GitHub -> Settings -> Secrets and variables -> Actions
+-> New repository secret
+
+   Nom    : HOSTINGER_STAGING_DEPLOY_URL
+   Valeur : l'URL du webhook copiee a l'etape 2c
+
+
+RESULTAT ATTENDU
+----------------
+Une fois les 3 etapes faites :
+- chaque push sur la branche "preprod" deploie automatiquement
+  staging.velos.agency
+- le chatbot de staging utilise le Worker preprod isole
+  (entrainement du bot sans aucun risque pour la prod)
+
+
+ENTRAINER LE BOT EN PREPROD (apres configuration)
+-------------------------------------------------
+1. Modifier worker/knowledge/fr.json et/ou en.json
+2. Relancer l'indexation preprod :
+       ./scripts/reindex.sh --env preprod
+3. Tester sur staging.velos.agency
