@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var WORKER_URL = 'https://shift-chatbot.workers.dev';
+  var WORKER_URL = 'https://shift-chatbot.velos.workers.dev';
   var MAX_MESSAGES = 30;
   var LEAD_AFTER_EXCHANGES = 3;
 
@@ -79,7 +79,7 @@
     '#velos-chat-toggle{position:fixed;bottom:24px;right:24px;z-index:9998;width:52px;height:52px;background:#CCFF00;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:4px 4px 0 #000;transition:transform .15s,box-shadow .15s}',
     '#velos-chat-toggle:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 #000}',
     '#velos-chat-toggle svg{width:24px;height:24px;fill:#131313}',
-    '#velos-chat-panel{position:fixed;top:0;right:0;bottom:0;width:380px;max-width:100vw;background:#131313;z-index:9999;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);border-left:2px solid #353534}',
+    '#velos-chat-panel{position:fixed;top:0;right:0;bottom:0;width:420px;max-width:100vw;background:#131313;z-index:9999;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);border-left:2px solid #353534}',
     '#velos-chat-panel.open{transform:translateX(0)}',
     '#velos-chat-header{padding:16px 16px 12px;border-bottom:2px solid #353534;flex-shrink:0}',
     '#velos-chat-header-top{display:flex;justify-content:space-between;align-items:center}',
@@ -87,13 +87,21 @@
     '#velos-chat-sub{font-family:"Inter",sans-serif;font-size:10px;color:#8E9379;text-transform:uppercase;letter-spacing:.06em;margin-top:2px}',
     '#velos-chat-close{background:none;border:none;cursor:pointer;color:#8E9379;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:18px;padding:0}',
     '#velos-chat-close:hover{color:#E5E2E1}',
-    '#velos-chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}',
-    '#velos-chat-messages::-webkit-scrollbar{width:4px}',
+    '#velos-chat-messages{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px}',
+    '#velos-chat-messages::-webkit-scrollbar{width:3px}',
     '#velos-chat-messages::-webkit-scrollbar-thumb{background:#353534}',
-    '.vc-msg{max-width:85%;padding:10px 14px;font-family:"Inter",sans-serif;font-size:13px;line-height:1.55;color:#E5E2E1;word-break:break-word}',
-    '.vc-msg.user{background:#353534;align-self:flex-end;border:1px solid #8E9379}',
-    '.vc-msg.bot{background:#1C1B1B;align-self:flex-start;border:1px solid #353534}',
-    '.vc-msg.bot.streaming::after{content:"▋";animation:vc-blink .7s step-end infinite;color:#CCFF00;font-size:11px}',
+    /* USER bubble */
+    '.vc-msg.user{background:#2C2B29;align-self:flex-end;max-width:80%;padding:10px 14px;font-family:"Inter",sans-serif;font-size:13px;line-height:1.6;color:#E5E2E1;border-right:3px solid #8E9379;word-break:break-word}',
+    /* BOT card */
+    '.vc-msg.bot{background:#1C1B1B;align-self:stretch;border-left:4px solid #CCFF00;font-family:"Inter",sans-serif;font-size:13.5px;line-height:1.75;color:#E8E5E2;word-break:break-word}',
+    '.vc-bot-content{padding:12px 16px}',
+    '.vc-msg.bot strong{color:#CCFF00;font-weight:600}',
+    '.vc-msg.bot ul{margin:8px 0 4px 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px}',
+    '.vc-msg.bot li{padding-left:18px;position:relative;color:#E8E5E2}',
+    '.vc-msg.bot li::before{content:"—";position:absolute;left:0;color:#CCFF00;font-weight:700}',
+    '.vc-msg.bot p{margin:0 0 7px 0;color:#E8E5E2}',
+    '.vc-msg.bot p:last-child{margin-bottom:0}',
+    '.vc-msg.bot.streaming .vc-bot-content::after{content:"▋";animation:vc-blink .7s step-end infinite;color:#CCFF00;font-size:11px;margin-left:2px}',
     '@keyframes vc-blink{0%,100%{opacity:1}50%{opacity:0}}',
     '#velos-suggestions{padding:0 16px 12px;display:flex;flex-wrap:wrap;gap:6px;flex-shrink:0}',
     '.vc-sug{background:transparent;border:1px solid #353534;color:#8E9379;font-family:"Inter",sans-serif;font-size:11px;padding:5px 10px;cursor:pointer;transition:border-color .15s,color .15s;text-align:left}',
@@ -181,10 +189,43 @@
   var leadSubmitBtn = document.getElementById('velos-lead-submit');
   var leadSkipBtn = document.getElementById('velos-lead-skip');
 
+  // renderMarkdown: HTML-escaped first, then only controlled tags (strong/ul/li/p) injected
+  function renderMarkdown(text) {
+    var s = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    // Normalise inline list separators "- item" not preceded by newline → put each on its own line
+    s = s.replace(/ - ([A-ZÀÂÄÉÈÊËÎÏÔÙÛÜÇ*\w])/g, '\n- $1');
+    // Bold
+    s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    // Line-by-line list detection
+    var lines = s.split('\n');
+    var out = []; var inList = false;
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i].trim();
+      var li = line.match(/^[-*•] (.+)/);
+      if (li) {
+        if (!inList) { out.push('<ul>'); inList = true; }
+        out.push('<li>' + li[1] + '</li>');
+      } else {
+        if (inList) { out.push('</ul>'); inList = false; }
+        if (line) out.push('<p>' + line + '</p>');
+      }
+    }
+    if (inList) out.push('</ul>');
+    return out.join('');
+  }
+
   function addMessage(role, text) {
     var el = document.createElement('div');
     el.className = 'vc-msg ' + role;
-    el.textContent = text;
+    if (role === 'bot') {
+      var content = document.createElement('div');
+      content.className = 'vc-bot-content';
+      // bot content: HTML-escaped + controlled tags only (see renderMarkdown)
+      if (text) content.innerHTML = renderMarkdown(text);
+      el.appendChild(content);
+    } else {
+      el.textContent = text;
+    }
     messagesEl.appendChild(el);
     messagesEl.scrollTop = messagesEl.scrollHeight;
     return el;
@@ -256,17 +297,18 @@
             var delta = parsed.choices && parsed.choices[0] && parsed.choices[0].delta && parsed.choices[0].delta.content;
             if (delta) {
               botText += delta;
-              botEl.textContent = botText;
+              var bc = botEl.querySelector('.vc-bot-content');
+              if (bc) bc.innerHTML = renderMarkdown(botText);
               messagesEl.scrollTop = messagesEl.scrollHeight;
             }
           } catch (e) { /* skip malformed lines */ }
         }
       }
     } catch (err) {
-      botEl.textContent = T.errMsg;
+      var bcErr = botEl.querySelector('.vc-bot-content'); if (bcErr) bcErr.textContent = T.errMsg;
     } finally {
       botEl.classList.remove('streaming');
-      if (!botEl.textContent) botEl.textContent = T.errMsg;
+      var bcFin = botEl.querySelector('.vc-bot-content'); if (bcFin && !bcFin.textContent.trim()) bcFin.textContent = T.errMsg;
       messages.push({ role: 'assistant', content: botText || T.errMsg });
       isStreaming = false;
       sendBtn.disabled = false;

@@ -1,5 +1,11 @@
 [
   {
+    "content": "Velos offers 2 distinct product families: (1) Web Offers — 4 website tiers (Starter €500, Business €1,500, Premium €2,500, Enterprise on quote) — no fixed timeline, duration depends on project. (2) AI & Automation Packs — 3 packs (Connect €1,500 / 7–10d dev, Commerce €3,500 / 14d dev, System €7,000 / 21d dev). Timelines are development days counted from Phase 3.",
+    "source": "offres_overview",
+    "lang": "en",
+    "chunk_index": 10
+  },
+  {
     "content": "Velos is a digital agency specialized for African markets. Main promise: your business online in days, not months. Flash delivery available in 48h. 3x faster than the competition. Zero hidden costs. Custom code only, no bloated templates. Contact: contact@velos.agency. Book a 30-minute slot via Calendly.",
     "source": "hero",
     "lang": "en",
@@ -12,13 +18,13 @@
     "chunk_index": 1
   },
   {
-    "content": "Velos web pricing — 4 tiers: Starter at €500 (+ monthly maintenance) includes Core Architecture, Basic Design System, Standard Deployment. Business at €1,500 one-time includes Starter + Core SEO, Advanced CMS Integration, Built-in Analytics. Premium at €2,500 one-time includes Business + Complex Animations (WebGL), High-Performance E-commerce, 24/7 Priority Support. Enterprise on quote with Custom Architecture for Custom Development, Data Migration, Hardened Security.",
+    "content": "Velos web pricing — 4 tiers with NO fixed delivery timeline (duration depends on project scope): Starter at €500 (+ monthly maintenance) includes Core Architecture, Basic Design System, Standard Deployment. Business at €1,500 one-time includes Starter + Core SEO, Advanced CMS Integration, Built-in Analytics. Premium at €2,500 one-time includes Business + Complex Animations (WebGL), High-Performance E-commerce, 24/7 Priority Support. Enterprise on quote with Custom Architecture for Custom Development, Data Migration, Hardened Security. NOTE: the 7–10d, 14d, 21d timelines do NOT apply to web tiers — they apply exclusively to the AI & Automation packs.",
     "source": "pricing_web",
     "lang": "en",
     "chunk_index": 2
   },
   {
-    "content": "Velos AI & Automation packs — 3 packs: Connect at €1,500 (7–10 days) includes 1 automation workflow, 1 integration between 2 tools, 3-month n8n hosting, documentation + 1h training. Commerce at €3,500 (14 days) includes AI bot (WhatsApp or web), automatic lead qualification, real-time team notifications, CRM sync, 6-month hosting. System at €7,000 (21 days) includes 3 integrated workflows, multichannel AI bot (WhatsApp + email + web), pilot dashboard, custom 3-tool integration, 12-month hosting + monitoring.",
+    "content": "Velos AI & Automation packs — 3 packs: Connect at €1,500 (7–10 development days) includes 1 automation workflow, 1 integration between 2 tools, 3-month n8n hosting, documentation + 1h training. Commerce at €3,500 (14 development days) includes AI bot (WhatsApp or web), automatic lead qualification, real-time team notifications, CRM sync, 6-month hosting. System at €7,000 (21 development days) includes 3 integrated workflows, multichannel AI bot (WhatsApp + email + web), pilot dashboard, custom 3-tool integration, 12-month hosting + monitoring. These timelines (7-10d, 14d, 21d) are pure development days. The count only starts after the Phase 3 scoping, once all workflows are validated and all accesses provided — the scoping time itself, of variable duration, is not included.",
     "source": "pricing_ia",
     "lang": "en",
     "chunk_index": 3
@@ -30,7 +36,7 @@
     "chunk_index": 4
   },
   {
-    "content": "Velos process — 5 steps with 30/40/30% staggered payment: Step 1 Discovery — project simulator then analysis meeting. Step 2 Order — contract signed, 30% deposit, kick-off. Step 3 Scoping — mockup validation (web) or config + real-condition testing (AI), 40% payment. Step 4 Delivery — full demo, no-surprise guarantee, 30% final payment, go-live. Step 5 Recurring — maintenance from €50/mo, SEO/Ads/AI content for Growth clients.",
+    "content": "Velos process — 5 steps with 30/40/30% staggered payment: Step 1 Discovery — project simulator then analysis meeting. Step 2 Order — contract signed, 30% deposit, kick-off: we define the exact scope and timeline. Step 3 Scoping & Preparation — we lay the foundations: mockup validation (web) or workflow design and validation + handover of required accesses CRM/API/WhatsApp Business (AI), 40% payment. This phase's duration depends on the project and the client's responsiveness — it is NOT counted in the announced timelines. Step 4 Development & Delivery — this is where, and only where, the development day count begins (7-10d, 14d, 21d depending on the pack), pure dev once scoping is locked; full demo, 30% final payment, go-live. Step 5 Recurring — maintenance from €50/mo, SEO/Ads/AI content for Growth clients.",
     "source": "process",
     "lang": "en",
     "chunk_index": 5
