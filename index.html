@@ -14,6 +14,17 @@
   <link rel="alternate" hreflang="en" href="/en/" />
   <link rel="alternate" hreflang="x-default" href="/" />
 
+  <!-- Reduced-motion detection (runs before paint) -->
+  <script>
+    (function () {
+      try {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          document.documentElement.classList.add('no-motion');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
   <!-- No-FOUC: hide body until i18n applied -->
   <style>
     html:not(.i18n-ready) body > *:not(#splash) { visibility: hidden; }
@@ -32,7 +43,10 @@
       display: grid;
       place-items: center;
       background: #1C1B1B;
-      animation: splashFadeOut 0.6s ease-in 2.6s forwards;
+    }
+    /* Fallback fade if GSAP/Flip never run (no JS, blocked CDN). */
+    html:not(.motion-ready) #splash {
+      animation: splashFadeOut 0.6s ease-in 2.0s forwards;
     }
     #splash img {
       display: block;
@@ -53,6 +67,44 @@
     @media (min-width: 768px) {
       .nav-logo-icon { height: 4rem; }
     }
+
+    /* Headline mask reveal — JS sets the initial push via gsap.set */
+    .word-mask {
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: bottom;
+      line-height: inherit;
+    }
+    .word-inner {
+      display: inline-block;
+      will-change: transform;
+    }
+
+    /* Reveal hint — JS sets actual pre-state; this avoids paint jank. */
+    [data-anim] { will-change: transform, opacity; }
+
+    /* Card spotlight (used by [data-spotlight]) */
+    [data-spotlight] { position: relative; isolation: isolate; }
+    [data-spotlight]::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 250ms ease;
+      background: radial-gradient(
+        circle at calc(var(--mx, 50) * 1%) calc(var(--my, 50) * 1%),
+        rgba(195, 244, 0, 0.10),
+        transparent 55%
+      );
+      z-index: 0;
+    }
+    [data-spotlight]:hover::after { opacity: 1; }
+    [data-spotlight] > * { position: relative; z-index: 1; }
+    @media (hover: none) {
+      [data-spotlight]::after { display: none; }
+    }
+    html.no-motion [data-spotlight]::after { display: none; }
 
     @keyframes footerMarquee {
       from { transform: translateX(0); }
@@ -649,6 +701,7 @@
         if (descEl) descEl.setAttribute('content', window.t('meta.description'));
 
         document.documentElement.classList.add('i18n-ready');
+        try { window.dispatchEvent(new Event('velos:i18n-ready')); } catch (e) {}
       };
 
       function wireSwitcher() {
@@ -755,15 +808,15 @@
       min-width: 0;
     }
 
-    .sim-card > div {
+    .sim-card > div:not(.sim-check) {
       min-width: 0;
       flex: 1 1 auto;
       word-break: break-word;
       hyphens: auto;
     }
 
-    .sim-check {
-      flex-shrink: 0;
+    .sim-card .sim-check {
+      flex: 0 0 auto;
     }
 
     .sim-card.selected {
@@ -842,7 +895,7 @@
     </div>
     <div class="hidden md:flex items-center gap-4">
       <a href="/en/" data-lang-switch class="nav-link" data-i18n="nav.langSwitch">EN</a>
-      <a href="#" data-config="calendlyUrl" target="_blank"
+      <a href="#" data-config="calendlyUrl" target="_blank" data-magnetic="0.3"
         class="inline-flex items-center gap-2 bg-primary-fixed text-on-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75"
         data-i18n="nav.cta">
         Start Project
@@ -881,55 +934,55 @@
         style="background: radial-gradient(circle at top right, rgba(204,255,0,0.4) 0%, transparent 50%);"></div>
       <div class="max-w-7xl mx-auto w-full z-10 grid md:grid-cols-12 gap-12 items-center py-24">
         <div class="md:col-span-7 space-y-8">
-          <div class="inline-block bg-surface-container-highest px-4 py-2">
+          <div class="inline-block bg-surface-container-highest px-4 py-2" data-anim-hero="eyebrow">
             <span class="font-headline uppercase tracking-widest text-xs text-on-surface-variant"
               data-i18n="hero.eyebrow">Agence digital</span>
           </div>
           <h1
             class="font-headline font-black uppercase tracking-tighter leading-[0.88] text-4xl sm:text-5xl md:text-8xl text-primary break-words">
-            <span data-i18n="hero.titleLine1">VOTRE BUSINESS</span><br /><span data-i18n="hero.titleLine2">EN
+            <span data-hero-headline data-i18n="hero.titleLine1">VOTRE BUSINESS</span><br /><span data-hero-headline data-i18n="hero.titleLine2">EN
               LIGNE.</span><br />
-            <span class="text-primary-fixed" data-i18n="hero.titleLine3">DÈS DEMAIN.</span>
+            <span class="text-primary-fixed" data-hero-headline data-i18n="hero.titleLine3">DÈS DEMAIN.</span>
           </h1>
           <p class="font-body text-xl md:text-2xl text-on-surface-variant max-w-xl font-medium"
-            data-i18n="hero.tagline">
+            data-anim-hero="tagline" data-i18n="hero.tagline">
             Votre business en ligne en quelques jours, pas en mois.
           </p>
           <div class="flex flex-wrap gap-4 pt-2">
-            <a href="#simulator"
+            <a href="#simulator" data-anim-hero="cta" data-magnetic="0.3"
               class="inline-flex items-center gap-2 bg-primary-fixed text-on-primary px-10 py-5 font-headline text-lg font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75">
               <span data-i18n="hero.ctaPrimary">Lancer mon projet</span>
               <span class="material-symbols-outlined">arrow_forward</span>
             </a>
-            <a href="#pricing"
+            <a href="#pricing" data-anim-hero="cta"
               class="inline-flex items-center gap-2 border-2 border-outline text-primary px-10 py-5 font-headline text-lg font-bold uppercase tracking-tighter hover:border-primary-fixed hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#CCFF00] transition-all duration-75"
               data-i18n="hero.ctaSecondary">
               Voir les tarifs
             </a>
           </div>
           <div class="flex gap-12 pt-4 border-t border-outline-variant/30">
-            <div>
-              <div class="font-headline text-4xl font-black text-primary-fixed" data-i18n="hero.stats.speed.value">48h
+            <div data-anim-hero="stat">
+              <div class="font-headline text-4xl font-black text-primary-fixed" data-counter data-i18n="hero.stats.speed.value">48h
               </div>
               <div class="font-label text-xs uppercase tracking-widest text-on-surface-variant"
                 data-i18n="hero.stats.speed.label">Livraison Flash</div>
             </div>
-            <div>
-              <div class="font-headline text-4xl font-black text-primary-fixed" data-i18n="hero.stats.speedX.value">3×
+            <div data-anim-hero="stat">
+              <div class="font-headline text-4xl font-black text-primary-fixed" data-counter data-i18n="hero.stats.speedX.value">3×
               </div>
               <div class="font-label text-xs uppercase tracking-widest text-on-surface-variant"
                 data-i18n="hero.stats.speedX.label">Plus rapide que la
                 concurrence</div>
             </div>
-            <div>
-              <div class="font-headline text-4xl font-black text-primary-fixed" data-i18n="hero.stats.hidden.value">0€
+            <div data-anim-hero="stat">
+              <div class="font-headline text-4xl font-black text-primary-fixed" data-counter data-i18n="hero.stats.hidden.value">0€
               </div>
               <div class="font-label text-xs uppercase tracking-widest text-on-surface-variant"
                 data-i18n="hero.stats.hidden.label">Coûts cachés</div>
             </div>
           </div>
         </div>
-        <div class="md:col-span-5 hidden md:block">
+        <div class="md:col-span-5 hidden md:block" data-anim-hero="visual">
           <div class="relative">
             <div
               class="w-full aspect-square bg-surface-container-high border-4 border-surface-container-highest shadow-[16px_16px_0px_0px_#CCFF00] flex items-center justify-center overflow-hidden">
@@ -943,6 +996,7 @@
             </div>
             <div
               class="absolute -bottom-4 -right-4 bg-primary-fixed text-on-primary px-4 py-2 font-headline font-bold uppercase tracking-tighter text-sm"
+              data-anim-hero="badge"
               data-i18n="hero.badge">
               Technologiquement Supérieur
             </div>
@@ -950,7 +1004,8 @@
         </div>
       </div>
       <div
-        class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-on-surface-variant animate-bounce">
+        class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-on-surface-variant animate-bounce"
+        data-anim-hero="chevron">
         <span class="material-symbols-outlined text-sm">keyboard_arrow_down</span>
       </div>
     </section>
@@ -960,14 +1015,18 @@
       <div class="max-w-7xl mx-auto">
         <h2
           class="font-headline text-4xl md:text-6xl font-black uppercase tracking-tighter text-primary mb-4 border-l-8 border-primary-fixed pl-6"
+          data-anim="reveal-left"
           data-i18n="advantage.title">
           L'Avantage</h2>
-        <p class="font-body text-on-surface-variant text-lg mb-16 pl-8 max-w-xl" data-i18n="advantage.subtitle">Pas de
+        <p class="font-body text-on-surface-variant text-lg mb-16 pl-8 max-w-xl"
+          data-anim="fade-up" data-anim-delay="0.1"
+          data-i18n="advantage.subtitle">Pas de
           réunions inutiles. Pas de
           promesses vides. Juste des résultats.</p>
-        <div class="grid md:grid-cols-3 gap-0 border border-outline-variant/20">
-          <div
-            class="bg-surface-container-low p-10 border-r border-outline-variant/20 hover:border-primary-fixed transition-colors duration-300 group">
+        <div class="grid md:grid-cols-3 gap-0 border border-outline-variant/20"
+          data-anim="fade-up" data-anim-stagger="0.1">
+          <div data-anim-child data-tilt data-spotlight
+            class="bg-surface-container-low p-10 border-r border-outline-variant/20 hover:shadow-[inset_0_0_0_2px_#c3f400] transition duration-300 group">
             <span
               class="material-symbols-outlined text-5xl text-primary-fixed mb-6 block group-hover:-translate-y-2 transition-transform duration-200">bolt</span>
             <h3 class="font-headline text-2xl font-bold text-primary uppercase tracking-tight mb-4"
@@ -978,8 +1037,8 @@
               construisons. Votre produit est en ligne pendant que la concurrence rédige encore son cahier des charges.
             </p>
           </div>
-          <div
-            class="bg-surface-container-low p-10 border-r border-outline-variant/20 hover:border-primary-fixed transition-colors duration-300 group">
+          <div data-anim-child data-tilt data-spotlight
+            class="bg-surface-container-low p-10 border-r border-outline-variant/20 hover:shadow-[inset_0_0_0_2px_#c3f400] transition duration-300 group">
             <span
               class="material-symbols-outlined text-5xl text-primary-fixed mb-6 block group-hover:-translate-y-2 transition-transform duration-200">my_location</span>
             <h3 class="font-headline text-2xl font-bold text-primary uppercase tracking-tight mb-4"
@@ -989,8 +1048,8 @@
               Chaque pixel est optimisé pour transformer vos
               visiteurs en clients. Un design brutal, direct et orienté résultats purs.</p>
           </div>
-          <div
-            class="bg-surface-container-low p-10 hover:border hover:border-primary-fixed transition-colors duration-300 group">
+          <div data-anim-child data-tilt data-spotlight
+            class="bg-surface-container-low p-10 hover:shadow-[inset_0_0_0_2px_#c3f400] transition duration-300 group">
             <span
               class="material-symbols-outlined text-5xl text-primary-fixed mb-6 block group-hover:-translate-y-2 transition-transform duration-200">terminal</span>
             <h3 class="font-headline text-2xl font-bold text-primary uppercase tracking-tight mb-4"
@@ -1008,15 +1067,19 @@
       <div class="max-w-7xl mx-auto">
         <h2
           class="font-headline text-4xl md:text-6xl font-black uppercase tracking-tighter text-primary mb-4 border-l-8 border-primary-fixed pl-6"
+          data-anim="reveal-left"
           data-i18n="services.title">
           Nos Services</h2>
-        <p class="font-body text-on-surface-variant text-lg mb-16 pl-8 max-w-xl" data-i18n="services.subtitle">Des
+        <p class="font-body text-on-surface-variant text-lg mb-16 pl-8 max-w-xl"
+          data-anim="fade-up" data-anim-delay="0.1"
+          data-i18n="services.subtitle">Des
           solutions adaptées à chaque
           ambition.</p>
 
         <!-- Types de projets -->
-        <div class="grid md:grid-cols-2 gap-4 mb-24">
-          <div
+        <div class="grid md:grid-cols-2 gap-4 mb-24"
+          data-anim="fade-up" data-anim-stagger="0.08">
+          <div data-anim-child data-spotlight
             class="bg-surface-container-low p-8 border border-outline-variant/20 hover:border-primary-fixed transition-colors duration-200 group">
             <div class="flex items-start justify-between mb-6">
               <span class="material-symbols-outlined text-4xl text-primary-fixed">storefront</span>
@@ -1029,7 +1092,7 @@
               data-i18n="services.projects.vitrine.body">Site institutionnel sur l'image de
               marque et la génération de leads qualifiés.</p>
           </div>
-          <div
+          <div data-anim-child data-spotlight
             class="bg-surface-container-low p-8 border border-outline-variant/20 hover:border-primary-fixed transition-colors duration-200 group">
             <div class="flex items-start justify-between mb-6">
               <span class="material-symbols-outlined text-4xl text-primary-fixed">shopping_cart</span>
@@ -1042,7 +1105,7 @@
               data-i18n="services.projects.ecommerce.body">Plateforme transactionnelle haute
               performance, conversion optimisée et gestion de catalogue avancée.</p>
           </div>
-          <div
+          <div data-anim-child data-spotlight
             class="bg-surface-container-low p-8 border border-outline-variant/20 hover:border-primary-fixed transition-colors duration-200 group">
             <div class="flex items-start justify-between mb-6">
               <span class="material-symbols-outlined text-4xl text-primary-fixed">grid_view</span>
@@ -1055,7 +1118,7 @@
               data-i18n="services.projects.saas.body">Application métier complexe, gestion
               utilisateurs, tableau de bord et traitement de données.</p>
           </div>
-          <div
+          <div data-anim-child data-spotlight
             class="bg-surface-container-low p-8 border border-outline-variant/20 hover:border-primary-fixed transition-colors duration-200 group">
             <div class="flex items-start justify-between mb-6">
               <span class="material-symbols-outlined text-4xl text-primary-fixed">settings_suggest</span>
@@ -1075,16 +1138,22 @@
     <!-- ═══════════════ AUTOMATION ═══════════════ -->
     <section id="automation" class="py-24 px-6 md:px-12 bg-surface-container-lowest">
       <div class="max-w-7xl mx-auto">
-        <div class="bg-background p-1 mb-6 inline-block">
+        <div class="bg-background p-1 mb-6 inline-block" data-anim="fade-up">
           <span class="bg-surface-container-lowest text-primary-fixed font-headline font-bold uppercase tracking-widest px-4 py-2 text-sm" data-i18n="automation.eyebrow">AUTOMATISATION & IA</span>
         </div>
-        <h2 class="font-headline text-4xl md:text-6xl font-black uppercase tracking-tighter text-primary mb-4 border-l-8 border-primary-fixed pl-6" data-i18n="automation.title">
+        <h2 class="font-headline text-4xl md:text-6xl font-black uppercase tracking-tighter text-primary mb-4 border-l-8 border-primary-fixed pl-6"
+          data-anim="reveal-left"
+          data-i18n="automation.title">
           Vos process, enfin automatisés.</h2>
-        <p class="font-body text-on-surface-variant text-lg mb-16 pl-8 max-w-xl" data-i18n="automation.subtitle">
+        <p class="font-body text-on-surface-variant text-lg mb-16 pl-8 max-w-xl"
+          data-anim="fade-up" data-anim-delay="0.1"
+          data-i18n="automation.subtitle">
           Workflows installés et testés en production. Pas de démo, pas de PoC — du concret qui tourne.</p>
 
-        <div class="grid md:grid-cols-3 gap-0 border border-outline-variant/20 mb-12">
-          <div class="bg-surface-container-low p-8 border-r border-outline-variant/20 hover:border-primary-fixed transition-colors duration-200 group">
+        <div class="grid md:grid-cols-3 gap-0 border border-outline-variant/20 mb-12"
+          data-anim="fade-up" data-anim-stagger="0.1">
+          <div data-anim-child data-tilt data-spotlight
+            class="bg-surface-container-low p-8 border-r border-outline-variant/20 hover:shadow-[inset_0_0_0_2px_#c3f400] transition duration-200 group">
             <div class="flex items-start justify-between mb-6">
               <span class="material-symbols-outlined text-4xl text-primary-fixed">bolt</span>
               <div class="w-3 h-3 bg-outline-variant group-hover:bg-primary-fixed transition-colors"></div>
@@ -1092,7 +1161,8 @@
             <h3 class="font-headline text-xl font-bold text-primary uppercase tracking-tight mb-3" data-i18n="automation.services.workflows.title">Automatisations & Workflows</h3>
             <p class="font-body text-on-surface-variant text-sm leading-relaxed" data-i18n="automation.services.workflows.body">Vos tâches répétitives supprimées.</p>
           </div>
-          <div class="bg-surface-container-low p-8 border-r border-outline-variant/20 hover:border-primary-fixed transition-colors duration-200 group">
+          <div data-anim-child data-tilt data-spotlight
+            class="bg-surface-container-low p-8 border-r border-outline-variant/20 hover:shadow-[inset_0_0_0_2px_#c3f400] transition duration-200 group">
             <div class="flex items-start justify-between mb-6">
               <span class="material-symbols-outlined text-4xl text-primary-fixed">chat</span>
               <div class="w-3 h-3 bg-outline-variant group-hover:bg-primary-fixed transition-colors"></div>
@@ -1100,7 +1170,8 @@
             <h3 class="font-headline text-xl font-bold text-primary uppercase tracking-tight mb-3" data-i18n="automation.services.bots.title">Bots conversationnels IA</h3>
             <p class="font-body text-on-surface-variant text-sm leading-relaxed" data-i18n="automation.services.bots.body">Agents WhatsApp, web et email 24/7.</p>
           </div>
-          <div class="bg-surface-container-low p-8 hover:border hover:border-primary-fixed transition-colors duration-200 group">
+          <div data-anim-child data-tilt data-spotlight
+            class="bg-surface-container-low p-8 hover:shadow-[inset_0_0_0_2px_#c3f400] transition duration-200 group">
             <div class="flex items-start justify-between mb-6">
               <span class="material-symbols-outlined text-4xl text-primary-fixed">hub</span>
               <div class="w-3 h-3 bg-outline-variant group-hover:bg-primary-fixed transition-colors"></div>
@@ -1110,10 +1181,12 @@
           </div>
         </div>
 
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-t border-outline-variant/20 pt-8">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-t border-outline-variant/20 pt-8"
+          data-anim="fade-up">
           <p class="font-body text-on-surface-variant text-sm italic" data-i18n="automation.transitionNote">
             Votre automatisation a besoin d'une interface ? On livre aussi le web.</p>
-          <a href="#pricing-ia" class="inline-flex items-center gap-2 border-2 border-primary-fixed text-primary-fixed px-8 py-3 font-headline font-bold uppercase tracking-tighter hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="automation.cta">
+          <a href="#pricing-ia" data-magnetic="0.25"
+            class="inline-flex items-center gap-2 border-2 border-primary-fixed text-primary-fixed px-8 py-3 font-headline font-bold uppercase tracking-tighter hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="automation.cta">
             Voir les packs →
           </a>
         </div>
@@ -1123,7 +1196,7 @@
     <!-- ═══════════════ PRICING ═══════════════ -->
     <section id="pricing" class="py-24 px-6 md:px-12 bg-surface-container-lowest">
       <div class="max-w-7xl mx-auto">
-        <div class="flex items-center gap-3 mb-6">
+        <div class="flex items-center gap-3 mb-6" data-anim="fade-up">
           <div class="w-2 h-2 bg-primary-fixed"></div>
           <span class="font-label text-xs uppercase tracking-widest text-primary-fixed"
             data-i18n="pricing.eyebrow">Haute Vélocité</span>
@@ -1133,21 +1206,25 @@
             standards.</span>
         </div>
         <h2
-          class="font-headline text-5xl md:text-8xl font-black uppercase tracking-tighter text-primary leading-[0.88] mb-4">
+          class="font-headline text-5xl md:text-8xl font-black uppercase tracking-tighter text-primary leading-[0.88] mb-4"
+          data-anim="reveal-left">
           <span data-i18n="pricing.titleLine1">Transparence</span><br /><span
             data-i18n="pricing.titleLine2">Absolue.</span>
         </h2>
-        <p class="font-body text-xl text-on-surface-variant mb-16 max-w-xl" data-i18n="pricing.subtitle">
+        <p class="font-body text-xl text-on-surface-variant mb-16 max-w-xl"
+          data-anim="fade-up" data-anim-delay="0.1"
+          data-i18n="pricing.subtitle">
           Des solutions tarifaires agressives pour des entités exigeantes. Pas de coûts cachés. Que de la performance.
         </p>
 
-        <div class="flex items-center gap-3 mb-4">
+        <div class="flex items-center gap-3 mb-4" data-anim="fade">
           <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant" data-i18n="pricing.eyebrowWeb">SERVICES WEB</span>
         </div>
-        <div class="grid md:grid-cols-4 gap-0 border border-outline-variant/20">
+        <div class="grid md:grid-cols-4 gap-0 border border-outline-variant/20"
+          data-anim="fade-up" data-anim-stagger="0.08">
 
           <!-- STARTER -->
-          <div class="bg-surface-container-low p-8 border-r border-outline-variant/20 flex flex-col">
+          <div data-anim-child class="bg-surface-container-low p-8 border-r border-outline-variant/20 flex flex-col">
             <div class="mb-6">
               <h3 class="font-headline text-lg font-bold text-primary uppercase tracking-tighter mb-1"
                 data-i18n="pricing.tiers.starter.name">Starter</h3>
@@ -1174,7 +1251,7 @@
                   data-i18n="pricing.tiers.starter.features.2">Déploiement Standard</span>
               </li>
             </ul>
-            <a href="#simulator"
+            <a href="#simulator" data-magnetic="0.2"
               class="block text-center border-2 border-outline text-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:border-primary-fixed hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75"
               data-i18n="pricing.tiers.starter.cta">
               Sélectionner
@@ -1182,8 +1259,8 @@
           </div>
 
           <!-- BUSINESS (recommandé) -->
-          <div class="bg-surface-container p-8 border-r border-outline-variant/20 flex flex-col relative">
-            <div
+          <div data-anim-child data-pricing-recommended class="bg-surface-container p-8 border-r border-outline-variant/20 flex flex-col relative">
+            <div data-pricing-badge
               class="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary-fixed text-on-primary px-4 py-1 font-headline text-xs font-bold uppercase tracking-tighter whitespace-nowrap"
               data-i18n="pricing.recommended">
               Recommandé
@@ -1218,7 +1295,7 @@
                   data-i18n="pricing.tiers.business.features.3">Analytique Intégrée</span>
               </li>
             </ul>
-            <a href="#simulator"
+            <a href="#simulator" data-magnetic="0.25"
               class="block text-center bg-primary-fixed text-on-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75"
               data-i18n="pricing.tiers.business.cta">
               Propulser
@@ -1226,7 +1303,7 @@
           </div>
 
           <!-- PREMIUM -->
-          <div class="bg-surface-container-low p-8 border-r border-outline-variant/20 flex flex-col">
+          <div data-anim-child class="bg-surface-container-low p-8 border-r border-outline-variant/20 flex flex-col">
             <div class="mb-6">
               <h3 class="font-headline text-lg font-bold text-primary uppercase tracking-tighter mb-1"
                 data-i18n="pricing.tiers.premium.name">Premium</h3>
@@ -1256,7 +1333,7 @@
                   data-i18n="pricing.tiers.premium.features.3">Support Prioritaire 24/7</span>
               </li>
             </ul>
-            <a href="#simulator"
+            <a href="#simulator" data-magnetic="0.2"
               class="block text-center border-2 border-outline text-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:border-primary-fixed hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75"
               data-i18n="pricing.tiers.premium.cta">
               Sélectionner
@@ -1264,7 +1341,7 @@
           </div>
 
           <!-- SUR-MESURE (WEB) -->
-          <div class="bg-surface-container-low p-8 flex flex-col">
+          <div data-anim-child class="bg-surface-container-low p-8 flex flex-col">
             <div class="mb-6">
               <h3 class="font-headline text-lg font-bold text-primary uppercase tracking-tighter mb-1"
                 data-i18n="pricing.tiers.surmesure.name">Sur-mesure</h3>
@@ -1290,7 +1367,7 @@
                   data-i18n="pricing.tiers.surmesure.features.2">Intégrations complexes</span>
               </li>
             </ul>
-            <a href="#" data-config="calendlyUrl" target="_blank"
+            <a href="#" data-config="calendlyUrl" target="_blank" data-magnetic="0.25"
               class="block text-center border-2 border-primary-fixed text-primary-fixed px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75"
               data-i18n="pricing.tiers.surmesure.cta">
               Contacter
@@ -1302,14 +1379,15 @@
         <!-- IA PACKS -->
         <div id="pricing-ia" class="mt-16 pt-16 pb-4 bg-surface-container-lowest -mx-6 md:-mx-12 px-6 md:px-12">
           <div class="max-w-7xl mx-auto">
-            <div class="flex items-center gap-3 mb-8">
+            <div class="flex items-center gap-3 mb-8" data-anim="fade-up">
               <div class="w-2 h-2 bg-primary-fixed"></div>
               <span class="font-label text-xs uppercase tracking-widest text-primary-fixed" data-i18n="pricing.eyebrowIa">AUTOMATISATION & IA</span>
             </div>
-            <div class="grid md:grid-cols-4 gap-0 border border-outline-variant/20">
+            <div class="grid md:grid-cols-4 gap-0 border border-outline-variant/20"
+              data-anim="fade-up" data-anim-stagger="0.08">
 
               <!-- CONNECT -->
-              <div class="bg-surface-container-low p-8 border-r border-outline-variant/20 flex flex-col">
+              <div data-anim-child class="bg-surface-container-low p-8 border-r border-outline-variant/20 flex flex-col">
                 <div class="mb-4">
                   <h3 class="font-headline text-lg font-bold text-primary uppercase tracking-tighter mb-1" data-i18n="pricing.packs.connect.name">Connect</h3>
                   <p class="font-body text-xs text-on-surface-variant" data-i18n="pricing.packs.connect.tagline">Pour automatiser une première tâche.</p>
@@ -1324,12 +1402,12 @@
                   <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.connect.features.2">Hébergement n8n 3 mois</span></li>
                   <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.connect.features.3">Documentation + 1h formation</span></li>
                 </ul>
-                <a href="#simulator" class="block text-center border-2 border-outline text-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:border-primary-fixed hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="pricing.packs.connect.cta">Sélectionner</a>
+                <a href="#simulator" data-magnetic="0.2" class="block text-center border-2 border-outline text-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:border-primary-fixed hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="pricing.packs.connect.cta">Sélectionner</a>
               </div>
 
               <!-- COMMERCE (recommandé) -->
-              <div class="bg-surface-container p-8 border-r border-outline-variant/20 flex flex-col relative">
-                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary-fixed text-on-primary px-4 py-1 font-headline text-xs font-bold uppercase tracking-tighter whitespace-nowrap" data-i18n="pricing.recommended">Recommandé</div>
+              <div data-anim-child data-pricing-recommended class="bg-surface-container p-8 border-r border-outline-variant/20 flex flex-col relative">
+                <div data-pricing-badge class="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary-fixed text-on-primary px-4 py-1 font-headline text-xs font-bold uppercase tracking-tighter whitespace-nowrap" data-i18n="pricing.recommended">Recommandé</div>
                 <div class="mb-4 mt-2">
                   <h3 class="font-headline text-lg font-bold text-primary uppercase tracking-tighter mb-1" data-i18n="pricing.packs.commerce.name">Commerce</h3>
                   <p class="font-body text-xs text-on-surface-variant" data-i18n="pricing.packs.commerce.tagline">Pour ne plus rater un seul prospect.</p>
@@ -1345,11 +1423,11 @@
                   <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.commerce.features.3">Synchronisation CRM</span></li>
                   <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.commerce.features.4">Hébergement 6 mois</span></li>
                 </ul>
-                <a href="#simulator" class="block text-center bg-primary-fixed text-on-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="pricing.packs.commerce.cta">Propulser</a>
+                <a href="#simulator" data-magnetic="0.25" class="block text-center bg-primary-fixed text-on-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="pricing.packs.commerce.cta">Propulser</a>
               </div>
 
               <!-- SYSTÈME -->
-              <div class="bg-surface-container-low p-8 border-r border-outline-variant/20 flex flex-col">
+              <div data-anim-child class="bg-surface-container-low p-8 border-r border-outline-variant/20 flex flex-col">
                 <div class="mb-4">
                   <h3 class="font-headline text-lg font-bold text-primary uppercase tracking-tighter mb-1" data-i18n="pricing.packs.systeme.name">Système</h3>
                   <p class="font-body text-xs text-on-surface-variant" data-i18n="pricing.packs.systeme.tagline">Pour industrialiser vos opérations.</p>
@@ -1365,11 +1443,11 @@
                   <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.systeme.features.3">Intégration sur-mesure 3 outils</span></li>
                   <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.systeme.features.4">Hébergement 12 mois + monitoring</span></li>
                 </ul>
-                <a href="#simulator" class="block text-center border-2 border-outline text-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:border-primary-fixed hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="pricing.packs.systeme.cta">Sélectionner</a>
+                <a href="#simulator" data-magnetic="0.2" class="block text-center border-2 border-outline text-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:border-primary-fixed hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="pricing.packs.systeme.cta">Sélectionner</a>
               </div>
 
               <!-- SUR-MESURE IA -->
-              <div class="bg-surface-container-low p-8 flex flex-col">
+              <div data-anim-child class="bg-surface-container-low p-8 flex flex-col">
                 <div class="mb-4">
                   <h3 class="font-headline text-lg font-bold text-primary uppercase tracking-tighter mb-1" data-i18n="pricing.tiers.surmesure.name">Sur-mesure</h3>
                   <p class="font-body text-xs text-on-surface-variant" data-i18n="pricing.tiers.surmesure.tagline">Projet hors standard.</p>
@@ -1383,7 +1461,7 @@
                   <li class="flex items-start gap-2 font-body text-sm text-on-surface-variant"><span class="material-symbols-outlined text-outline text-base mt-0.5">arrow_right</span><span data-i18n="pricing.tiers.surmesure.features.1">Développement sur-mesure</span></li>
                   <li class="flex items-start gap-2 font-body text-sm text-on-surface-variant"><span class="material-symbols-outlined text-outline text-base mt-0.5">arrow_right</span><span data-i18n="pricing.tiers.surmesure.features.2">Intégrations complexes</span></li>
                 </ul>
-                <a href="#" data-config="calendlyUrl" target="_blank" class="block text-center border-2 border-primary-fixed text-primary-fixed px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="pricing.tiers.surmesure.cta">Contacter</a>
+                <a href="#" data-config="calendlyUrl" target="_blank" data-magnetic="0.25" class="block text-center border-2 border-primary-fixed text-primary-fixed px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="pricing.tiers.surmesure.cta">Contacter</a>
               </div>
 
             </div>
@@ -1393,12 +1471,13 @@
         <!-- RETAINER BAND -->
         <div class="mt-16 bg-surface-container-highest -mx-6 md:-mx-12 px-6 md:px-12 py-12">
           <div class="max-w-7xl mx-auto">
-            <div class="flex items-center gap-3 mb-8">
+            <div class="flex items-center gap-3 mb-8" data-anim="fade-up">
               <div class="w-2 h-2 bg-outline"></div>
               <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant" data-i18n="pricing.retainerEyebrow">RÉCURRENCE</span>
             </div>
-            <div class="grid md:grid-cols-2 gap-0 border border-outline-variant/20">
-              <div class="p-8 border-r border-outline-variant/20">
+            <div class="grid md:grid-cols-2 gap-0 border border-outline-variant/20"
+              data-anim="fade-up" data-anim-stagger="0.12">
+              <div data-anim-child class="p-8 border-r border-outline-variant/20">
                 <div class="flex items-baseline gap-4 mb-2">
                   <span class="font-headline text-2xl font-black text-primary uppercase" data-i18n="pricing.keep.name">Velos Keep</span>
                   <span class="font-headline text-xl font-black text-primary-fixed" data-i18n="pricing.keep.price">50€/mois</span>
@@ -1412,7 +1491,7 @@
                   <li class="flex items-center gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base">check_circle</span><span data-i18n="pricing.keep.features.3">Support email 48h</span></li>
                 </ul>
               </div>
-              <div class="p-8 border-l-4 border-primary-fixed">
+              <div data-anim-child class="p-8 border-l-4 border-primary-fixed">
                 <div class="flex items-baseline gap-4 mb-2">
                   <span class="font-headline text-2xl font-black text-primary uppercase" data-i18n="pricing.care.name">Velos Care</span>
                   <span class="font-headline text-xl font-black text-primary-fixed" data-i18n="pricing.care.price">250€/mois</span>
@@ -1436,13 +1515,14 @@
     <!-- ═══════════════ SIMULATOR ═══════════════ -->
     <section id="simulator" class="py-24 px-6 md:px-12 bg-background">
       <div class="max-w-7xl mx-auto">
-        <div class="bg-surface-container-lowest p-1 mb-6 inline-block">
+        <div class="bg-surface-container-lowest p-1 mb-6 inline-block" data-anim="fade-up">
           <span
             class="bg-background text-primary-fixed font-headline font-bold uppercase tracking-widest px-4 py-2 text-sm"
             data-i18n="simulator.eyebrow">Qualification
             Initiale</span>
         </div>
         <h2 class="font-headline text-3xl md:text-5xl font-black uppercase tracking-tighter text-primary mb-12"
+          data-anim="reveal-left"
           data-i18n="simulator.title">
           Simulateur de Projet</h2>
 
@@ -1475,7 +1555,7 @@
                   <div class="font-headline font-bold uppercase tracking-tight text-primary text-base" data-i18n="simulator.step0.options.web.title">Présence en ligne</div>
                   <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="simulator.step0.options.web.body">Site vitrine, e-commerce ou application web.</div>
                 </div>
-                <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0 flex items-center justify-center"></div>
+                <div class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0 flex items-center justify-center"></div>
               </div>
               <div class="sim-card p-5 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4" data-value="ia">
                 <span class="material-symbols-outlined text-2xl text-primary-fixed">bolt</span>
@@ -1483,7 +1563,7 @@
                   <div class="font-headline font-bold uppercase tracking-tight text-primary text-base" data-i18n="simulator.step0.options.ia.title">Automatiser mes process</div>
                   <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="simulator.step0.options.ia.body">Workflows, bots et intégrations métier.</div>
                 </div>
-                <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0 flex items-center justify-center"></div>
+                <div class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0 flex items-center justify-center"></div>
               </div>
               <div class="sim-card p-5 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4" data-value="both">
                 <span class="material-symbols-outlined text-2xl text-primary-fixed">layers</span>
@@ -1491,7 +1571,7 @@
                   <div class="font-headline font-bold uppercase tracking-tight text-primary text-base" data-i18n="simulator.step0.options.both.title">Les deux</div>
                   <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="simulator.step0.options.both.body">Un projet qui combine web et automatisation.</div>
                 </div>
-                <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0 flex items-center justify-center"></div>
+                <div class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0 flex items-center justify-center"></div>
               </div>
             </div>
           </div>
@@ -1529,7 +1609,7 @@
                     et la génération de leads qualifiés.</div>
                 </div>
                 <div
-                  class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0 flex items-center justify-center">
+                  class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0 flex items-center justify-center">
                 </div>
               </div>
               <div
@@ -1545,7 +1625,7 @@
                     performance, conversion optimisée et gestion de catalogue.</div>
                 </div>
                 <div
-                  class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0 flex items-center justify-center">
+                  class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0 flex items-center justify-center">
                 </div>
               </div>
               <div
@@ -1561,7 +1641,7 @@
                     utilisateurs, tableau de bord et traitement de données.</div>
                 </div>
                 <div
-                  class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0 flex items-center justify-center">
+                  class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0 flex items-center justify-center">
                 </div>
               </div>
               <div
@@ -1577,7 +1657,7 @@
                     sur-mesure, intégration API lourde ou expérimentale.</div>
                 </div>
                 <div
-                  class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0 flex items-center justify-center">
+                  class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0 flex items-center justify-center">
                 </div>
               </div>
             </div>
@@ -1610,7 +1690,7 @@
                     data-i18n="simulator.step2.options.template.body">Base optimisée pré-configurée. Livraison
                     ultra-rapide (2–3 jours).</div>
                 </div>
-                <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0"></div>
+                <div class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0"></div>
               </div>
               <div
                 class="sim-card p-6 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4"
@@ -1624,7 +1704,7 @@
                     data-i18n="simulator.step2.options.personnalise.body">Design adapté à votre identité. Livraison
                     5–7 jours.</div>
                 </div>
-                <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0"></div>
+                <div class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0"></div>
               </div>
               <div
                 class="sim-card p-6 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4"
@@ -1637,7 +1717,7 @@
                     data-i18n="simulator.step2.options.sur-mesure.body">Création intégrale de A à Z. Expérience
                     unique et signature visuelle forte.</div>
                 </div>
-                <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0"></div>
+                <div class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0"></div>
               </div>
             </div>
           </div>
@@ -1668,7 +1748,7 @@
                     data-i18n="simulator.step3.options.aucun.body">Vous gérez en autonomie. Livraison avec
                     documentation complète.</div>
                 </div>
-                <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0"></div>
+                <div class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0"></div>
               </div>
               <div
                 class="sim-card p-6 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4"
@@ -1681,7 +1761,7 @@
                     data-i18n="simulator.step3.options.maintenance.body">Hébergement + mises à jour + support. À
                     partir de 40€/mois.</div>
                 </div>
-                <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0"></div>
+                <div class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0"></div>
               </div>
               <div
                 class="sim-card p-6 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4"
@@ -1694,7 +1774,7 @@
                     data-i18n="simulator.step3.options.croissance.body">SEO + Ads + contenu IA. Stratégie
                     d'acquisition mensuelle.</div>
                 </div>
-                <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0"></div>
+                <div class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0"></div>
               </div>
             </div>
           </div>
@@ -1710,17 +1790,17 @@
                 Votre offre<br /><span class="text-primary-fixed italic">recommandée</span>
               </h3>
               <div class="space-y-3 mb-8">
-                <div class="flex gap-4 items-start">
+                <div class="flex gap-4 items-start" data-anim-recap>
                   <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant w-32 flex-shrink-0"
                     data-i18n="simulator.step4.recap.objectif">Objectif</span>
                   <span id="recap-objectif" class="font-body text-sm text-primary font-medium">—</span>
                 </div>
-                <div class="flex gap-4 items-start">
+                <div class="flex gap-4 items-start" data-anim-recap>
                   <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant w-32 flex-shrink-0"
                     data-i18n="simulator.step4.recap.perso">Personnalisation</span>
                   <span id="recap-perso" class="font-body text-sm text-primary font-medium">—</span>
                 </div>
-                <div class="flex gap-4 items-start">
+                <div class="flex gap-4 items-start" data-anim-recap>
                   <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant w-32 flex-shrink-0"
                     data-i18n="simulator.step4.recap.accomp">Accompagnement</span>
                   <span id="recap-accomp" class="font-body text-sm text-primary font-medium">—</span>
@@ -1825,19 +1905,23 @@
     <section class="py-24 px-6 md:px-12 bg-surface-container-lowest">
       <div class="max-w-7xl mx-auto">
         <h2
-          class="font-headline text-4xl md:text-6xl font-black uppercase tracking-tighter text-primary mb-4 border-l-8 border-primary-fixed pl-6">
+          class="font-headline text-4xl md:text-6xl font-black uppercase tracking-tighter text-primary mb-4 border-l-8 border-primary-fixed pl-6"
+          data-anim="reveal-left">
           <span data-i18n="process.titleLine1">Le Parcours.</span><br /><span data-i18n="process.titleLine2">De A à
             Z.</span>
         </h2>
-        <p class="font-body text-on-surface-variant text-lg mb-16 pl-8 max-w-xl" data-i18n="process.subtitle">
+        <p class="font-body text-on-surface-variant text-lg mb-16 pl-8 max-w-xl"
+          data-anim="fade-up" data-anim-delay="0.1"
+          data-i18n="process.subtitle">
           De la découverte à l'accompagnement post-livraison — un processus transparent et sans surprise.
         </p>
 
         <div class="relative">
           <div class="hidden md:block absolute top-8 left-0 right-0 h-px bg-outline-variant/30"></div>
-          <div class="grid md:grid-cols-5 gap-0">
+          <div class="grid md:grid-cols-5 gap-0"
+            data-anim="fade-up" data-anim-stagger="0.08">
 
-            <div
+            <div data-anim-child
               class="relative p-8 md:p-6 border border-outline-variant/20 md:border-r-0 hover:bg-surface-container-low transition-colors duration-200 group">
               <div class="w-4 h-4 bg-primary-fixed mb-6 group-hover:scale-150 transition-transform duration-200"></div>
               <div class="font-label text-xs uppercase tracking-widest text-primary-fixed mb-3"
@@ -1850,7 +1934,7 @@
                 analysons votre besoin et vous proposons un rendez-vous.</p>
             </div>
 
-            <div
+            <div data-anim-child
               class="relative p-8 md:p-6 border border-outline-variant/20 md:border-r-0 hover:bg-surface-container-low transition-colors duration-200 group">
               <div
                 class="w-4 h-4 bg-surface-container-highest border-2 border-primary-fixed mb-6 group-hover:bg-primary-fixed transition-colors duration-200">
@@ -1865,7 +1949,7 @@
                 (30%). Extensions définies et planning validé.</p>
             </div>
 
-            <div
+            <div data-anim-child
               class="relative p-8 md:p-6 border border-outline-variant/20 md:border-r-0 hover:bg-surface-container-low transition-colors duration-200 group">
               <div
                 class="w-4 h-4 bg-surface-container-highest border-2 border-primary-fixed mb-6 group-hover:bg-primary-fixed transition-colors duration-200">
@@ -1880,7 +1964,7 @@
                 versement (40%). Développement lancé.</p>
             </div>
 
-            <div
+            <div data-anim-child
               class="relative p-8 md:p-6 border border-outline-variant/20 md:border-r-0 hover:bg-surface-container-low transition-colors duration-200 group">
               <div
                 class="w-4 h-4 bg-surface-container-highest border-2 border-primary-fixed mb-6 group-hover:bg-primary-fixed transition-colors duration-200">
@@ -1896,7 +1980,7 @@
                 sans surprise. Solde final (30%) et mise en ligne.</p>
             </div>
 
-            <div
+            <div data-anim-child
               class="relative p-8 md:p-6 border border-outline-variant/20 hover:bg-surface-container-low transition-colors duration-200 group">
               <div
                 class="w-4 h-4 bg-surface-container-highest border-2 border-primary-fixed mb-6 group-hover:bg-primary-fixed transition-colors duration-200">
@@ -1916,7 +2000,8 @@
         </div>
 
         <div
-          class="mt-12 bg-surface-container-low p-8 border-l-4 border-primary-fixed flex flex-col md:flex-row items-start md:items-center gap-6">
+          class="mt-12 bg-surface-container-low p-8 border-l-4 border-primary-fixed flex flex-col md:flex-row items-start md:items-center gap-6"
+          data-anim="fade-up">
           <span class="material-symbols-outlined text-4xl text-primary-fixed flex-shrink-0">verified</span>
           <div>
             <div class="font-headline text-xl font-bold uppercase tracking-tight text-primary mb-1"
@@ -1926,7 +2011,7 @@
               exactement ce qui est validé, dans les
               délais contractuels. Pénalité en cas de retard de notre côté.</p>
           </div>
-          <a href="#simulator"
+          <a href="#simulator" data-magnetic="0.3"
             class="md:ml-auto flex-shrink-0 inline-flex items-center gap-2 bg-primary-fixed text-on-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75">
             <span data-i18n="process.guarantee.cta">Démarrer</span> <span
               class="material-symbols-outlined">arrow_forward</span>
@@ -2054,7 +2139,7 @@
           });
           card.classList.add('selected');
           const check = card.querySelector('.sim-check');
-          if (check) check.innerHTML = '<span class="material-symbols-outlined text-primary-fixed text-sm">check</span>';
+          if (check) check.innerHTML = '<span class="material-symbols-outlined text-primary-fixed text-xs">check</span>';
         });
       });
 
@@ -2193,7 +2278,7 @@
           var check = card.querySelector('.sim-check');
           if (check) {
             var icon = document.createElement('span');
-            icon.className = 'material-symbols-outlined text-primary-fixed text-sm';
+            icon.className = 'material-symbols-outlined text-primary-fixed text-xs';
             icon.textContent = 'check';
             check.appendChild(icon);
           }
@@ -2223,7 +2308,7 @@
       card.appendChild(textDiv);
 
       var checkDiv = document.createElement('div');
-      checkDiv.className = 'ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0 flex items-center justify-center';
+      checkDiv.className = 'ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0 flex items-center justify-center';
       card.appendChild(checkDiv);
 
       return card;
@@ -2380,6 +2465,13 @@
   </script>
   <!-- Velos AI Chatbot -->
   <script src="/chatbot.js"></script>
+
+  <!-- GSAP animation layer -->
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Flip.min.js"></script>
+  <script defer src="/assets/js/motion.js"></script>
 </body>
 
 </html>

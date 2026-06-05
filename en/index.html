@@ -7,12 +7,23 @@
   <title>Velos | Agence Digitale</title>
   <meta name="description" content="Votre business en ligne en quelques jours, pas en mois." />
 
-  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg" />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
 
   <!-- i18n alternates -->
   <link rel="alternate" hreflang="fr" href="/" />
   <link rel="alternate" hreflang="en" href="/en/" />
   <link rel="alternate" hreflang="x-default" href="/" />
+
+  <!-- Reduced-motion detection (runs before paint) -->
+  <script>
+    (function () {
+      try {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          document.documentElement.classList.add('no-motion');
+        }
+      } catch (e) {}
+    })();
+  </script>
 
   <!-- No-FOUC: hide body until i18n applied -->
   <style>
@@ -32,7 +43,10 @@
       display: grid;
       place-items: center;
       background: #1C1B1B;
-      animation: splashFadeOut 0.6s ease-in 2.6s forwards;
+    }
+    /* Fallback fade if GSAP/Flip never run (no JS, blocked CDN). */
+    html:not(.motion-ready) #splash {
+      animation: splashFadeOut 0.6s ease-in 2.0s forwards;
     }
     #splash img {
       display: block;
@@ -53,6 +67,44 @@
     @media (min-width: 768px) {
       .nav-logo-icon { height: 4rem; }
     }
+
+    /* Headline mask reveal — JS sets the initial push via gsap.set */
+    .word-mask {
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: bottom;
+      line-height: inherit;
+    }
+    .word-inner {
+      display: inline-block;
+      will-change: transform;
+    }
+
+    /* Reveal hint — JS sets actual pre-state; this avoids paint jank. */
+    [data-anim] { will-change: transform, opacity; }
+
+    /* Card spotlight (used by [data-spotlight]) */
+    [data-spotlight] { position: relative; isolation: isolate; }
+    [data-spotlight]::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 250ms ease;
+      background: radial-gradient(
+        circle at calc(var(--mx, 50) * 1%) calc(var(--my, 50) * 1%),
+        rgba(195, 244, 0, 0.10),
+        transparent 55%
+      );
+      z-index: 0;
+    }
+    [data-spotlight]:hover::after { opacity: 1; }
+    [data-spotlight] > * { position: relative; z-index: 1; }
+    @media (hover: none) {
+      [data-spotlight]::after { display: none; }
+    }
+    html.no-motion [data-spotlight]::after { display: none; }
 
     @keyframes footerMarquee {
       from { transform: translateX(0); }
@@ -123,9 +175,9 @@
           ctaPrimary: "Lancer mon projet",
           ctaSecondary: "Voir les tarifs",
           stats: {
-            speed:  { value: "48h", label: "Livraison Flash" },
-            speedX: { value: "3×",  label: "Plus rapide que la concurrence" },
-            hidden: { value: "0€",  label: "Coûts cachés" },
+            speed: { value: "48h", label: "Livraison Flash" },
+            speedX: { value: "3×", label: "Plus rapide que la concurrence" },
+            hidden: { value: "0€", label: "Coûts cachés" },
           },
           visualLabel: "Performance. Vitesse. Résultats.",
           badge: "Technologiquement Supérieur",
@@ -134,19 +186,19 @@
           title: "L'Avantage",
           subtitle: "Pas de réunions inutiles. Pas de promesses vides. Juste des résultats.",
           cards: {
-            speed:      { title: "Vitesse d'exécution inégalée", body: "Nous ne faisons pas de réunions inutiles. Nous construisons. Votre produit est en ligne pendant que la concurrence rédige encore son cahier des charges." },
+            speed: { title: "Vitesse d'exécution inégalée", body: "Nous ne faisons pas de réunions inutiles. Nous construisons. Votre produit est en ligne pendant que la concurrence rédige encore son cahier des charges." },
             conversion: { title: "Conversion Focus", body: "Chaque pixel est optimisé pour transformer vos visiteurs en clients. Un design brutal, direct et orienté résultats purs." },
-            code:       { title: "Code Brut", body: "Architecture technique de pointe. Pas de templates lourds, uniquement du code sur-mesure pour des performances optimales." },
+            code: { title: "Code Brut", body: "Architecture technique de pointe. Pas de templates lourds, uniquement du code sur-mesure pour des performances optimales." },
           },
         },
         services: {
           title: "Nos Services",
           subtitle: "Des solutions adaptées à chaque ambition.",
           projects: {
-            vitrine:   { title: "Présentation & Vitrine", body: "Site institutionnel sur l'image de marque et la génération de leads qualifiés." },
+            vitrine: { title: "Présentation & Vitrine", body: "Site institutionnel sur l'image de marque et la génération de leads qualifiés." },
             ecommerce: { title: "Vente & E-Commerce", body: "Plateforme transactionnelle haute performance, conversion optimisée et gestion de catalogue avancée." },
-            saas:      { title: "SaaS & App Web", body: "Application métier complexe, gestion utilisateurs, tableau de bord et traitement de données." },
-            complexe:  { title: "Autre / Complexe", body: "Besoins spécifiques, architecture sur-mesure ou intégration API lourde ou expérimentale." },
+            saas: { title: "SaaS & App Web", body: "Application métier complexe, gestion utilisateurs, tableau de bord et traitement de données." },
+            complexe: { title: "Autre / Complexe", body: "Besoins spécifiques, architecture sur-mesure ou intégration API lourde ou expérimentale." },
           },
           extensions: {
             eyebrow: "Extensions",
@@ -222,19 +274,19 @@
             titleHtml: 'Quel est<br /><span class="text-primary-fixed italic">l\'objectif<br />principal</span><br />de votre<br />plateforme ?',
             body: "Notre architecture dépend de vos ambitions. Sélectionnez l'orientation qui définit le mieux votre projet digital.",
             options: {
-              vitrine:   { title: "Présentation & Vitrine", body: "Site institutionnel sur l'image de marque et la génération de leads qualifiés." },
+              vitrine: { title: "Présentation & Vitrine", body: "Site institutionnel sur l'image de marque et la génération de leads qualifiés." },
               ecommerce: { title: "Vente & E-Commerce", body: "Plateforme transactionnelle haute performance, conversion optimisée et gestion de catalogue." },
-              saas:      { title: "SaaS & App Web", body: "Application métier complexe, gestion utilisateurs, tableau de bord et traitement de données." },
-              complexe:  { title: "Autre / Complexe", body: "Besoins spécifiques, architecture sur-mesure, intégration API lourde ou expérimentale." },
+              saas: { title: "SaaS & App Web", body: "Application métier complexe, gestion utilisateurs, tableau de bord et traitement de données." },
+              complexe: { title: "Autre / Complexe", body: "Besoins spécifiques, architecture sur-mesure, intégration API lourde ou expérimentale." },
             },
           },
           step2: {
             titleHtml: 'Niveau de<br /><span class="text-primary-fixed italic">personnalisation</span><br />souhaité ?',
             body: "Le niveau de personnalisation définit le temps de conception et les possibilités créatives de votre projet.",
             options: {
-              template:     { title: "Template Rapide", body: "Base optimisée pré-configurée. Livraison ultra-rapide (2–3 jours de dev.)." },
-              personnalise: { title: "Personnalisé",    body: "Design adapté à votre identité. Livraison en 5–7 jours de dev." },
-              "sur-mesure": { title: "Sur-Mesure",      body: "Création intégrale de A à Z. Expérience unique et signature visuelle forte." },
+              template: { title: "Template Rapide", body: "Base optimisée pré-configurée. Livraison ultra-rapide (2–3 jours de dev.)." },
+              personnalise: { title: "Personnalisé", body: "Design adapté à votre identité. Livraison en 5–7 jours de dev." },
+              "sur-mesure": { title: "Sur-Mesure", body: "Création intégrale de A à Z. Expérience unique et signature visuelle forte." },
             },
           },
           step1ia: {
@@ -261,9 +313,9 @@
             titleHtml: 'Besoin<br /><span class="text-primary-fixed italic">d\'accompagnement</span><br />post-livraison ?',
             body: "Un site performant nécessite un entretien. Choisissez le niveau d'accompagnement adapté à vos ressources.",
             options: {
-              aucun:       { title: "Aucun",       body: "Vous gérez en autonomie. Livraison avec documentation complète." },
+              aucun: { title: "Aucun", body: "Vous gérez en autonomie. Livraison avec documentation complète." },
               maintenance: { title: "Maintenance", body: "Hébergement + mises à jour + support. À partir de 40€/mois." },
-              croissance:  { title: "Croissance",  body: "SEO + Ads + contenu IA. Stratégie d'acquisition mensuelle." },
+              croissance: { title: "Croissance", body: "SEO + Ads + contenu IA. Stratégie d'acquisition mensuelle." },
             },
           },
           step4: {
@@ -286,8 +338,8 @@
           },
           simLabels: {
             objectif: { vitrine: "Présentation & Vitrine", ecommerce: "Vente & E-Commerce", saas: "SaaS & App Web", complexe: "Autre / Complexe", workflow: "Workflow Métier", bot: "Bot Conversationnel", integration: "Intégration Outils", stack: "Stack Complète", siteBot: "Site + Bot", siteWorkflow: "Site + Workflows", siteStack: "Site + Stack Complète", custom: "Sur-mesure" },
-            perso:    { template: "Template Rapide", personnalise: "Personnalisé", "sur-mesure": "Sur-Mesure" },
-            accomp:   { aucun: "Aucun", maintenance: "Maintenance", croissance: "Croissance (SEO/Ads)", care: "Velos Care" },
+            perso: { template: "Template Rapide", personnalise: "Personnalisé", "sur-mesure": "Sur-Mesure" },
+            accomp: { aucun: "Aucun", maintenance: "Maintenance", croissance: "Croissance (SEO/Ads)", care: "Velos Care" },
             flux: { web: "Présence en ligne", ia: "Automatisation", both: "Les deux" },
             delai: { "7j": "Le plus vite (7j)", "14j": "Sous 2 semaines (14j)", "21j": "Sous 3 semaines (21j)", "pasurgent": "Pas urgent" },
           },
@@ -307,11 +359,11 @@
           titleLine2: "De A à Z.",
           subtitle: "De la découverte à l'accompagnement post-livraison — un processus transparent et sans surprise.",
           steps: {
-            s1: { eyebrow: "01 / Découverte",  title: "Simulateur & Premier Contact", body: "Vous complétez le simulateur. Nous analysons votre besoin et vous proposons un rendez-vous." },
-            s2: { eyebrow: "02 / Commande",    title: "30% Acompte & Kick-off",       body: "Signature du devis, premier versement (30%). On définit le périmètre exact et on valide le planning." },
-            s3: { eyebrow: "03 / Cadrage",     title: "Cadrage & Préparation · 40% Paiement", body: "On pose les fondations. Projet web : validation de la maquette. Projet IA : on conçoit et valide ensemble les workflows, puis vous nous transmettez les accès nécessaires (CRM, API, WhatsApp Business…). La durée de cette phase dépend du projet et de votre réactivité — elle n'entre pas dans les délais annoncés. Second versement (40%)." },
-            s4: { eyebrow: "04 / Livraison",   title: "Développement & Livraison",             body: "C'est ici que démarre le décompte des jours de développement (7-10j, 14j ou 21j selon le pack) — du dev pur, une fois le cadrage figé. Démo complète, solde final (30%) et mise en ligne." },
-            s5: { eyebrow: "05 / Récurrence",  title: "Hébergement & Croissance",     body: "Maintenance à 40–50€/mois. SEO, Ads, contenu IA pour les clients Growth." },
+            s1: { eyebrow: "01 / Découverte", title: "Simulateur & Premier Contact", body: "Vous complétez le simulateur. Nous analysons votre besoin et vous proposons un rendez-vous." },
+            s2: { eyebrow: "02 / Commande", title: "30% Acompte & Kick-off", body: "Signature du devis, premier versement (30%). On définit le périmètre exact et on valide le planning." },
+            s3: { eyebrow: "03 / Cadrage", title: "Cadrage & Préparation · 40% Paiement", body: "On pose les fondations. Projet web : validation de la maquette. Projet IA : on conçoit et valide ensemble les workflows, puis vous nous transmettez les accès nécessaires (CRM, API, WhatsApp Business…). La durée de cette phase dépend du projet et de votre réactivité — elle n'entre pas dans les délais annoncés. Second versement (40%)." },
+            s4: { eyebrow: "04 / Livraison", title: "Développement & Livraison", body: "C'est ici que démarre le décompte des jours de développement (7-10j, 14j ou 21j selon le pack) — du dev pur, une fois le cadrage figé. Démo complète, solde final (30%) et mise en ligne." },
+            s5: { eyebrow: "05 / Récurrence", title: "Hébergement & Croissance", body: "Maintenance à 40–50€/mois. SEO, Ads, contenu IA pour les clients Growth." },
           },
           guarantee: {
             title: "Garantie Sans Surprise",
@@ -349,9 +401,9 @@
           ctaPrimary: "Launch my project",
           ctaSecondary: "View pricing",
           stats: {
-            speed:  { value: "48h", label: "Flash Delivery" },
-            speedX: { value: "3×",  label: "Faster than the competition" },
-            hidden: { value: "$0",  label: "Hidden costs" },
+            speed: { value: "48h", label: "Flash Delivery" },
+            speedX: { value: "3×", label: "Faster than the competition" },
+            hidden: { value: "$0", label: "Hidden costs" },
           },
           visualLabel: "Performance. Speed. Results.",
           badge: "Technologically Superior",
@@ -360,19 +412,19 @@
           title: "The Advantage",
           subtitle: "No useless meetings. No empty promises. Just results.",
           cards: {
-            speed:      { title: "Unmatched execution speed", body: "We don't waste time on meetings. We build. Your product is live while the competition is still drafting requirements." },
-            conversion: { title: "Conversion Focus",          body: "Every pixel is optimized to turn visitors into customers. Brutal, direct design built for pure results." },
-            code:       { title: "Raw Code",                  body: "State-of-the-art technical architecture. No bloated templates — only custom code for optimal performance." },
+            speed: { title: "Unmatched execution speed", body: "We don't waste time on meetings. We build. Your product is live while the competition is still drafting requirements." },
+            conversion: { title: "Conversion Focus", body: "Every pixel is optimized to turn visitors into customers. Brutal, direct design built for pure results." },
+            code: { title: "Raw Code", body: "State-of-the-art technical architecture. No bloated templates — only custom code for optimal performance." },
           },
         },
         services: {
           title: "Our Services",
           subtitle: "Solutions tailored to every ambition.",
           projects: {
-            vitrine:   { title: "Brand & Showcase",   body: "Institutional website focused on brand image and qualified lead generation." },
+            vitrine: { title: "Brand & Showcase", body: "Institutional website focused on brand image and qualified lead generation." },
             ecommerce: { title: "Sales & E-Commerce", body: "High-performance transactional platform, optimized conversion and advanced catalog management." },
-            saas:      { title: "SaaS & Web App",     body: "Complex business application, user management, dashboards and data processing." },
-            complexe:  { title: "Other / Custom",     body: "Specific needs, custom architecture, or heavy / experimental API integration." },
+            saas: { title: "SaaS & Web App", body: "Complex business application, user management, dashboards and data processing." },
+            complexe: { title: "Other / Custom", body: "Specific needs, custom architecture, or heavy / experimental API integration." },
           },
           extensions: {
             eyebrow: "Extensions",
@@ -448,19 +500,19 @@
             titleHtml: 'What is<br /><span class="text-primary-fixed italic">the main<br />objective</span><br />of your<br />platform?',
             body: "Our architecture depends on your ambitions. Pick the direction that best fits your digital project.",
             options: {
-              vitrine:   { title: "Brand & Showcase",   body: "Institutional website focused on brand image and qualified lead generation." },
+              vitrine: { title: "Brand & Showcase", body: "Institutional website focused on brand image and qualified lead generation." },
               ecommerce: { title: "Sales & E-Commerce", body: "High-performance transactional platform, optimized conversion and catalog management." },
-              saas:      { title: "SaaS & Web App",     body: "Complex business application, user management, dashboards and data processing." },
-              complexe:  { title: "Other / Custom",     body: "Specific needs, custom architecture, heavy or experimental API integration." },
+              saas: { title: "SaaS & Web App", body: "Complex business application, user management, dashboards and data processing." },
+              complexe: { title: "Other / Custom", body: "Specific needs, custom architecture, heavy or experimental API integration." },
             },
           },
           step2: {
             titleHtml: 'Desired<br /><span class="text-primary-fixed italic">customization</span><br />level?',
             body: "Customization level drives design time and the creative possibilities of your project.",
             options: {
-              template:     { title: "Quick Template", body: "Pre-configured optimized base. Ultra-fast delivery (2–3 dev days)." },
-              personnalise: { title: "Personalized",   body: "Design adapted to your identity. Delivery in 5–7 dev days." },
-              "sur-mesure": { title: "Custom",         body: "Built from scratch. Unique experience and strong visual signature." },
+              template: { title: "Quick Template", body: "Pre-configured optimized base. Ultra-fast delivery (2–3 dev days)." },
+              personnalise: { title: "Personalized", body: "Design adapted to your identity. Delivery in 5–7 dev days." },
+              "sur-mesure": { title: "Custom", body: "Built from scratch. Unique experience and strong visual signature." },
             },
           },
           step1ia: {
@@ -487,9 +539,9 @@
             titleHtml: 'Need<br /><span class="text-primary-fixed italic">post-launch<br />support</span>?',
             body: "A high-performing site needs upkeep. Pick the level of support that fits your resources.",
             options: {
-              aucun:       { title: "None",        body: "You handle it on your own. Delivered with full documentation." },
+              aucun: { title: "None", body: "You handle it on your own. Delivered with full documentation." },
               maintenance: { title: "Maintenance", body: "Hosting + updates + support. Starting at €40/month." },
-              croissance:  { title: "Growth",      body: "SEO + Ads + AI content. Monthly acquisition strategy." },
+              croissance: { title: "Growth", body: "SEO + Ads + AI content. Monthly acquisition strategy." },
             },
           },
           step4: {
@@ -512,8 +564,8 @@
           },
           simLabels: {
             objectif: { vitrine: "Brand & Showcase", ecommerce: "Sales & E-Commerce", saas: "SaaS & Web App", complexe: "Other / Custom", workflow: "Business Workflow", bot: "Conversational Bot", integration: "Tool Integration", stack: "Full Stack", siteBot: "Site + Bot", siteWorkflow: "Site + Workflows", siteStack: "Site + Full Stack", custom: "Custom" },
-            perso:    { template: "Quick Template", personnalise: "Personalized", "sur-mesure": "Custom" },
-            accomp:   { aucun: "None", maintenance: "Maintenance", croissance: "Growth (SEO/Ads)", care: "Velos Care" },
+            perso: { template: "Quick Template", personnalise: "Personalized", "sur-mesure": "Custom" },
+            accomp: { aucun: "None", maintenance: "Maintenance", croissance: "Growth (SEO/Ads)", care: "Velos Care" },
             flux: { web: "Online presence", ia: "Automation", both: "Both" },
             delai: { "7j": "Fastest (7d)", "14j": "Within 2 weeks (14d)", "21j": "Within 3 weeks (21d)", "pasurgent": "Not urgent" },
           },
@@ -533,11 +585,11 @@
           titleLine2: "From A to Z.",
           subtitle: "From discovery to post-launch support — a transparent process with no surprises.",
           steps: {
-            s1: { eyebrow: "01 / Discovery",  title: "Simulator & First Contact",  body: "You complete the simulator. We analyze your needs and propose a meeting." },
-            s2: { eyebrow: "02 / Order",      title: "30% Deposit & Kick-off",     body: "Quote signed, first payment (30%). We define the exact scope and approve the timeline." },
-            s3: { eyebrow: "03 / Scoping",    title: "Scoping & Preparation · 40% Payment", body: "We lay the foundations. Web projects: mockup approval. AI projects: we design and validate the workflows together, then you provide the required accesses (CRM, API, WhatsApp Business…). This phase's duration depends on the project and your responsiveness — it is not included in the announced timelines. Second payment (40%)." },
-            s4: { eyebrow: "04 / Delivery",   title: "Development & Delivery",           body: "This is where the development day count begins (7-10d, 14d or 21d depending on the pack) — pure dev, once scoping is locked. Full demo, final payment (30%) and go-live." },
-            s5: { eyebrow: "05 / Recurring",  title: "Hosting & Growth",           body: "Maintenance at €40–50/month. SEO, Ads, AI content for Growth clients." },
+            s1: { eyebrow: "01 / Discovery", title: "Simulator & First Contact", body: "You complete the simulator. We analyze your needs and propose a meeting." },
+            s2: { eyebrow: "02 / Order", title: "30% Deposit & Kick-off", body: "Quote signed, first payment (30%). We define the exact scope and approve the timeline." },
+            s3: { eyebrow: "03 / Scoping", title: "Scoping & Preparation · 40% Payment", body: "We lay the foundations. Web projects: mockup approval. AI projects: we design and validate the workflows together, then you provide the required accesses (CRM, API, WhatsApp Business…). This phase's duration depends on the project and your responsiveness — it is not included in the announced timelines. Second payment (40%)." },
+            s4: { eyebrow: "04 / Delivery", title: "Development & Delivery", body: "This is where the development day count begins (7-10d, 14d or 21d depending on the pack) — pure dev, once scoping is locked. Full demo, final payment (30%) and go-live." },
+            s5: { eyebrow: "05 / Recurring", title: "Hosting & Growth", body: "Maintenance at €40–50/month. SEO, Ads, AI content for Growth clients." },
           },
           guarantee: {
             title: "No-Surprise Guarantee",
@@ -649,13 +701,14 @@
         if (descEl) descEl.setAttribute('content', window.t('meta.description'));
 
         document.documentElement.classList.add('i18n-ready');
+        try { window.dispatchEvent(new Event('velos:i18n-ready')); } catch (e) {}
       };
 
       function wireSwitcher() {
         document.querySelectorAll('[data-lang-switch]').forEach(function (el) {
           el.setAttribute('href', pathLang === 'fr' ? '/en/' : '/');
           el.addEventListener('click', function () {
-            try { localStorage.setItem('preferredLang', pathLang === 'fr' ? 'en' : 'fr'); } catch (e) {}
+            try { localStorage.setItem('preferredLang', pathLang === 'fr' ? 'en' : 'fr'); } catch (e) { }
           });
         });
       }
@@ -755,15 +808,15 @@
       min-width: 0;
     }
 
-    .sim-card > div {
+    .sim-card > div:not(.sim-check) {
       min-width: 0;
       flex: 1 1 auto;
       word-break: break-word;
       hyphens: auto;
     }
 
-    .sim-check {
-      flex-shrink: 0;
+    .sim-card .sim-check {
+      flex: 0 0 auto;
     }
 
     .sim-card.selected {
@@ -842,7 +895,7 @@
     </div>
     <div class="hidden md:flex items-center gap-4">
       <a href="/en/" data-lang-switch class="nav-link" data-i18n="nav.langSwitch">EN</a>
-      <a href="#" data-config="calendlyUrl" target="_blank"
+      <a href="#" data-config="calendlyUrl" target="_blank" data-magnetic="0.3"
         class="inline-flex items-center gap-2 bg-primary-fixed text-on-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75"
         data-i18n="nav.cta">
         Start Project
@@ -855,7 +908,8 @@
 
   <div id="mobile-menu"
     class="fixed inset-0 z-40 bg-surface-container-lowest flex flex-col items-center justify-center gap-10 hidden">
-    <button id="close-menu" data-i18n-attr="aria-label:nav.menuClose" aria-label="Fermer le menu" class="absolute top-6 right-8 text-primary">
+    <button id="close-menu" data-i18n-attr="aria-label:nav.menuClose" aria-label="Fermer le menu"
+      class="absolute top-6 right-8 text-primary">
       <span class="material-symbols-outlined text-3xl">close</span>
     </button>
     <a href="#services" class="mobile-nav-link" onclick="closeMobileMenu()" data-i18n="nav.services">Services</a>
@@ -880,58 +934,69 @@
         style="background: radial-gradient(circle at top right, rgba(204,255,0,0.4) 0%, transparent 50%);"></div>
       <div class="max-w-7xl mx-auto w-full z-10 grid md:grid-cols-12 gap-12 items-center py-24">
         <div class="md:col-span-7 space-y-8">
-          <div class="inline-block bg-surface-container-highest px-4 py-2">
-            <span class="font-headline uppercase tracking-widest text-xs text-on-surface-variant" data-i18n="hero.eyebrow">Agence digital</span>
+          <div class="inline-block bg-surface-container-highest px-4 py-2" data-anim-hero="eyebrow">
+            <span class="font-headline uppercase tracking-widest text-xs text-on-surface-variant"
+              data-i18n="hero.eyebrow">Agence digital</span>
           </div>
           <h1
             class="font-headline font-black uppercase tracking-tighter leading-[0.88] text-4xl sm:text-5xl md:text-8xl text-primary break-words">
-            <span data-i18n="hero.titleLine1">VOTRE BUSINESS</span><br /><span data-i18n="hero.titleLine2">EN LIGNE.</span><br />
-            <span class="text-primary-fixed" data-i18n="hero.titleLine3">DÈS DEMAIN.</span>
+            <span data-hero-headline data-i18n="hero.titleLine1">VOTRE BUSINESS</span><br /><span data-hero-headline data-i18n="hero.titleLine2">EN
+              LIGNE.</span><br />
+            <span class="text-primary-fixed" data-hero-headline data-i18n="hero.titleLine3">DÈS DEMAIN.</span>
           </h1>
-          <p class="font-body text-xl md:text-2xl text-on-surface-variant max-w-xl font-medium" data-i18n="hero.tagline">
+          <p class="font-body text-xl md:text-2xl text-on-surface-variant max-w-xl font-medium"
+            data-anim-hero="tagline" data-i18n="hero.tagline">
             Votre business en ligne en quelques jours, pas en mois.
           </p>
           <div class="flex flex-wrap gap-4 pt-2">
-            <a href="#simulator"
+            <a href="#simulator" data-anim-hero="cta" data-magnetic="0.3"
               class="inline-flex items-center gap-2 bg-primary-fixed text-on-primary px-10 py-5 font-headline text-lg font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75">
               <span data-i18n="hero.ctaPrimary">Lancer mon projet</span>
               <span class="material-symbols-outlined">arrow_forward</span>
             </a>
-            <a href="#pricing"
+            <a href="#pricing" data-anim-hero="cta"
               class="inline-flex items-center gap-2 border-2 border-outline text-primary px-10 py-5 font-headline text-lg font-bold uppercase tracking-tighter hover:border-primary-fixed hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#CCFF00] transition-all duration-75"
               data-i18n="hero.ctaSecondary">
               Voir les tarifs
             </a>
           </div>
           <div class="flex gap-12 pt-4 border-t border-outline-variant/30">
-            <div>
-              <div class="font-headline text-4xl font-black text-primary-fixed" data-i18n="hero.stats.speed.value">48h</div>
-              <div class="font-label text-xs uppercase tracking-widest text-on-surface-variant" data-i18n="hero.stats.speed.label">Livraison Flash</div>
+            <div data-anim-hero="stat">
+              <div class="font-headline text-4xl font-black text-primary-fixed" data-counter data-i18n="hero.stats.speed.value">48h
+              </div>
+              <div class="font-label text-xs uppercase tracking-widest text-on-surface-variant"
+                data-i18n="hero.stats.speed.label">Livraison Flash</div>
             </div>
-            <div>
-              <div class="font-headline text-4xl font-black text-primary-fixed" data-i18n="hero.stats.speedX.value">3×</div>
-              <div class="font-label text-xs uppercase tracking-widest text-on-surface-variant" data-i18n="hero.stats.speedX.label">Plus rapide que la
+            <div data-anim-hero="stat">
+              <div class="font-headline text-4xl font-black text-primary-fixed" data-counter data-i18n="hero.stats.speedX.value">3×
+              </div>
+              <div class="font-label text-xs uppercase tracking-widest text-on-surface-variant"
+                data-i18n="hero.stats.speedX.label">Plus rapide que la
                 concurrence</div>
             </div>
-            <div>
-              <div class="font-headline text-4xl font-black text-primary-fixed" data-i18n="hero.stats.hidden.value">0€</div>
-              <div class="font-label text-xs uppercase tracking-widest text-on-surface-variant" data-i18n="hero.stats.hidden.label">Coûts cachés</div>
+            <div data-anim-hero="stat">
+              <div class="font-headline text-4xl font-black text-primary-fixed" data-counter data-i18n="hero.stats.hidden.value">0€
+              </div>
+              <div class="font-label text-xs uppercase tracking-widest text-on-surface-variant"
+                data-i18n="hero.stats.hidden.label">Coûts cachés</div>
             </div>
           </div>
         </div>
-        <div class="md:col-span-5 hidden md:block">
+        <div class="md:col-span-5 hidden md:block" data-anim-hero="visual">
           <div class="relative">
             <div
               class="w-full aspect-square bg-surface-container-high border-4 border-surface-container-highest shadow-[16px_16px_0px_0px_#CCFF00] flex items-center justify-center overflow-hidden">
               <div class="text-center p-8">
                 <div class="font-headline text-8xl font-black text-primary-fixed opacity-20 leading-none">&lt;/&gt;
                 </div>
-                <div class="font-headline text-lg font-bold uppercase tracking-widest text-on-surface-variant mt-4" data-i18n="hero.visualLabel">
+                <div class="font-headline text-lg font-bold uppercase tracking-widest text-on-surface-variant mt-4"
+                  data-i18n="hero.visualLabel">
                   Performance. Vitesse. Résultats.</div>
               </div>
             </div>
             <div
               class="absolute -bottom-4 -right-4 bg-primary-fixed text-on-primary px-4 py-2 font-headline font-bold uppercase tracking-tighter text-sm"
+              data-anim-hero="badge"
               data-i18n="hero.badge">
               Technologiquement Supérieur
             </div>
@@ -939,7 +1004,8 @@
         </div>
       </div>
       <div
-        class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-on-surface-variant animate-bounce">
+        class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-on-surface-variant animate-bounce"
+        data-anim-hero="chevron">
         <span class="material-symbols-outlined text-sm">keyboard_arrow_down</span>
       </div>
     </section>
@@ -949,36 +1015,47 @@
       <div class="max-w-7xl mx-auto">
         <h2
           class="font-headline text-4xl md:text-6xl font-black uppercase tracking-tighter text-primary mb-4 border-l-8 border-primary-fixed pl-6"
+          data-anim="reveal-left"
           data-i18n="advantage.title">
           L'Avantage</h2>
-        <p class="font-body text-on-surface-variant text-lg mb-16 pl-8 max-w-xl" data-i18n="advantage.subtitle">Pas de réunions inutiles. Pas de
+        <p class="font-body text-on-surface-variant text-lg mb-16 pl-8 max-w-xl"
+          data-anim="fade-up" data-anim-delay="0.1"
+          data-i18n="advantage.subtitle">Pas de
+          réunions inutiles. Pas de
           promesses vides. Juste des résultats.</p>
-        <div class="grid md:grid-cols-3 gap-0 border border-outline-variant/20">
-          <div
-            class="bg-surface-container-low p-10 border-r border-outline-variant/20 hover:border-primary-fixed transition-colors duration-300 group">
+        <div class="grid md:grid-cols-3 gap-0 border border-outline-variant/20"
+          data-anim="fade-up" data-anim-stagger="0.1">
+          <div data-anim-child data-tilt data-spotlight
+            class="bg-surface-container-low p-10 border-r border-outline-variant/20 hover:shadow-[inset_0_0_0_2px_#c3f400] transition duration-300 group">
             <span
               class="material-symbols-outlined text-5xl text-primary-fixed mb-6 block group-hover:-translate-y-2 transition-transform duration-200">bolt</span>
-            <h3 class="font-headline text-2xl font-bold text-primary uppercase tracking-tight mb-4" data-i18n="advantage.cards.speed.title">Vitesse d'exécution
+            <h3 class="font-headline text-2xl font-bold text-primary uppercase tracking-tight mb-4"
+              data-i18n="advantage.cards.speed.title">Vitesse d'exécution
               inégalée</h3>
-            <p class="font-body text-on-surface-variant leading-relaxed" data-i18n="advantage.cards.speed.body">Nous ne faisons pas de réunions inutiles. Nous
+            <p class="font-body text-on-surface-variant leading-relaxed" data-i18n="advantage.cards.speed.body">Nous ne
+              faisons pas de réunions inutiles. Nous
               construisons. Votre produit est en ligne pendant que la concurrence rédige encore son cahier des charges.
             </p>
           </div>
-          <div
-            class="bg-surface-container-low p-10 border-r border-outline-variant/20 hover:border-primary-fixed transition-colors duration-300 group">
+          <div data-anim-child data-tilt data-spotlight
+            class="bg-surface-container-low p-10 border-r border-outline-variant/20 hover:shadow-[inset_0_0_0_2px_#c3f400] transition duration-300 group">
             <span
               class="material-symbols-outlined text-5xl text-primary-fixed mb-6 block group-hover:-translate-y-2 transition-transform duration-200">my_location</span>
-            <h3 class="font-headline text-2xl font-bold text-primary uppercase tracking-tight mb-4" data-i18n="advantage.cards.conversion.title">Conversion Focus
+            <h3 class="font-headline text-2xl font-bold text-primary uppercase tracking-tight mb-4"
+              data-i18n="advantage.cards.conversion.title">Conversion Focus
             </h3>
-            <p class="font-body text-on-surface-variant leading-relaxed" data-i18n="advantage.cards.conversion.body">Chaque pixel est optimisé pour transformer vos
+            <p class="font-body text-on-surface-variant leading-relaxed" data-i18n="advantage.cards.conversion.body">
+              Chaque pixel est optimisé pour transformer vos
               visiteurs en clients. Un design brutal, direct et orienté résultats purs.</p>
           </div>
-          <div
-            class="bg-surface-container-low p-10 hover:border hover:border-primary-fixed transition-colors duration-300 group">
+          <div data-anim-child data-tilt data-spotlight
+            class="bg-surface-container-low p-10 hover:shadow-[inset_0_0_0_2px_#c3f400] transition duration-300 group">
             <span
               class="material-symbols-outlined text-5xl text-primary-fixed mb-6 block group-hover:-translate-y-2 transition-transform duration-200">terminal</span>
-            <h3 class="font-headline text-2xl font-bold text-primary uppercase tracking-tight mb-4" data-i18n="advantage.cards.code.title">Code Brut</h3>
-            <p class="font-body text-on-surface-variant leading-relaxed" data-i18n="advantage.cards.code.body">Architecture technique de pointe. Pas de
+            <h3 class="font-headline text-2xl font-bold text-primary uppercase tracking-tight mb-4"
+              data-i18n="advantage.cards.code.title">Code Brut</h3>
+            <p class="font-body text-on-surface-variant leading-relaxed" data-i18n="advantage.cards.code.body">
+              Architecture technique de pointe. Pas de
               templates lourds, uniquement du code sur-mesure pour des performances optimales.</p>
           </div>
         </div>
@@ -990,54 +1067,67 @@
       <div class="max-w-7xl mx-auto">
         <h2
           class="font-headline text-4xl md:text-6xl font-black uppercase tracking-tighter text-primary mb-4 border-l-8 border-primary-fixed pl-6"
+          data-anim="reveal-left"
           data-i18n="services.title">
           Nos Services</h2>
-        <p class="font-body text-on-surface-variant text-lg mb-16 pl-8 max-w-xl" data-i18n="services.subtitle">Des solutions adaptées à chaque
+        <p class="font-body text-on-surface-variant text-lg mb-16 pl-8 max-w-xl"
+          data-anim="fade-up" data-anim-delay="0.1"
+          data-i18n="services.subtitle">Des
+          solutions adaptées à chaque
           ambition.</p>
 
         <!-- Types de projets -->
-        <div class="grid md:grid-cols-2 gap-4 mb-24">
-          <div
+        <div class="grid md:grid-cols-2 gap-4 mb-24"
+          data-anim="fade-up" data-anim-stagger="0.08">
+          <div data-anim-child data-spotlight
             class="bg-surface-container-low p-8 border border-outline-variant/20 hover:border-primary-fixed transition-colors duration-200 group">
             <div class="flex items-start justify-between mb-6">
               <span class="material-symbols-outlined text-4xl text-primary-fixed">storefront</span>
               <div class="w-3 h-3 bg-outline-variant group-hover:bg-primary-fixed transition-colors"></div>
             </div>
-            <h3 class="font-headline text-xl font-bold text-primary uppercase tracking-tight mb-3" data-i18n="services.projects.vitrine.title">Présentation &amp;
+            <h3 class="font-headline text-xl font-bold text-primary uppercase tracking-tight mb-3"
+              data-i18n="services.projects.vitrine.title">Présentation &amp;
               Vitrine</h3>
-            <p class="font-body text-on-surface-variant text-sm leading-relaxed" data-i18n="services.projects.vitrine.body">Site institutionnel sur l'image de
+            <p class="font-body text-on-surface-variant text-sm leading-relaxed"
+              data-i18n="services.projects.vitrine.body">Site institutionnel sur l'image de
               marque et la génération de leads qualifiés.</p>
           </div>
-          <div
+          <div data-anim-child data-spotlight
             class="bg-surface-container-low p-8 border border-outline-variant/20 hover:border-primary-fixed transition-colors duration-200 group">
             <div class="flex items-start justify-between mb-6">
               <span class="material-symbols-outlined text-4xl text-primary-fixed">shopping_cart</span>
               <div class="w-3 h-3 bg-outline-variant group-hover:bg-primary-fixed transition-colors"></div>
             </div>
-            <h3 class="font-headline text-xl font-bold text-primary uppercase tracking-tight mb-3" data-i18n="services.projects.ecommerce.title">Vente &amp;
+            <h3 class="font-headline text-xl font-bold text-primary uppercase tracking-tight mb-3"
+              data-i18n="services.projects.ecommerce.title">Vente &amp;
               E-Commerce</h3>
-            <p class="font-body text-on-surface-variant text-sm leading-relaxed" data-i18n="services.projects.ecommerce.body">Plateforme transactionnelle haute
+            <p class="font-body text-on-surface-variant text-sm leading-relaxed"
+              data-i18n="services.projects.ecommerce.body">Plateforme transactionnelle haute
               performance, conversion optimisée et gestion de catalogue avancée.</p>
           </div>
-          <div
+          <div data-anim-child data-spotlight
             class="bg-surface-container-low p-8 border border-outline-variant/20 hover:border-primary-fixed transition-colors duration-200 group">
             <div class="flex items-start justify-between mb-6">
               <span class="material-symbols-outlined text-4xl text-primary-fixed">grid_view</span>
               <div class="w-3 h-3 bg-outline-variant group-hover:bg-primary-fixed transition-colors"></div>
             </div>
-            <h3 class="font-headline text-xl font-bold text-primary uppercase tracking-tight mb-3" data-i18n="services.projects.saas.title">SaaS &amp; App Web
+            <h3 class="font-headline text-xl font-bold text-primary uppercase tracking-tight mb-3"
+              data-i18n="services.projects.saas.title">SaaS &amp; App Web
             </h3>
-            <p class="font-body text-on-surface-variant text-sm leading-relaxed" data-i18n="services.projects.saas.body">Application métier complexe, gestion
+            <p class="font-body text-on-surface-variant text-sm leading-relaxed"
+              data-i18n="services.projects.saas.body">Application métier complexe, gestion
               utilisateurs, tableau de bord et traitement de données.</p>
           </div>
-          <div
+          <div data-anim-child data-spotlight
             class="bg-surface-container-low p-8 border border-outline-variant/20 hover:border-primary-fixed transition-colors duration-200 group">
             <div class="flex items-start justify-between mb-6">
               <span class="material-symbols-outlined text-4xl text-primary-fixed">settings_suggest</span>
               <div class="w-3 h-3 bg-outline-variant group-hover:bg-primary-fixed transition-colors"></div>
             </div>
-            <h3 class="font-headline text-xl font-bold text-primary uppercase tracking-tight mb-3" data-i18n="services.projects.complexe.title">Autre / Complexe</h3>
-            <p class="font-body text-on-surface-variant text-sm leading-relaxed" data-i18n="services.projects.complexe.body">Besoins spécifiques, architecture
+            <h3 class="font-headline text-xl font-bold text-primary uppercase tracking-tight mb-3"
+              data-i18n="services.projects.complexe.title">Autre / Complexe</h3>
+            <p class="font-body text-on-surface-variant text-sm leading-relaxed"
+              data-i18n="services.projects.complexe.body">Besoins spécifiques, architecture
               sur-mesure ou intégration API lourde ou expérimentale.</p>
           </div>
         </div>
@@ -1048,46 +1138,56 @@
     <!-- ═══════════════ AUTOMATION ═══════════════ -->
     <section id="automation" class="py-24 px-6 md:px-12 bg-surface-container-lowest">
       <div class="max-w-7xl mx-auto">
-        <div class="bg-background p-1 mb-6 inline-block">
-          <span class="bg-surface-container-lowest text-primary-fixed font-headline font-bold uppercase tracking-widest px-4 py-2 text-sm" data-i18n="automation.eyebrow">AUTOMATION & AI</span>
+        <div class="bg-background p-1 mb-6 inline-block" data-anim="fade-up">
+          <span class="bg-surface-container-lowest text-primary-fixed font-headline font-bold uppercase tracking-widest px-4 py-2 text-sm" data-i18n="automation.eyebrow">AUTOMATISATION & IA</span>
         </div>
-        <h2 class="font-headline text-4xl md:text-6xl font-black uppercase tracking-tighter text-primary mb-4 border-l-8 border-primary-fixed pl-6" data-i18n="automation.title">
-          Your processes, finally automated.</h2>
-        <p class="font-body text-on-surface-variant text-lg mb-16 pl-8 max-w-xl" data-i18n="automation.subtitle">
-          Workflows installed and tested in production. No demo, no PoC — real systems that run.</p>
+        <h2 class="font-headline text-4xl md:text-6xl font-black uppercase tracking-tighter text-primary mb-4 border-l-8 border-primary-fixed pl-6"
+          data-anim="reveal-left"
+          data-i18n="automation.title">
+          Vos process, enfin automatisés.</h2>
+        <p class="font-body text-on-surface-variant text-lg mb-16 pl-8 max-w-xl"
+          data-anim="fade-up" data-anim-delay="0.1"
+          data-i18n="automation.subtitle">
+          Workflows installés et testés en production. Pas de démo, pas de PoC — du concret qui tourne.</p>
 
-        <div class="grid md:grid-cols-3 gap-0 border border-outline-variant/20 mb-12">
-          <div class="bg-surface-container-low p-8 border-r border-outline-variant/20 hover:border-primary-fixed transition-colors duration-200 group">
+        <div class="grid md:grid-cols-3 gap-0 border border-outline-variant/20 mb-12"
+          data-anim="fade-up" data-anim-stagger="0.1">
+          <div data-anim-child data-tilt data-spotlight
+            class="bg-surface-container-low p-8 border-r border-outline-variant/20 hover:shadow-[inset_0_0_0_2px_#c3f400] transition duration-200 group">
             <div class="flex items-start justify-between mb-6">
               <span class="material-symbols-outlined text-4xl text-primary-fixed">bolt</span>
               <div class="w-3 h-3 bg-outline-variant group-hover:bg-primary-fixed transition-colors"></div>
             </div>
-            <h3 class="font-headline text-xl font-bold text-primary uppercase tracking-tight mb-3" data-i18n="automation.services.workflows.title">Automations & Workflows</h3>
-            <p class="font-body text-on-surface-variant text-sm leading-relaxed" data-i18n="automation.services.workflows.body">Your repetitive tasks eliminated.</p>
+            <h3 class="font-headline text-xl font-bold text-primary uppercase tracking-tight mb-3" data-i18n="automation.services.workflows.title">Automatisations & Workflows</h3>
+            <p class="font-body text-on-surface-variant text-sm leading-relaxed" data-i18n="automation.services.workflows.body">Vos tâches répétitives supprimées.</p>
           </div>
-          <div class="bg-surface-container-low p-8 border-r border-outline-variant/20 hover:border-primary-fixed transition-colors duration-200 group">
+          <div data-anim-child data-tilt data-spotlight
+            class="bg-surface-container-low p-8 border-r border-outline-variant/20 hover:shadow-[inset_0_0_0_2px_#c3f400] transition duration-200 group">
             <div class="flex items-start justify-between mb-6">
               <span class="material-symbols-outlined text-4xl text-primary-fixed">chat</span>
               <div class="w-3 h-3 bg-outline-variant group-hover:bg-primary-fixed transition-colors"></div>
             </div>
-            <h3 class="font-headline text-xl font-bold text-primary uppercase tracking-tight mb-3" data-i18n="automation.services.bots.title">AI Conversational Bots</h3>
-            <p class="font-body text-on-surface-variant text-sm leading-relaxed" data-i18n="automation.services.bots.body">WhatsApp, web and email agents 24/7.</p>
+            <h3 class="font-headline text-xl font-bold text-primary uppercase tracking-tight mb-3" data-i18n="automation.services.bots.title">Bots conversationnels IA</h3>
+            <p class="font-body text-on-surface-variant text-sm leading-relaxed" data-i18n="automation.services.bots.body">Agents WhatsApp, web et email 24/7.</p>
           </div>
-          <div class="bg-surface-container-low p-8 hover:border hover:border-primary-fixed transition-colors duration-200 group">
+          <div data-anim-child data-tilt data-spotlight
+            class="bg-surface-container-low p-8 hover:shadow-[inset_0_0_0_2px_#c3f400] transition duration-200 group">
             <div class="flex items-start justify-between mb-6">
               <span class="material-symbols-outlined text-4xl text-primary-fixed">hub</span>
               <div class="w-3 h-3 bg-outline-variant group-hover:bg-primary-fixed transition-colors"></div>
             </div>
-            <h3 class="font-headline text-xl font-bold text-primary uppercase tracking-tight mb-3" data-i18n="automation.services.pipelines.title">Integrations & Pipelines</h3>
-            <p class="font-body text-on-surface-variant text-sm leading-relaxed" data-i18n="automation.services.pipelines.body">Your tools finally connected.</p>
+            <h3 class="font-headline text-xl font-bold text-primary uppercase tracking-tight mb-3" data-i18n="automation.services.pipelines.title">Intégrations & Pipelines</h3>
+            <p class="font-body text-on-surface-variant text-sm leading-relaxed" data-i18n="automation.services.pipelines.body">Vos outils enfin connectés.</p>
           </div>
         </div>
 
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-t border-outline-variant/20 pt-8">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-t border-outline-variant/20 pt-8"
+          data-anim="fade-up">
           <p class="font-body text-on-surface-variant text-sm italic" data-i18n="automation.transitionNote">
-            Your automation needs an interface? We deliver the web layer too.</p>
-          <a href="#pricing-ia" class="inline-flex items-center gap-2 border-2 border-primary-fixed text-primary-fixed px-8 py-3 font-headline font-bold uppercase tracking-tighter hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="automation.cta">
-            View packages →
+            Votre automatisation a besoin d'une interface ? On livre aussi le web.</p>
+          <a href="#pricing-ia" data-magnetic="0.25"
+            class="inline-flex items-center gap-2 border-2 border-primary-fixed text-primary-fixed px-8 py-3 font-headline font-bold uppercase tracking-tighter hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="automation.cta">
+            Voir les packs →
           </a>
         </div>
       </div>
@@ -1096,31 +1196,40 @@
     <!-- ═══════════════ PRICING ═══════════════ -->
     <section id="pricing" class="py-24 px-6 md:px-12 bg-surface-container-lowest">
       <div class="max-w-7xl mx-auto">
-        <div class="flex items-center gap-3 mb-6">
+        <div class="flex items-center gap-3 mb-6" data-anim="fade-up">
           <div class="w-2 h-2 bg-primary-fixed"></div>
-          <span class="font-label text-xs uppercase tracking-widest text-primary-fixed" data-i18n="pricing.eyebrow">Haute Vélocité</span>
-          <span class="font-body text-xs text-on-surface-variant" data-i18n="pricing.eyebrowSub">Déploiement initial de quelques jours sur toutes les
+          <span class="font-label text-xs uppercase tracking-widest text-primary-fixed"
+            data-i18n="pricing.eyebrow">Haute Vélocité</span>
+          <span class="font-body text-xs text-on-surface-variant" data-i18n="pricing.eyebrowSub">Déploiement initial de
+            quelques jours sur toutes les
             offres
             standards.</span>
         </div>
         <h2
-          class="font-headline text-5xl md:text-8xl font-black uppercase tracking-tighter text-primary leading-[0.88] mb-4">
-          <span data-i18n="pricing.titleLine1">Transparence</span><br /><span data-i18n="pricing.titleLine2">Absolue.</span>
+          class="font-headline text-5xl md:text-8xl font-black uppercase tracking-tighter text-primary leading-[0.88] mb-4"
+          data-anim="reveal-left">
+          <span data-i18n="pricing.titleLine1">Transparence</span><br /><span
+            data-i18n="pricing.titleLine2">Absolue.</span>
         </h2>
-        <p class="font-body text-xl text-on-surface-variant mb-16 max-w-xl" data-i18n="pricing.subtitle">
+        <p class="font-body text-xl text-on-surface-variant mb-16 max-w-xl"
+          data-anim="fade-up" data-anim-delay="0.1"
+          data-i18n="pricing.subtitle">
           Des solutions tarifaires agressives pour des entités exigeantes. Pas de coûts cachés. Que de la performance.
         </p>
 
-        <div class="flex items-center gap-3 mb-4">
-          <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant" data-i18n="pricing.eyebrowWeb">WEB SERVICES</span>
+        <div class="flex items-center gap-3 mb-4" data-anim="fade">
+          <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant" data-i18n="pricing.eyebrowWeb">SERVICES WEB</span>
         </div>
-        <div class="grid md:grid-cols-4 gap-0 border border-outline-variant/20">
+        <div class="grid md:grid-cols-4 gap-0 border border-outline-variant/20"
+          data-anim="fade-up" data-anim-stagger="0.08">
 
           <!-- STARTER -->
-          <div class="bg-surface-container-low p-8 border-r border-outline-variant/20 flex flex-col">
+          <div data-anim-child class="bg-surface-container-low p-8 border-r border-outline-variant/20 flex flex-col">
             <div class="mb-6">
-              <h3 class="font-headline text-lg font-bold text-primary uppercase tracking-tighter mb-1" data-i18n="pricing.tiers.starter.name">Starter</h3>
-              <p class="font-body text-xs text-on-surface-variant" data-i18n="pricing.tiers.starter.tagline">Pour les concepts émergents nécessitant une fondation
+              <h3 class="font-headline text-lg font-bold text-primary uppercase tracking-tighter mb-1"
+                data-i18n="pricing.tiers.starter.name">Starter</h3>
+              <p class="font-body text-xs text-on-surface-variant" data-i18n="pricing.tiers.starter.tagline">Pour les
+                concepts émergents nécessitant une fondation
                 solide.</p>
             </div>
             <div class="mb-6">
@@ -1130,18 +1239,19 @@
             </div>
             <ul class="space-y-3 mb-8 flex-1">
               <li class="flex items-start gap-2 font-body text-sm text-on-surface">
-                <span
-                  class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.tiers.starter.features.0">Architecture Core</span>
+                <span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span
+                  data-i18n="pricing.tiers.starter.features.0">Architecture Core</span>
               </li>
               <li class="flex items-start gap-2 font-body text-sm text-on-surface">
-                <span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.tiers.starter.features.1">Design System Basique</span>
+                <span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span
+                  data-i18n="pricing.tiers.starter.features.1">Design System Basique</span>
               </li>
               <li class="flex items-start gap-2 font-body text-sm text-on-surface">
-                <span
-                  class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.tiers.starter.features.2">Déploiement Standard</span>
+                <span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span
+                  data-i18n="pricing.tiers.starter.features.2">Déploiement Standard</span>
               </li>
             </ul>
-            <a href="#simulator"
+            <a href="#simulator" data-magnetic="0.2"
               class="block text-center border-2 border-outline text-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:border-primary-fixed hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75"
               data-i18n="pricing.tiers.starter.cta">
               Sélectionner
@@ -1149,15 +1259,17 @@
           </div>
 
           <!-- BUSINESS (recommandé) -->
-          <div class="bg-surface-container p-8 border-r border-outline-variant/20 flex flex-col relative">
-            <div
+          <div data-anim-child data-pricing-recommended class="bg-surface-container p-8 border-r border-outline-variant/20 flex flex-col relative">
+            <div data-pricing-badge
               class="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary-fixed text-on-primary px-4 py-1 font-headline text-xs font-bold uppercase tracking-tighter whitespace-nowrap"
               data-i18n="pricing.recommended">
               Recommandé
             </div>
             <div class="mb-6 mt-2">
-              <h3 class="font-headline text-lg font-bold text-primary uppercase tracking-tighter mb-1" data-i18n="pricing.tiers.business.name">Business</h3>
-              <p class="font-body text-xs text-on-surface-variant" data-i18n="pricing.tiers.business.tagline">Pour les entités établies visant l'expansion
+              <h3 class="font-headline text-lg font-bold text-primary uppercase tracking-tighter mb-1"
+                data-i18n="pricing.tiers.business.name">Business</h3>
+              <p class="font-body text-xs text-on-surface-variant" data-i18n="pricing.tiers.business.tagline">Pour les
+                entités établies visant l'expansion
                 digitale.</p>
             </div>
             <div class="mb-6">
@@ -1167,22 +1279,23 @@
             </div>
             <ul class="space-y-3 mb-8 flex-1">
               <li class="flex items-start gap-2 font-body text-sm text-on-surface">
-                <span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.tiers.business.features.0">Starter +</span>
+                <span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span
+                  data-i18n="pricing.tiers.business.features.0">Starter +</span>
               </li>
               <li class="flex items-start gap-2 font-body text-sm text-on-surface">
-                <span
-                  class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.tiers.business.features.1">Optimisation SEO Core</span>
+                <span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span
+                  data-i18n="pricing.tiers.business.features.1">Optimisation SEO Core</span>
               </li>
               <li class="flex items-start gap-2 font-body text-sm text-on-surface">
-                <span
-                  class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.tiers.business.features.2">Intégration CMS Avancée</span>
+                <span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span
+                  data-i18n="pricing.tiers.business.features.2">Intégration CMS Avancée</span>
               </li>
               <li class="flex items-start gap-2 font-body text-sm text-on-surface">
-                <span
-                  class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.tiers.business.features.3">Analytique Intégrée</span>
+                <span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span
+                  data-i18n="pricing.tiers.business.features.3">Analytique Intégrée</span>
               </li>
             </ul>
-            <a href="#simulator"
+            <a href="#simulator" data-magnetic="0.25"
               class="block text-center bg-primary-fixed text-on-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75"
               data-i18n="pricing.tiers.business.cta">
               Propulser
@@ -1190,10 +1303,12 @@
           </div>
 
           <!-- PREMIUM -->
-          <div class="bg-surface-container-low p-8 border-r border-outline-variant/20 flex flex-col">
+          <div data-anim-child class="bg-surface-container-low p-8 border-r border-outline-variant/20 flex flex-col">
             <div class="mb-6">
-              <h3 class="font-headline text-lg font-bold text-primary uppercase tracking-tighter mb-1" data-i18n="pricing.tiers.premium.name">Premium</h3>
-              <p class="font-body text-xs text-on-surface-variant" data-i18n="pricing.tiers.premium.tagline">Pour une performance d'élite et une domination de
+              <h3 class="font-headline text-lg font-bold text-primary uppercase tracking-tighter mb-1"
+                data-i18n="pricing.tiers.premium.name">Premium</h3>
+              <p class="font-body text-xs text-on-surface-variant" data-i18n="pricing.tiers.premium.tagline">Pour une
+                performance d'élite et une domination de
                 marché.</p>
             </div>
             <div class="mb-6">
@@ -1202,52 +1317,60 @@
             </div>
             <ul class="space-y-3 mb-8 flex-1">
               <li class="flex items-start gap-2 font-body text-sm text-on-surface">
-                <span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.tiers.premium.features.0">Business +</span>
+                <span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span
+                  data-i18n="pricing.tiers.premium.features.0">Business +</span>
               </li>
               <li class="flex items-start gap-2 font-body text-sm text-on-surface">
-                <span
-                  class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.tiers.premium.features.1">Animations Complexes (WebGL)</span>
+                <span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span
+                  data-i18n="pricing.tiers.premium.features.1">Animations Complexes (WebGL)</span>
               </li>
               <li class="flex items-start gap-2 font-body text-sm text-on-surface">
-                <span
-                  class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.tiers.premium.features.2">E-commerce Haute Performance</span>
+                <span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span
+                  data-i18n="pricing.tiers.premium.features.2">E-commerce Haute Performance</span>
               </li>
               <li class="flex items-start gap-2 font-body text-sm text-on-surface">
-                <span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.tiers.premium.features.3">Support Prioritaire 24/7</span>
+                <span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span
+                  data-i18n="pricing.tiers.premium.features.3">Support Prioritaire 24/7</span>
               </li>
             </ul>
-            <a href="#simulator"
+            <a href="#simulator" data-magnetic="0.2"
               class="block text-center border-2 border-outline text-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:border-primary-fixed hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75"
               data-i18n="pricing.tiers.premium.cta">
               Sélectionner
             </a>
           </div>
 
-          <!-- CUSTOM (Sur-mesure) -->
-          <div class="bg-surface-container-low p-8 flex flex-col">
+          <!-- SUR-MESURE (WEB) -->
+          <div data-anim-child class="bg-surface-container-low p-8 flex flex-col">
             <div class="mb-6">
-              <h3 class="font-headline text-lg font-bold text-primary uppercase tracking-tighter mb-1" data-i18n="pricing.tiers.surmesure.name">Custom</h3>
-              <p class="font-body text-xs text-on-surface-variant" data-i18n="pricing.tiers.surmesure.tagline">Non-standard project.</p>
+              <h3 class="font-headline text-lg font-bold text-primary uppercase tracking-tighter mb-1"
+                data-i18n="pricing.tiers.surmesure.name">Sur-mesure</h3>
+              <p class="font-body text-xs text-on-surface-variant" data-i18n="pricing.tiers.surmesure.tagline">
+                Projet hors standard.
+              </p>
             </div>
             <div class="mb-6">
-              <div class="font-headline text-4xl font-black text-primary" data-i18n="pricing.tiers.surmesure.price">On quote</div>
+              <div class="font-headline text-4xl font-black text-primary" data-i18n="pricing.tiers.surmesure.price">Sur devis</div>
               <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="pricing.tiers.surmesure.delay">—</div>
             </div>
             <ul class="space-y-3 mb-8 flex-1">
               <li class="flex items-start gap-2 font-body text-sm text-on-surface-variant">
-                <span class="material-symbols-outlined text-outline text-base mt-0.5">arrow_right</span><span data-i18n="pricing.tiers.surmesure.features.0">Specific architecture</span>
+                <span class="material-symbols-outlined text-outline text-base mt-0.5">arrow_right</span><span
+                  data-i18n="pricing.tiers.surmesure.features.0">Architecture spécifique</span>
               </li>
               <li class="flex items-start gap-2 font-body text-sm text-on-surface-variant">
-                <span class="material-symbols-outlined text-outline text-base mt-0.5">arrow_right</span><span data-i18n="pricing.tiers.surmesure.features.1">Custom development</span>
+                <span class="material-symbols-outlined text-outline text-base mt-0.5">arrow_right</span><span
+                  data-i18n="pricing.tiers.surmesure.features.1">Développement sur-mesure</span>
               </li>
               <li class="flex items-start gap-2 font-body text-sm text-on-surface-variant">
-                <span class="material-symbols-outlined text-outline text-base mt-0.5">arrow_right</span><span data-i18n="pricing.tiers.surmesure.features.2">Complex integrations</span>
+                <span class="material-symbols-outlined text-outline text-base mt-0.5">arrow_right</span><span
+                  data-i18n="pricing.tiers.surmesure.features.2">Intégrations complexes</span>
               </li>
             </ul>
-            <a href="#" data-config="calendlyUrl" target="_blank"
+            <a href="#" data-config="calendlyUrl" target="_blank" data-magnetic="0.25"
               class="block text-center border-2 border-primary-fixed text-primary-fixed px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75"
               data-i18n="pricing.tiers.surmesure.cta">
-              Contact us
+              Contacter
             </a>
           </div>
 
@@ -1256,88 +1379,89 @@
         <!-- IA PACKS -->
         <div id="pricing-ia" class="mt-16 pt-16 pb-4 bg-surface-container-lowest -mx-6 md:-mx-12 px-6 md:px-12">
           <div class="max-w-7xl mx-auto">
-            <div class="flex items-center gap-3 mb-8">
+            <div class="flex items-center gap-3 mb-8" data-anim="fade-up">
               <div class="w-2 h-2 bg-primary-fixed"></div>
-              <span class="font-label text-xs uppercase tracking-widest text-primary-fixed" data-i18n="pricing.eyebrowIa">AUTOMATION & AI</span>
+              <span class="font-label text-xs uppercase tracking-widest text-primary-fixed" data-i18n="pricing.eyebrowIa">AUTOMATISATION & IA</span>
             </div>
-            <div class="grid md:grid-cols-4 gap-0 border border-outline-variant/20">
+            <div class="grid md:grid-cols-4 gap-0 border border-outline-variant/20"
+              data-anim="fade-up" data-anim-stagger="0.08">
 
               <!-- CONNECT -->
-              <div class="bg-surface-container-low p-8 border-r border-outline-variant/20 flex flex-col">
+              <div data-anim-child class="bg-surface-container-low p-8 border-r border-outline-variant/20 flex flex-col">
                 <div class="mb-4">
                   <h3 class="font-headline text-lg font-bold text-primary uppercase tracking-tighter mb-1" data-i18n="pricing.packs.connect.name">Connect</h3>
-                  <p class="font-body text-xs text-on-surface-variant" data-i18n="pricing.packs.connect.tagline">Automate your first task.</p>
+                  <p class="font-body text-xs text-on-surface-variant" data-i18n="pricing.packs.connect.tagline">Pour automatiser une première tâche.</p>
                 </div>
                 <div class="mb-4">
-                  <div class="font-headline text-4xl font-black text-primary" data-i18n="pricing.packs.connect.price">€1,500</div>
-                  <div class="font-body text-xs text-primary-fixed mt-1" data-i18n="pricing.packs.connect.delay">7–10d</div>
+                  <div class="font-headline text-4xl font-black text-primary" data-i18n="pricing.packs.connect.price">1 500€</div>
+                  <div class="font-body text-xs text-primary-fixed mt-1" data-i18n="pricing.packs.connect.delay">7–10j</div>
                 </div>
                 <ul class="space-y-3 mb-8 flex-1">
-                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.connect.features.0">1 automation workflow</span></li>
-                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.connect.features.1">1 integration between 2 tools</span></li>
-                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.connect.features.2">3-month n8n hosting</span></li>
-                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.connect.features.3">Documentation + 1h training</span></li>
+                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.connect.features.0">1 workflow d'automatisation</span></li>
+                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.connect.features.1">1 intégration entre 2 outils</span></li>
+                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.connect.features.2">Hébergement n8n 3 mois</span></li>
+                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.connect.features.3">Documentation + 1h formation</span></li>
                 </ul>
-                <a href="#simulator" class="block text-center border-2 border-outline text-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:border-primary-fixed hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="pricing.packs.connect.cta">Select</a>
+                <a href="#simulator" data-magnetic="0.2" class="block text-center border-2 border-outline text-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:border-primary-fixed hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="pricing.packs.connect.cta">Sélectionner</a>
               </div>
 
-              <!-- COMMERCE (recommended) -->
-              <div class="bg-surface-container p-8 border-r border-outline-variant/20 flex flex-col relative">
-                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary-fixed text-on-primary px-4 py-1 font-headline text-xs font-bold uppercase tracking-tighter whitespace-nowrap" data-i18n="pricing.recommended">Recommended</div>
+              <!-- COMMERCE (recommandé) -->
+              <div data-anim-child data-pricing-recommended class="bg-surface-container p-8 border-r border-outline-variant/20 flex flex-col relative">
+                <div data-pricing-badge class="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary-fixed text-on-primary px-4 py-1 font-headline text-xs font-bold uppercase tracking-tighter whitespace-nowrap" data-i18n="pricing.recommended">Recommandé</div>
                 <div class="mb-4 mt-2">
                   <h3 class="font-headline text-lg font-bold text-primary uppercase tracking-tighter mb-1" data-i18n="pricing.packs.commerce.name">Commerce</h3>
-                  <p class="font-body text-xs text-on-surface-variant" data-i18n="pricing.packs.commerce.tagline">Never miss a lead again.</p>
+                  <p class="font-body text-xs text-on-surface-variant" data-i18n="pricing.packs.commerce.tagline">Pour ne plus rater un seul prospect.</p>
                 </div>
                 <div class="mb-4">
-                  <div class="font-headline text-4xl font-black text-primary-fixed" data-i18n="pricing.packs.commerce.price">€3,500</div>
-                  <div class="font-body text-xs text-primary-fixed mt-1" data-i18n="pricing.packs.commerce.delay">14d</div>
-                </div>
-                <ul class="space-y-3 mb-8 flex-1">
-                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.commerce.features.0">AI bot (WhatsApp or web)</span></li>
-                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.commerce.features.1">Automatic lead qualification</span></li>
-                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.commerce.features.2">Real-time team notifications</span></li>
-                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.commerce.features.3">CRM sync</span></li>
-                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.commerce.features.4">6-month hosting</span></li>
-                </ul>
-                <a href="#simulator" class="block text-center bg-primary-fixed text-on-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="pricing.packs.commerce.cta">Boost</a>
-              </div>
-
-              <!-- SYSTEM -->
-              <div class="bg-surface-container-low p-8 border-r border-outline-variant/20 flex flex-col">
-                <div class="mb-4">
-                  <h3 class="font-headline text-lg font-bold text-primary uppercase tracking-tighter mb-1" data-i18n="pricing.packs.systeme.name">System</h3>
-                  <p class="font-body text-xs text-on-surface-variant" data-i18n="pricing.packs.systeme.tagline">Industrialise your operations.</p>
-                </div>
-                <div class="mb-4">
-                  <div class="font-headline text-4xl font-black text-primary" data-i18n="pricing.packs.systeme.price">€7,000</div>
-                  <div class="font-body text-xs text-primary-fixed mt-1" data-i18n="pricing.packs.systeme.delay">21d</div>
+                  <div class="font-headline text-4xl font-black text-primary-fixed" data-i18n="pricing.packs.commerce.price">3 500€</div>
+                  <div class="font-body text-xs text-primary-fixed mt-1" data-i18n="pricing.packs.commerce.delay">14j</div>
                 </div>
                 <ul class="space-y-3 mb-8 flex-1">
-                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.systeme.features.0">3 integrated workflows</span></li>
-                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.systeme.features.1">Multichannel AI bot (WhatsApp + email + web)</span></li>
-                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.systeme.features.2">Pilot dashboard</span></li>
-                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.systeme.features.3">Custom 3-tool integration</span></li>
-                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.systeme.features.4">12-month hosting + monitoring</span></li>
+                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.commerce.features.0">Bot IA WhatsApp ou web</span></li>
+                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.commerce.features.1">Qualification automatique des leads</span></li>
+                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.commerce.features.2">Notifications temps réel équipe</span></li>
+                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.commerce.features.3">Synchronisation CRM</span></li>
+                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.commerce.features.4">Hébergement 6 mois</span></li>
                 </ul>
-                <a href="#simulator" class="block text-center border-2 border-outline text-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:border-primary-fixed hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="pricing.packs.systeme.cta">Select</a>
+                <a href="#simulator" data-magnetic="0.25" class="block text-center bg-primary-fixed text-on-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="pricing.packs.commerce.cta">Propulser</a>
               </div>
 
-              <!-- CUSTOM IA -->
-              <div class="bg-surface-container-low p-8 flex flex-col">
+              <!-- SYSTÈME -->
+              <div data-anim-child class="bg-surface-container-low p-8 border-r border-outline-variant/20 flex flex-col">
                 <div class="mb-4">
-                  <h3 class="font-headline text-lg font-bold text-primary uppercase tracking-tighter mb-1" data-i18n="pricing.tiers.surmesure.name">Custom</h3>
-                  <p class="font-body text-xs text-on-surface-variant" data-i18n="pricing.tiers.surmesure.tagline">Non-standard project.</p>
+                  <h3 class="font-headline text-lg font-bold text-primary uppercase tracking-tighter mb-1" data-i18n="pricing.packs.systeme.name">Système</h3>
+                  <p class="font-body text-xs text-on-surface-variant" data-i18n="pricing.packs.systeme.tagline">Pour industrialiser vos opérations.</p>
                 </div>
                 <div class="mb-4">
-                  <div class="font-headline text-4xl font-black text-primary" data-i18n="pricing.tiers.surmesure.price">On quote</div>
+                  <div class="font-headline text-4xl font-black text-primary" data-i18n="pricing.packs.systeme.price">7 000€</div>
+                  <div class="font-body text-xs text-primary-fixed mt-1" data-i18n="pricing.packs.systeme.delay">21j</div>
+                </div>
+                <ul class="space-y-3 mb-8 flex-1">
+                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.systeme.features.0">3 workflows intégrés</span></li>
+                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.systeme.features.1">Bot IA multicanal (WhatsApp + email + web)</span></li>
+                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.systeme.features.2">Tableau de bord de pilotage</span></li>
+                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.systeme.features.3">Intégration sur-mesure 3 outils</span></li>
+                  <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.systeme.features.4">Hébergement 12 mois + monitoring</span></li>
+                </ul>
+                <a href="#simulator" data-magnetic="0.2" class="block text-center border-2 border-outline text-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:border-primary-fixed hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="pricing.packs.systeme.cta">Sélectionner</a>
+              </div>
+
+              <!-- SUR-MESURE IA -->
+              <div data-anim-child class="bg-surface-container-low p-8 flex flex-col">
+                <div class="mb-4">
+                  <h3 class="font-headline text-lg font-bold text-primary uppercase tracking-tighter mb-1" data-i18n="pricing.tiers.surmesure.name">Sur-mesure</h3>
+                  <p class="font-body text-xs text-on-surface-variant" data-i18n="pricing.tiers.surmesure.tagline">Projet hors standard.</p>
+                </div>
+                <div class="mb-4">
+                  <div class="font-headline text-4xl font-black text-primary" data-i18n="pricing.tiers.surmesure.price">Sur devis</div>
                   <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="pricing.tiers.surmesure.delay">—</div>
                 </div>
                 <ul class="space-y-3 mb-8 flex-1">
-                  <li class="flex items-start gap-2 font-body text-sm text-on-surface-variant"><span class="material-symbols-outlined text-outline text-base mt-0.5">arrow_right</span><span data-i18n="pricing.tiers.surmesure.features.0">Specific architecture</span></li>
-                  <li class="flex items-start gap-2 font-body text-sm text-on-surface-variant"><span class="material-symbols-outlined text-outline text-base mt-0.5">arrow_right</span><span data-i18n="pricing.tiers.surmesure.features.1">Custom development</span></li>
-                  <li class="flex items-start gap-2 font-body text-sm text-on-surface-variant"><span class="material-symbols-outlined text-outline text-base mt-0.5">arrow_right</span><span data-i18n="pricing.tiers.surmesure.features.2">Complex integrations</span></li>
+                  <li class="flex items-start gap-2 font-body text-sm text-on-surface-variant"><span class="material-symbols-outlined text-outline text-base mt-0.5">arrow_right</span><span data-i18n="pricing.tiers.surmesure.features.0">Architecture spécifique</span></li>
+                  <li class="flex items-start gap-2 font-body text-sm text-on-surface-variant"><span class="material-symbols-outlined text-outline text-base mt-0.5">arrow_right</span><span data-i18n="pricing.tiers.surmesure.features.1">Développement sur-mesure</span></li>
+                  <li class="flex items-start gap-2 font-body text-sm text-on-surface-variant"><span class="material-symbols-outlined text-outline text-base mt-0.5">arrow_right</span><span data-i18n="pricing.tiers.surmesure.features.2">Intégrations complexes</span></li>
                 </ul>
-                <a href="#" data-config="calendlyUrl" target="_blank" class="block text-center border-2 border-primary-fixed text-primary-fixed px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="pricing.tiers.surmesure.cta">Contact us</a>
+                <a href="#" data-config="calendlyUrl" target="_blank" data-magnetic="0.25" class="block text-center border-2 border-primary-fixed text-primary-fixed px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="pricing.tiers.surmesure.cta">Contacter</a>
               </div>
 
             </div>
@@ -1347,38 +1471,39 @@
         <!-- RETAINER BAND -->
         <div class="mt-16 bg-surface-container-highest -mx-6 md:-mx-12 px-6 md:px-12 py-12">
           <div class="max-w-7xl mx-auto">
-            <div class="flex items-center gap-3 mb-8">
+            <div class="flex items-center gap-3 mb-8" data-anim="fade-up">
               <div class="w-2 h-2 bg-outline"></div>
-              <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant" data-i18n="pricing.retainerEyebrow">RECURRING</span>
+              <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant" data-i18n="pricing.retainerEyebrow">RÉCURRENCE</span>
             </div>
-            <div class="grid md:grid-cols-2 gap-0 border border-outline-variant/20">
-              <div class="p-8 border-r border-outline-variant/20">
+            <div class="grid md:grid-cols-2 gap-0 border border-outline-variant/20"
+              data-anim="fade-up" data-anim-stagger="0.12">
+              <div data-anim-child class="p-8 border-r border-outline-variant/20">
                 <div class="flex items-baseline gap-4 mb-2">
                   <span class="font-headline text-2xl font-black text-primary uppercase" data-i18n="pricing.keep.name">Velos Keep</span>
-                  <span class="font-headline text-xl font-black text-primary-fixed" data-i18n="pricing.keep.price">€50/mo</span>
+                  <span class="font-headline text-xl font-black text-primary-fixed" data-i18n="pricing.keep.price">50€/mois</span>
                 </div>
-                <p class="font-body text-xs text-on-surface-variant mb-1" data-i18n="pricing.keep.commitment">3-month commitment</p>
-                <p class="font-body text-xs text-outline mb-4" data-i18n="pricing.keep.audience">Web clients</p>
+                <p class="font-body text-xs text-on-surface-variant mb-1" data-i18n="pricing.keep.commitment">Engagement 3 mois</p>
+                <p class="font-body text-xs text-outline mb-4" data-i18n="pricing.keep.audience">Clients web</p>
                 <ul class="space-y-2">
-                  <li class="flex items-center gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base">check_circle</span><span data-i18n="pricing.keep.features.0">Hosting included</span></li>
-                  <li class="flex items-center gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base">check_circle</span><span data-i18n="pricing.keep.features.1">Technical updates</span></li>
-                  <li class="flex items-center gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base">check_circle</span><span data-i18n="pricing.keep.features.2">Weekly backups</span></li>
-                  <li class="flex items-center gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base">check_circle</span><span data-i18n="pricing.keep.features.3">Email support 48h</span></li>
+                  <li class="flex items-center gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base">check_circle</span><span data-i18n="pricing.keep.features.0">Hébergement inclus</span></li>
+                  <li class="flex items-center gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base">check_circle</span><span data-i18n="pricing.keep.features.1">Mises à jour techniques</span></li>
+                  <li class="flex items-center gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base">check_circle</span><span data-i18n="pricing.keep.features.2">Sauvegardes hebdomadaires</span></li>
+                  <li class="flex items-center gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base">check_circle</span><span data-i18n="pricing.keep.features.3">Support email 48h</span></li>
                 </ul>
               </div>
-              <div class="p-8 border-l-4 border-primary-fixed">
+              <div data-anim-child class="p-8 border-l-4 border-primary-fixed">
                 <div class="flex items-baseline gap-4 mb-2">
                   <span class="font-headline text-2xl font-black text-primary uppercase" data-i18n="pricing.care.name">Velos Care</span>
-                  <span class="font-headline text-xl font-black text-primary-fixed" data-i18n="pricing.care.price">€250/mo</span>
+                  <span class="font-headline text-xl font-black text-primary-fixed" data-i18n="pricing.care.price">250€/mois</span>
                 </div>
-                <p class="font-body text-xs text-on-surface-variant mb-1" data-i18n="pricing.care.commitment">6-month commitment</p>
-                <p class="font-body text-xs text-primary-fixed mb-4" data-i18n="pricing.care.audience">AI packs — others on quote</p>
+                <p class="font-body text-xs text-on-surface-variant mb-1" data-i18n="pricing.care.commitment">Engagement 6 mois</p>
+                <p class="font-body text-xs text-primary-fixed mb-4" data-i18n="pricing.care.audience">Packs IA — autres sur devis</p>
                 <ul class="space-y-2">
-                  <li class="flex items-center gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base">check_circle</span><span data-i18n="pricing.care.features.0">24/7 workflow monitoring</span></li>
-                  <li class="flex items-center gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base">check_circle</span><span data-i18n="pricing.care.features.1">Minor adjustments ≤ 2h/mo</span></li>
-                  <li class="flex items-center gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base">check_circle</span><span data-i18n="pricing.care.features.2">Monthly performance report</span></li>
-                  <li class="flex items-center gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base">check_circle</span><span data-i18n="pricing.care.features.3">Monthly strategic review</span></li>
-                  <li class="flex items-center gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base">check_circle</span><span data-i18n="pricing.care.features.4">Priority support &lt; 4h</span></li>
+                  <li class="flex items-center gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base">check_circle</span><span data-i18n="pricing.care.features.0">Monitoring 24/7 des workflows</span></li>
+                  <li class="flex items-center gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base">check_circle</span><span data-i18n="pricing.care.features.1">Ajustements mineurs ≤ 2h/mois</span></li>
+                  <li class="flex items-center gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base">check_circle</span><span data-i18n="pricing.care.features.2">Rapport mensuel de performance</span></li>
+                  <li class="flex items-center gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base">check_circle</span><span data-i18n="pricing.care.features.3">Revue stratégique mensuelle</span></li>
+                  <li class="flex items-center gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base">check_circle</span><span data-i18n="pricing.care.features.4">Support prioritaire &lt; 4h ouvrées</span></li>
                 </ul>
               </div>
             </div>
@@ -1390,13 +1515,15 @@
     <!-- ═══════════════ SIMULATOR ═══════════════ -->
     <section id="simulator" class="py-24 px-6 md:px-12 bg-background">
       <div class="max-w-7xl mx-auto">
-        <div class="bg-surface-container-lowest p-1 mb-6 inline-block">
+        <div class="bg-surface-container-lowest p-1 mb-6 inline-block" data-anim="fade-up">
           <span
             class="bg-background text-primary-fixed font-headline font-bold uppercase tracking-widest px-4 py-2 text-sm"
             data-i18n="simulator.eyebrow">Qualification
             Initiale</span>
         </div>
-        <h2 class="font-headline text-3xl md:text-5xl font-black uppercase tracking-tighter text-primary mb-12" data-i18n="simulator.title">
+        <h2 class="font-headline text-3xl md:text-5xl font-black uppercase tracking-tighter text-primary mb-12"
+          data-anim="reveal-left"
+          data-i18n="simulator.title">
           Simulateur de Projet</h2>
 
         <!-- Progress -->
@@ -1412,11 +1539,11 @@
           <!-- ÉTAPE 0 — Besoin principal -->
           <div class="sim-step active" id="step-0">
             <div class="bg-surface-container-low p-10 border-r border-outline-variant/20">
-              <div class="text-on-surface-variant font-label text-xs uppercase tracking-widest mb-6" data-i18n="simulator.stepCounter" data-i18n-vars='{"current":"01","total":"06"}'>Step 01 / 06</div>
+              <div class="text-on-surface-variant font-label text-xs uppercase tracking-widest mb-6" data-i18n="simulator.stepCounter" data-i18n-vars='{"current":"01","total":"06"}'>Étape 01 / 06</div>
               <h3 class="font-headline text-2xl md:text-4xl font-black uppercase tracking-tighter text-primary leading-tight mb-6" data-i18n-html="simulator.step0.titleHtml">
-                What is your<br /><span class="text-primary-fixed italic">main need</span>?
+                Quel est votre<br /><span class="text-primary-fixed italic">besoin principal</span> ?
               </h3>
-              <p class="font-body text-on-surface-variant text-sm leading-relaxed mb-10" data-i18n="simulator.step0.body">We adapt our recommendations based on your situation.</p>
+              <p class="font-body text-on-surface-variant text-sm leading-relaxed mb-10" data-i18n="simulator.step0.body">Nous adaptons nos recommandations selon votre situation.</p>
               <div class="w-24 h-24 bg-surface-container-high border-2 border-surface-container-highest flex items-center justify-center">
                 <span class="material-symbols-outlined text-4xl text-outline">help_outline</span>
               </div>
@@ -1425,26 +1552,26 @@
               <div class="sim-card p-5 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4" data-value="web">
                 <span class="material-symbols-outlined text-2xl text-primary-fixed">language</span>
                 <div>
-                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base" data-i18n="simulator.step0.options.web.title">Online presence</div>
-                  <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="simulator.step0.options.web.body">Showcase site, e-commerce or web application.</div>
+                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base" data-i18n="simulator.step0.options.web.title">Présence en ligne</div>
+                  <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="simulator.step0.options.web.body">Site vitrine, e-commerce ou application web.</div>
                 </div>
-                <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0 flex items-center justify-center"></div>
+                <div class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0 flex items-center justify-center"></div>
               </div>
               <div class="sim-card p-5 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4" data-value="ia">
                 <span class="material-symbols-outlined text-2xl text-primary-fixed">bolt</span>
                 <div>
-                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base" data-i18n="simulator.step0.options.ia.title">Automate my processes</div>
-                  <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="simulator.step0.options.ia.body">Workflows, bots and business integrations.</div>
+                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base" data-i18n="simulator.step0.options.ia.title">Automatiser mes process</div>
+                  <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="simulator.step0.options.ia.body">Workflows, bots et intégrations métier.</div>
                 </div>
-                <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0 flex items-center justify-center"></div>
+                <div class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0 flex items-center justify-center"></div>
               </div>
               <div class="sim-card p-5 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4" data-value="both">
                 <span class="material-symbols-outlined text-2xl text-primary-fixed">layers</span>
                 <div>
-                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base" data-i18n="simulator.step0.options.both.title">Both</div>
-                  <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="simulator.step0.options.both.body">A project combining web and automation.</div>
+                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base" data-i18n="simulator.step0.options.both.title">Les deux</div>
+                  <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="simulator.step0.options.both.body">Un projet qui combine web et automatisation.</div>
                 </div>
-                <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0 flex items-center justify-center"></div>
+                <div class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0 flex items-center justify-center"></div>
               </div>
             </div>
           </div>
@@ -1452,14 +1579,17 @@
           <!-- ÉTAPE 1 — Objectif -->
           <div class="sim-step" id="step-1">
             <div class="bg-surface-container-low p-10 border-r border-outline-variant/20">
-              <div class="text-on-surface-variant font-label text-xs uppercase tracking-widest mb-6" data-i18n="simulator.stepCounter" data-i18n-vars='{"current":"02","total":"06"}'>Step 02 / 06</div>
+              <div class="text-on-surface-variant font-label text-xs uppercase tracking-widest mb-6"
+                data-i18n="simulator.stepCounter" data-i18n-vars='{"current":"02","total":"06"}'>Étape 02 / 06</div>
               <h3
                 class="font-headline text-2xl md:text-4xl font-black uppercase tracking-tighter text-primary leading-tight mb-6"
                 data-i18n-html="simulator.step1.titleHtml">
-                What is<br /><span class="text-primary-fixed italic">the main<br />objective</span><br />of
-                your<br />platform?
+                Quel est<br /><span class="text-primary-fixed italic">l'objectif<br />principal</span><br />de
+                votre<br />plateforme ?
               </h3>
-              <p class="font-body text-on-surface-variant text-sm leading-relaxed mb-10" data-i18n="simulator.step1.body">Our architecture depends on your ambitions. Pick the direction that best fits your digital project.</p>
+              <p class="font-body text-on-surface-variant text-sm leading-relaxed mb-10"
+                data-i18n="simulator.step1.body">Notre architecture dépend de
+                vos ambitions. Sélectionnez l'orientation qui définit le mieux votre projet digital.</p>
               <div
                 class="w-24 h-24 bg-surface-container-high border-2 border-surface-container-highest flex items-center justify-center">
                 <span class="material-symbols-outlined text-4xl text-outline">category</span>
@@ -1471,13 +1601,15 @@
                 data-value="vitrine">
                 <span class="material-symbols-outlined text-2xl text-primary-fixed">storefront</span>
                 <div>
-                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base" data-i18n="simulator.step1.options.vitrine.title">Présentation
+                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base"
+                    data-i18n="simulator.step1.options.vitrine.title">Présentation
                     &amp; Vitrine</div>
-                  <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="simulator.step1.options.vitrine.body">Site institutionnel sur l'image de marque
+                  <div class="font-body text-xs text-on-surface-variant mt-1"
+                    data-i18n="simulator.step1.options.vitrine.body">Site institutionnel sur l'image de marque
                     et la génération de leads qualifiés.</div>
                 </div>
                 <div
-                  class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0 flex items-center justify-center">
+                  class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0 flex items-center justify-center">
                 </div>
               </div>
               <div
@@ -1485,13 +1617,15 @@
                 data-value="ecommerce">
                 <span class="material-symbols-outlined text-2xl text-primary-fixed">shopping_cart</span>
                 <div>
-                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base" data-i18n="simulator.step1.options.ecommerce.title">Vente &amp;
+                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base"
+                    data-i18n="simulator.step1.options.ecommerce.title">Vente &amp;
                     E-Commerce</div>
-                  <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="simulator.step1.options.ecommerce.body">Plateforme transactionnelle haute
+                  <div class="font-body text-xs text-on-surface-variant mt-1"
+                    data-i18n="simulator.step1.options.ecommerce.body">Plateforme transactionnelle haute
                     performance, conversion optimisée et gestion de catalogue.</div>
                 </div>
                 <div
-                  class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0 flex items-center justify-center">
+                  class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0 flex items-center justify-center">
                 </div>
               </div>
               <div
@@ -1499,13 +1633,15 @@
                 data-value="saas">
                 <span class="material-symbols-outlined text-2xl text-primary-fixed">grid_view</span>
                 <div>
-                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base" data-i18n="simulator.step1.options.saas.title">SaaS &amp; App
+                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base"
+                    data-i18n="simulator.step1.options.saas.title">SaaS &amp; App
                     Web</div>
-                  <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="simulator.step1.options.saas.body">Application métier complexe, gestion
+                  <div class="font-body text-xs text-on-surface-variant mt-1"
+                    data-i18n="simulator.step1.options.saas.body">Application métier complexe, gestion
                     utilisateurs, tableau de bord et traitement de données.</div>
                 </div>
                 <div
-                  class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0 flex items-center justify-center">
+                  class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0 flex items-center justify-center">
                 </div>
               </div>
               <div
@@ -1513,13 +1649,15 @@
                 data-value="complexe">
                 <span class="material-symbols-outlined text-2xl text-primary-fixed">settings_suggest</span>
                 <div>
-                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base" data-i18n="simulator.step1.options.complexe.title">Autre / Complexe
+                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base"
+                    data-i18n="simulator.step1.options.complexe.title">Autre / Complexe
                   </div>
-                  <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="simulator.step1.options.complexe.body">Besoins spécifiques, architecture
+                  <div class="font-body text-xs text-on-surface-variant mt-1"
+                    data-i18n="simulator.step1.options.complexe.body">Besoins spécifiques, architecture
                     sur-mesure, intégration API lourde ou expérimentale.</div>
                 </div>
                 <div
-                  class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0 flex items-center justify-center">
+                  class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0 flex items-center justify-center">
                 </div>
               </div>
             </div>
@@ -1528,13 +1666,15 @@
           <!-- ÉTAPE 2 — Personnalisation -->
           <div class="sim-step" id="step-2">
             <div class="bg-surface-container-low p-10 border-r border-outline-variant/20">
-              <div class="text-on-surface-variant font-label text-xs uppercase tracking-widest mb-6" data-i18n="simulator.stepCounter" data-i18n-vars='{"current":"03","total":"06"}'>Step 03 / 06</div>
+              <div class="text-on-surface-variant font-label text-xs uppercase tracking-widest mb-6"
+                data-i18n="simulator.stepCounter" data-i18n-vars='{"current":"03","total":"06"}'>Étape 03 / 06</div>
               <h3
                 class="font-headline text-2xl md:text-4xl font-black uppercase tracking-tighter text-primary leading-tight mb-6"
                 data-i18n-html="simulator.step2.titleHtml">
                 Niveau de<br /><span class="text-primary-fixed italic">personnalisation</span><br />souhaité ?
               </h3>
-              <p class="font-body text-on-surface-variant text-sm leading-relaxed" data-i18n="simulator.step2.body">Le niveau de personnalisation définit
+              <p class="font-body text-on-surface-variant text-sm leading-relaxed" data-i18n="simulator.step2.body">Le
+                niveau de personnalisation définit
                 le temps de conception et les possibilités créatives de votre projet.</p>
             </div>
             <div class="bg-surface-container p-10 grid grid-cols-1 gap-4">
@@ -1543,35 +1683,41 @@
                 data-value="template">
                 <span class="material-symbols-outlined text-2xl text-primary-fixed">bolt</span>
                 <div>
-                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base" data-i18n="simulator.step2.options.template.title">Template Rapide
+                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base"
+                    data-i18n="simulator.step2.options.template.title">Template Rapide
                   </div>
-                  <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="simulator.step2.options.template.body">Base optimisée pré-configurée. Livraison
+                  <div class="font-body text-xs text-on-surface-variant mt-1"
+                    data-i18n="simulator.step2.options.template.body">Base optimisée pré-configurée. Livraison
                     ultra-rapide (2–3 jours).</div>
                 </div>
-                <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0"></div>
+                <div class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0"></div>
               </div>
               <div
                 class="sim-card p-6 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4"
                 data-value="personnalise">
                 <span class="material-symbols-outlined text-2xl text-primary-fixed">tune</span>
                 <div>
-                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base" data-i18n="simulator.step2.options.personnalise.title">Personnalisé
+                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base"
+                    data-i18n="simulator.step2.options.personnalise.title">Personnalisé
                   </div>
-                  <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="simulator.step2.options.personnalise.body">Design adapté à votre identité. Livraison
+                  <div class="font-body text-xs text-on-surface-variant mt-1"
+                    data-i18n="simulator.step2.options.personnalise.body">Design adapté à votre identité. Livraison
                     5–7 jours.</div>
                 </div>
-                <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0"></div>
+                <div class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0"></div>
               </div>
               <div
                 class="sim-card p-6 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4"
                 data-value="sur-mesure">
                 <span class="material-symbols-outlined text-2xl text-primary-fixed">architecture</span>
                 <div>
-                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base" data-i18n="simulator.step2.options.sur-mesure.title">Sur-Mesure</div>
-                  <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="simulator.step2.options.sur-mesure.body">Création intégrale de A à Z. Expérience
+                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base"
+                    data-i18n="simulator.step2.options.sur-mesure.title">Sur-Mesure</div>
+                  <div class="font-body text-xs text-on-surface-variant mt-1"
+                    data-i18n="simulator.step2.options.sur-mesure.body">Création intégrale de A à Z. Expérience
                     unique et signature visuelle forte.</div>
                 </div>
-                <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0"></div>
+                <div class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0"></div>
               </div>
             </div>
           </div>
@@ -1579,13 +1725,15 @@
           <!-- ÉTAPE 3 — Accompagnement -->
           <div class="sim-step" id="step-3">
             <div class="bg-surface-container-low p-10 border-r border-outline-variant/20">
-              <div class="text-on-surface-variant font-label text-xs uppercase tracking-widest mb-6" data-i18n="simulator.stepCounter" data-i18n-vars='{"current":"04","total":"06"}'>Step 04 / 06</div>
+              <div class="text-on-surface-variant font-label text-xs uppercase tracking-widest mb-6"
+                data-i18n="simulator.stepCounter" data-i18n-vars='{"current":"04","total":"06"}'>Étape 04 / 06</div>
               <h3
                 class="font-headline text-2xl md:text-4xl font-black uppercase tracking-tighter text-primary leading-tight mb-6"
                 data-i18n-html="simulator.step3.titleHtml">
                 Besoin<br /><span class="text-primary-fixed italic">d'accompagnement</span><br />post-livraison ?
               </h3>
-              <p class="font-body text-on-surface-variant text-sm leading-relaxed" data-i18n="simulator.step3.body">Un site performant nécessite un
+              <p class="font-body text-on-surface-variant text-sm leading-relaxed" data-i18n="simulator.step3.body">Un
+                site performant nécessite un
                 entretien. Choisissez le niveau d'accompagnement adapté à vos ressources.</p>
             </div>
             <div class="bg-surface-container p-10 grid grid-cols-1 gap-4">
@@ -1594,33 +1742,39 @@
                 data-value="aucun">
                 <span class="material-symbols-outlined text-2xl text-primary-fixed">handyman</span>
                 <div>
-                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base" data-i18n="simulator.step3.options.aucun.title">Aucun</div>
-                  <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="simulator.step3.options.aucun.body">Vous gérez en autonomie. Livraison avec
+                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base"
+                    data-i18n="simulator.step3.options.aucun.title">Aucun</div>
+                  <div class="font-body text-xs text-on-surface-variant mt-1"
+                    data-i18n="simulator.step3.options.aucun.body">Vous gérez en autonomie. Livraison avec
                     documentation complète.</div>
                 </div>
-                <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0"></div>
+                <div class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0"></div>
               </div>
               <div
                 class="sim-card p-6 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4"
                 data-value="maintenance">
                 <span class="material-symbols-outlined text-2xl text-primary-fixed">build</span>
                 <div>
-                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base" data-i18n="simulator.step3.options.maintenance.title">Maintenance</div>
-                  <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="simulator.step3.options.maintenance.body">Hébergement + mises à jour + support. À
+                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base"
+                    data-i18n="simulator.step3.options.maintenance.title">Maintenance</div>
+                  <div class="font-body text-xs text-on-surface-variant mt-1"
+                    data-i18n="simulator.step3.options.maintenance.body">Hébergement + mises à jour + support. À
                     partir de 40€/mois.</div>
                 </div>
-                <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0"></div>
+                <div class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0"></div>
               </div>
               <div
                 class="sim-card p-6 border-2 border-outline-variant/40 hover:border-primary-fixed cursor-pointer transition-colors duration-150 flex items-start gap-4"
                 data-value="croissance">
                 <span class="material-symbols-outlined text-2xl text-primary-fixed">trending_up</span>
                 <div>
-                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base" data-i18n="simulator.step3.options.croissance.title">Croissance</div>
-                  <div class="font-body text-xs text-on-surface-variant mt-1" data-i18n="simulator.step3.options.croissance.body">SEO + Ads + contenu IA. Stratégie
+                  <div class="font-headline font-bold uppercase tracking-tight text-primary text-base"
+                    data-i18n="simulator.step3.options.croissance.title">Croissance</div>
+                  <div class="font-body text-xs text-on-surface-variant mt-1"
+                    data-i18n="simulator.step3.options.croissance.body">SEO + Ads + contenu IA. Stratégie
                     d'acquisition mensuelle.</div>
                 </div>
-                <div class="ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0"></div>
+                <div class="ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0"></div>
               </div>
             </div>
           </div>
@@ -1628,28 +1782,26 @@
           <!-- ÉTAPE 4 — Résultat -->
           <div class="sim-step" id="step-4">
             <div class="bg-surface-container-low p-10 border-r border-outline-variant/20">
-              <div class="text-on-surface-variant font-label text-xs uppercase tracking-widest mb-6" data-i18n="simulator.stepCounter" data-i18n-vars='{"current":"05","total":"06"}'>Step 05 / 06</div>
+              <div class="text-on-surface-variant font-label text-xs uppercase tracking-widest mb-6"
+                data-i18n="simulator.stepCounter" data-i18n-vars='{"current":"05","total":"06"}'>Étape 05 / 06</div>
               <h3
                 class="font-headline text-2xl md:text-4xl font-black uppercase tracking-tighter text-primary leading-tight mb-8"
                 data-i18n-html="simulator.step4.titleHtml">
                 Votre offre<br /><span class="text-primary-fixed italic">recommandée</span>
               </h3>
               <div class="space-y-3 mb-8">
-                <div class="flex gap-4 items-start">
-                  <span
-                    class="font-label text-xs uppercase tracking-widest text-on-surface-variant w-32 flex-shrink-0"
+                <div class="flex gap-4 items-start" data-anim-recap>
+                  <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant w-32 flex-shrink-0"
                     data-i18n="simulator.step4.recap.objectif">Objectif</span>
                   <span id="recap-objectif" class="font-body text-sm text-primary font-medium">—</span>
                 </div>
-                <div class="flex gap-4 items-start">
-                  <span
-                    class="font-label text-xs uppercase tracking-widest text-on-surface-variant w-32 flex-shrink-0"
+                <div class="flex gap-4 items-start" data-anim-recap>
+                  <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant w-32 flex-shrink-0"
                     data-i18n="simulator.step4.recap.perso">Personnalisation</span>
                   <span id="recap-perso" class="font-body text-sm text-primary font-medium">—</span>
                 </div>
-                <div class="flex gap-4 items-start">
-                  <span
-                    class="font-label text-xs uppercase tracking-widest text-on-surface-variant w-32 flex-shrink-0"
+                <div class="flex gap-4 items-start" data-anim-recap>
+                  <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant w-32 flex-shrink-0"
                     data-i18n="simulator.step4.recap.accomp">Accompagnement</span>
                   <span id="recap-accomp" class="font-body text-sm text-primary font-medium">—</span>
                 </div>
@@ -1671,7 +1823,8 @@
                   <div class="font-body text-xs text-on-surface-variant" id="recap-tier-sub">Paiement unique</div>
                 </div>
               </div>
-              <p class="font-body text-sm text-on-surface-variant" data-i18n="simulator.step4.body">Cette recommandation est basée sur vos réponses.
+              <p class="font-body text-sm text-on-surface-variant" data-i18n="simulator.step4.body">Cette recommandation
+                est basée sur vos réponses.
                 L'étape suivante vous permet de prendre contact directement.</p>
             </div>
           </div>
@@ -1679,16 +1832,19 @@
           <!-- ÉTAPE 5 — Contact -->
           <div class="sim-step" id="step-5">
             <div class="bg-surface-container-low p-10 border-r border-outline-variant/20">
-              <div class="text-on-surface-variant font-label text-xs uppercase tracking-widest mb-6" data-i18n="simulator.stepCounter" data-i18n-vars='{"current":"06","total":"06"}'>Step 06 / 06</div>
+              <div class="text-on-surface-variant font-label text-xs uppercase tracking-widest mb-6"
+                data-i18n="simulator.stepCounter" data-i18n-vars='{"current":"06","total":"06"}'>Étape 06 / 06</div>
               <h3
                 class="font-headline text-2xl md:text-4xl font-black uppercase tracking-tighter text-primary leading-tight mb-6"
                 data-i18n-html="simulator.step5.titleHtml">
                 Lançons<br /><span class="text-primary-fixed italic">votre projet</span>
               </h3>
-              <p class="font-body text-on-surface-variant text-sm leading-relaxed mb-6" data-i18n="simulator.step5.body">Réservez un créneau de 30
+              <p class="font-body text-on-surface-variant text-sm leading-relaxed mb-6"
+                data-i18n="simulator.step5.body">Réservez un créneau de 30
                 minutes. Nous analyserons votre projet et vous ferons une proposition détaillée sous 24h.</p>
               <div class="bg-surface-container-high p-4 border-l-2 border-primary-fixed">
-                <div class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-1" data-i18n="simulator.step5.recapLabel">Rappel de votre
+                <div class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-1"
+                  data-i18n="simulator.step5.recapLabel">Rappel de votre
                   offre</div>
                 <div class="font-headline font-bold uppercase text-primary-fixed" id="recap-tier-final">Business — 1250€
                 </div>
@@ -1705,16 +1861,14 @@
                     class="w-full bg-surface-container-low border-2 border-outline text-on-surface font-body px-4 py-3 focus:outline-none focus:border-primary-fixed placeholder:text-on-surface-variant/50" />
                 </div>
                 <div>
-                  <label
-                    class="font-label text-xs uppercase tracking-widest text-on-surface-variant block mb-2"
+                  <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant block mb-2"
                     data-i18n="simulator.step5.form.emailLabel">Email</label>
                   <input type="email" id="sim-email" required placeholder="vous@domaine.com"
                     data-i18n-attr="placeholder:simulator.step5.form.emailPlaceholder"
                     class="w-full bg-surface-container-low border-2 border-outline text-on-surface font-body px-4 py-3 focus:outline-none focus:border-primary-fixed placeholder:text-on-surface-variant/50" />
                 </div>
                 <div>
-                  <label
-                    class="font-label text-xs uppercase tracking-widest text-on-surface-variant block mb-2"
+                  <label class="font-label text-xs uppercase tracking-widest text-on-surface-variant block mb-2"
                     data-i18n="simulator.step5.form.messageLabel">Message</label>
                   <textarea id="sim-message" rows="4"
                     class="w-full bg-surface-container-low border-2 border-outline text-on-surface font-body px-4 py-3 focus:outline-none focus:border-primary-fixed resize-none placeholder:text-on-surface-variant/50"></textarea>
@@ -1733,12 +1887,14 @@
             class="flex justify-between items-center p-6 bg-surface-container-lowest border-t border-outline-variant/20">
             <button id="sim-prev" onclick="simPrev()"
               class="hidden items-center gap-2 font-headline font-bold uppercase tracking-tighter text-on-surface-variant hover:text-primary transition-colors">
-              <span class="material-symbols-outlined">arrow_back</span> <span data-i18n="simulator.nav.prev">Retour</span>
+              <span class="material-symbols-outlined">arrow_back</span> <span
+                data-i18n="simulator.nav.prev">Retour</span>
             </button>
             <div class="flex-1"></div>
             <button id="sim-next" onclick="simNext()"
               class="flex items-center gap-2 bg-primary-fixed text-on-primary px-8 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75">
-              <span data-i18n="simulator.nav.next">Continuer</span> <span class="material-symbols-outlined">arrow_forward</span>
+              <span data-i18n="simulator.nav.next">Continuer</span> <span
+                class="material-symbols-outlined">arrow_forward</span>
             </button>
           </div>
 
@@ -1749,74 +1905,94 @@
     <section class="py-24 px-6 md:px-12 bg-surface-container-lowest">
       <div class="max-w-7xl mx-auto">
         <h2
-          class="font-headline text-4xl md:text-6xl font-black uppercase tracking-tighter text-primary mb-4 border-l-8 border-primary-fixed pl-6">
-          <span data-i18n="process.titleLine1">Le Parcours.</span><br /><span data-i18n="process.titleLine2">De A à Z.</span>
+          class="font-headline text-4xl md:text-6xl font-black uppercase tracking-tighter text-primary mb-4 border-l-8 border-primary-fixed pl-6"
+          data-anim="reveal-left">
+          <span data-i18n="process.titleLine1">Le Parcours.</span><br /><span data-i18n="process.titleLine2">De A à
+            Z.</span>
         </h2>
-        <p class="font-body text-on-surface-variant text-lg mb-16 pl-8 max-w-xl" data-i18n="process.subtitle">
+        <p class="font-body text-on-surface-variant text-lg mb-16 pl-8 max-w-xl"
+          data-anim="fade-up" data-anim-delay="0.1"
+          data-i18n="process.subtitle">
           De la découverte à l'accompagnement post-livraison — un processus transparent et sans surprise.
         </p>
 
         <div class="relative">
           <div class="hidden md:block absolute top-8 left-0 right-0 h-px bg-outline-variant/30"></div>
-          <div class="grid md:grid-cols-5 gap-0">
+          <div class="grid md:grid-cols-5 gap-0"
+            data-anim="fade-up" data-anim-stagger="0.08">
 
-            <div
+            <div data-anim-child
               class="relative p-8 md:p-6 border border-outline-variant/20 md:border-r-0 hover:bg-surface-container-low transition-colors duration-200 group">
               <div class="w-4 h-4 bg-primary-fixed mb-6 group-hover:scale-150 transition-transform duration-200"></div>
-              <div class="font-label text-xs uppercase tracking-widest text-primary-fixed mb-3" data-i18n="process.steps.s1.eyebrow">01 / Découverte</div>
-              <h4 class="font-headline text-base font-bold uppercase tracking-tight text-primary mb-3" data-i18n="process.steps.s1.title">Simulateur &amp;
+              <div class="font-label text-xs uppercase tracking-widest text-primary-fixed mb-3"
+                data-i18n="process.steps.s1.eyebrow">01 / Découverte</div>
+              <h4 class="font-headline text-base font-bold uppercase tracking-tight text-primary mb-3"
+                data-i18n="process.steps.s1.title">Simulateur &amp;
                 Premier Contact</h4>
-              <p class="font-body text-xs text-on-surface-variant leading-relaxed" data-i18n="process.steps.s1.body">Vous complétez le simulateur. Nous
+              <p class="font-body text-xs text-on-surface-variant leading-relaxed" data-i18n="process.steps.s1.body">
+                Vous complétez le simulateur. Nous
                 analysons votre besoin et vous proposons un rendez-vous.</p>
             </div>
 
-            <div
+            <div data-anim-child
               class="relative p-8 md:p-6 border border-outline-variant/20 md:border-r-0 hover:bg-surface-container-low transition-colors duration-200 group">
               <div
                 class="w-4 h-4 bg-surface-container-highest border-2 border-primary-fixed mb-6 group-hover:bg-primary-fixed transition-colors duration-200">
               </div>
-              <div class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-3" data-i18n="process.steps.s2.eyebrow">02 / Commande</div>
-              <h4 class="font-headline text-base font-bold uppercase tracking-tight text-primary mb-3" data-i18n="process.steps.s2.title">30% Acompte &amp;
+              <div class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-3"
+                data-i18n="process.steps.s2.eyebrow">02 / Commande</div>
+              <h4 class="font-headline text-base font-bold uppercase tracking-tight text-primary mb-3"
+                data-i18n="process.steps.s2.title">30% Acompte &amp;
                 Kick-off</h4>
-              <p class="font-body text-xs text-on-surface-variant leading-relaxed" data-i18n="process.steps.s2.body">Signature du devis, premier versement
+              <p class="font-body text-xs text-on-surface-variant leading-relaxed" data-i18n="process.steps.s2.body">
+                Signature du devis, premier versement
                 (30%). Extensions définies et planning validé.</p>
             </div>
 
-            <div
+            <div data-anim-child
               class="relative p-8 md:p-6 border border-outline-variant/20 md:border-r-0 hover:bg-surface-container-low transition-colors duration-200 group">
               <div
                 class="w-4 h-4 bg-surface-container-highest border-2 border-primary-fixed mb-6 group-hover:bg-primary-fixed transition-colors duration-200">
               </div>
-              <div class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-3" data-i18n="process.steps.s3.eyebrow">03 / Design</div>
-              <h4 class="font-headline text-base font-bold uppercase tracking-tight text-primary mb-3" data-i18n="process.steps.s3.title">Maquette &amp;
+              <div class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-3"
+                data-i18n="process.steps.s3.eyebrow">03 / Design</div>
+              <h4 class="font-headline text-base font-bold uppercase tracking-tight text-primary mb-3"
+                data-i18n="process.steps.s3.title">Maquette &amp;
                 40% Paiement</h4>
-              <p class="font-body text-xs text-on-surface-variant leading-relaxed" data-i18n="process.steps.s3.body">Vous validez la maquette. Second
+              <p class="font-body text-xs text-on-surface-variant leading-relaxed" data-i18n="process.steps.s3.body">
+                Vous validez la maquette. Second
                 versement (40%). Développement lancé.</p>
             </div>
 
-            <div
+            <div data-anim-child
               class="relative p-8 md:p-6 border border-outline-variant/20 md:border-r-0 hover:bg-surface-container-low transition-colors duration-200 group">
               <div
                 class="w-4 h-4 bg-surface-container-highest border-2 border-primary-fixed mb-6 group-hover:bg-primary-fixed transition-colors duration-200">
               </div>
-              <div class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-3" data-i18n="process.steps.s4.eyebrow">04 / Livraison
+              <div class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-3"
+                data-i18n="process.steps.s4.eyebrow">04 / Livraison
               </div>
-              <h4 class="font-headline text-base font-bold uppercase tracking-tight text-primary mb-3" data-i18n="process.steps.s4.title">Démo + Solde 30%
+              <h4 class="font-headline text-base font-bold uppercase tracking-tight text-primary mb-3"
+                data-i18n="process.steps.s4.title">Démo + Solde 30%
               </h4>
-              <p class="font-body text-xs text-on-surface-variant leading-relaxed" data-i18n="process.steps.s4.body">Démo complète de votre site. Garantie
+              <p class="font-body text-xs text-on-surface-variant leading-relaxed" data-i18n="process.steps.s4.body">
+                Démo complète de votre site. Garantie
                 sans surprise. Solde final (30%) et mise en ligne.</p>
             </div>
 
-            <div
+            <div data-anim-child
               class="relative p-8 md:p-6 border border-outline-variant/20 hover:bg-surface-container-low transition-colors duration-200 group">
               <div
                 class="w-4 h-4 bg-surface-container-highest border-2 border-primary-fixed mb-6 group-hover:bg-primary-fixed transition-colors duration-200">
               </div>
-              <div class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-3" data-i18n="process.steps.s5.eyebrow">05 / Récurrence
+              <div class="font-label text-xs uppercase tracking-widest text-on-surface-variant mb-3"
+                data-i18n="process.steps.s5.eyebrow">05 / Récurrence
               </div>
-              <h4 class="font-headline text-base font-bold uppercase tracking-tight text-primary mb-3" data-i18n="process.steps.s5.title">Hébergement &amp;
+              <h4 class="font-headline text-base font-bold uppercase tracking-tight text-primary mb-3"
+                data-i18n="process.steps.s5.title">Hébergement &amp;
                 Croissance</h4>
-              <p class="font-body text-xs text-on-surface-variant leading-relaxed" data-i18n="process.steps.s5.body">Maintenance à 40–50€/mois. SEO, Ads,
+              <p class="font-body text-xs text-on-surface-variant leading-relaxed" data-i18n="process.steps.s5.body">
+                Maintenance à 40–50€/mois. SEO, Ads,
                 contenu IA pour les clients Growth.</p>
             </div>
 
@@ -1824,17 +2000,21 @@
         </div>
 
         <div
-          class="mt-12 bg-surface-container-low p-8 border-l-4 border-primary-fixed flex flex-col md:flex-row items-start md:items-center gap-6">
+          class="mt-12 bg-surface-container-low p-8 border-l-4 border-primary-fixed flex flex-col md:flex-row items-start md:items-center gap-6"
+          data-anim="fade-up">
           <span class="material-symbols-outlined text-4xl text-primary-fixed flex-shrink-0">verified</span>
           <div>
-            <div class="font-headline text-xl font-bold uppercase tracking-tight text-primary mb-1" data-i18n="process.guarantee.title">Garantie Sans
+            <div class="font-headline text-xl font-bold uppercase tracking-tight text-primary mb-1"
+              data-i18n="process.guarantee.title">Garantie Sans
               Surprise</div>
-            <p class="font-body text-on-surface-variant text-sm" data-i18n="process.guarantee.body">Vous obtenez exactement ce qui est validé, dans les
+            <p class="font-body text-on-surface-variant text-sm" data-i18n="process.guarantee.body">Vous obtenez
+              exactement ce qui est validé, dans les
               délais contractuels. Pénalité en cas de retard de notre côté.</p>
           </div>
-          <a href="#simulator"
+          <a href="#simulator" data-magnetic="0.3"
             class="md:ml-auto flex-shrink-0 inline-flex items-center gap-2 bg-primary-fixed text-on-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75">
-            <span data-i18n="process.guarantee.cta">Démarrer</span> <span class="material-symbols-outlined">arrow_forward</span>
+            <span data-i18n="process.guarantee.cta">Démarrer</span> <span
+              class="material-symbols-outlined">arrow_forward</span>
           </a>
         </div>
       </div>
@@ -1862,8 +2042,9 @@
           class="text-5xl font-black text-primary-fixed opacity-20 font-headline tracking-tighter uppercase hidden md:block"
           data-config="agencyName">Velos</span>
         <p class="font-headline uppercase tracking-widest text-xs text-on-surface-variant">
-          © <span data-config="copyrightYear">2026</span> <span data-config="agencyName">Velos</span>. <span data-i18n="footer.copyrightSuffix">ALL RIGHTS
-          RESERVED. TECHNOLOGICALLY SUPERIOR.</span>
+          © <span data-config="copyrightYear">2026</span> <span data-config="agencyName">Velos</span>. <span
+            data-i18n="footer.copyrightSuffix">ALL RIGHTS
+            RESERVED. TECHNOLOGICALLY SUPERIOR.</span>
         </p>
       </div>
       <div class="flex flex-wrap gap-6 md:gap-8 justify-end">
@@ -1958,7 +2139,7 @@
           });
           card.classList.add('selected');
           const check = card.querySelector('.sim-check');
-          if (check) check.innerHTML = '<span class="material-symbols-outlined text-primary-fixed text-sm">check</span>';
+          if (check) check.innerHTML = '<span class="material-symbols-outlined text-primary-fixed text-xs">check</span>';
         });
       });
 
@@ -2097,7 +2278,7 @@
           var check = card.querySelector('.sim-check');
           if (check) {
             var icon = document.createElement('span');
-            icon.className = 'material-symbols-outlined text-primary-fixed text-sm';
+            icon.className = 'material-symbols-outlined text-primary-fixed text-xs';
             icon.textContent = 'check';
             check.appendChild(icon);
           }
@@ -2127,7 +2308,7 @@
       card.appendChild(textDiv);
 
       var checkDiv = document.createElement('div');
-      checkDiv.className = 'ml-auto w-5 h-5 border-2 border-outline sim-check flex-shrink-0 flex items-center justify-center';
+      checkDiv.className = 'ml-auto w-4 h-4 border border-outline sim-check flex-shrink-0 flex items-center justify-center';
       card.appendChild(checkDiv);
 
       return card;
@@ -2145,11 +2326,11 @@
       }
 
       if (flux === 'web') {
-        // Restore original web options (trusted static HTML from page source)
-        step1Panel.innerHTML = step1OriginalHTML;
+        // Restore original web options
+        step1Panel.innerHTML = step1OriginalHTML; // trusted dev content from original HTML
         if (titleEl) {
           titleEl.setAttribute('data-i18n-html', 'simulator.step1.titleHtml');
-          if (window.t) titleEl.innerHTML = window.t('simulator.step1.titleHtml');
+          if (window.t) titleEl.innerHTML = window.t('simulator.step1.titleHtml'); // trusted i18n
         }
         if (bodyEl) {
           bodyEl.setAttribute('data-i18n', 'simulator.step1.body');
@@ -2182,12 +2363,12 @@
         step1Panel.appendChild(makeSimCard(opt.value, opt.icon, title, body));
       });
 
-      // Update step-1 title and body from i18n (trusted content)
+      // Update step-1 title and body using trusted i18n content
       var titleKey = flux === 'ia' ? 'simulator.step1ia.titleHtml' : 'simulator.step1mix.titleHtml';
       var bodyKey  = flux === 'ia' ? 'simulator.step1ia.body'      : 'simulator.step1mix.body';
       if (titleEl) {
         titleEl.setAttribute('data-i18n-html', titleKey);
-        if (window.t) titleEl.innerHTML = window.t(titleKey);
+        if (window.t) titleEl.innerHTML = window.t(titleKey); // trusted i18n template strings
       }
       if (bodyEl) {
         bodyEl.setAttribute('data-i18n', bodyKey);
@@ -2232,20 +2413,20 @@
       var s = simState.currentStep;
       if (s === 0) {
         var val0 = getSelectedSimValue(0);
-        if (!val0) { alert(window.t ? window.t('simulator.alertSelectOption') : 'Select an option to continue.'); return; }
+        if (!val0) { alert(window.t ? window.t('simulator.alertSelectOption') : 'Sélectionnez une option pour continuer.'); return; }
         simState.answers.flux = val0;
         renderStep1ForFlux(val0);
       } else if (s === 1) {
         var val1 = getSelectedSimValue(1);
-        if (!val1) { alert(window.t ? window.t('simulator.alertSelectOption') : 'Select an option to continue.'); return; }
+        if (!val1) { alert(window.t ? window.t('simulator.alertSelectOption') : 'Sélectionnez une option pour continuer.'); return; }
         simState.answers.objectif = val1;
       } else if (s === 2) {
         var val2 = getSelectedSimValue(2);
-        if (!val2) { alert(window.t ? window.t('simulator.alertSelectOption') : 'Select an option to continue.'); return; }
+        if (!val2) { alert(window.t ? window.t('simulator.alertSelectOption') : 'Sélectionnez une option pour continuer.'); return; }
         simState.answers.perso = val2;
       } else if (s === 3) {
         var val3 = getSelectedSimValue(3);
-        if (!val3) { alert(window.t ? window.t('simulator.alertSelectOption') : 'Select an option to continue.'); return; }
+        if (!val3) { alert(window.t ? window.t('simulator.alertSelectOption') : 'Sélectionnez une option pour continuer.'); return; }
         simState.answers.accomp = val3;
         buildSimRecap();
       } else if (s === 4) {
@@ -2284,6 +2465,13 @@
   </script>
   <!-- Velos AI Chatbot -->
   <script src="/chatbot.js"></script>
+
+  <!-- GSAP animation layer -->
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/Flip.min.js"></script>
+  <script defer src="/assets/js/motion.js"></script>
 </body>
 
 </html>
