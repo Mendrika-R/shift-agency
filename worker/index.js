@@ -87,11 +87,20 @@ async function handleChat(request, env) {
     chunks.join('\n\n') || 'Aucun contexte disponible.'
   );
 
-  const aiStream = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
-    messages: [{ role: 'system', content: systemContent }, ...messages],
-    stream: true,
-    max_tokens: 350,
-  });
+  let aiStream;
+  try {
+    aiStream = await env.AI.run('@cf/meta/llama-3.1-8b-instruct-fast', {
+      messages: [{ role: 'system', content: systemContent }, ...messages],
+      stream: true,
+      max_tokens: 350,
+    });
+  } catch (e) {
+    console.error('AI generation error:', e.message);
+    return Response.json(
+      { error: 'generation_unavailable' },
+      { status: 503, headers: corsHeaders(request.headers.get('Origin')) }
+    );
+  }
 
   // Convert CF Workers AI SSE format {"response":"..."} to OpenRouter format
   const { readable, writable } = new TransformStream({
