@@ -788,7 +788,7 @@
       text-transform: uppercase;
       letter-spacing: -0.05em;
       padding: 0.5rem 0.75rem;
-      transition: all 75ms;
+      transition: background-color 75ms, color 75ms, transform 75ms, box-shadow 75ms;
     }
 
     .nav-link:hover {
@@ -847,7 +847,7 @@
     <div class="hidden md:flex items-center gap-4">
       <a href="/en/" data-lang-switch class="nav-link" data-i18n="nav.langSwitch">EN</a>
       <a href="#" data-config="calendlyUrl" target="_blank" data-magnetic="0.3"
-        class="inline-flex items-center gap-2 bg-primary-fixed text-on-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75"
+        class="inline-flex items-center gap-2 bg-primary-fixed text-on-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition duration-75"
         data-i18n="nav.cta">
         Start Project
       </a>
@@ -869,7 +869,7 @@
     <a href="#simulator" class="mobile-nav-link" onclick="closeMobileMenu()" data-i18n="nav.simulator">Simulator</a>
     <a href="/en/" data-lang-switch class="mobile-nav-link" data-i18n="nav.langSwitch">EN</a>
     <a href="#" data-config="calendlyUrl" target="_blank"
-      class="bg-primary-fixed text-on-primary px-8 py-4 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75"
+      class="bg-primary-fixed text-on-primary px-8 py-4 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition duration-75"
       data-i18n="nav.cta">
       Start Project
     </a>
@@ -901,12 +901,12 @@
           </p>
           <div class="flex flex-wrap gap-4 pt-2">
             <a href="#simulator" data-anim-hero="cta" data-magnetic="0.3"
-              class="inline-flex items-center gap-2 bg-primary-fixed text-on-primary px-10 py-5 font-headline text-lg font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75">
+              class="inline-flex items-center gap-2 bg-primary-fixed text-on-primary px-10 py-5 font-headline text-lg font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition duration-75">
               <span data-i18n="hero.ctaPrimary">Lancer mon projet</span>
               <span class="material-symbols-outlined">arrow_forward</span>
             </a>
             <a href="#pricing" data-anim-hero="cta"
-              class="inline-flex items-center gap-2 border-2 border-outline text-primary px-10 py-5 font-headline text-lg font-bold uppercase tracking-tighter hover:border-primary-fixed hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#CCFF00] transition-all duration-75"
+              class="inline-flex items-center gap-2 border-2 border-outline text-primary px-10 py-5 font-headline text-lg font-bold uppercase tracking-tighter hover:border-primary-fixed hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#CCFF00] transition duration-75"
               data-i18n="hero.ctaSecondary">
               Voir les tarifs
             </a>
@@ -1137,7 +1137,7 @@
           <p class="font-body text-on-surface-variant text-sm italic" data-i18n="automation.transitionNote">
             Votre automatisation a besoin d'une interface ? On livre aussi le web.</p>
           <a href="#pricing-ia" data-magnetic="0.25"
-            class="inline-flex items-center gap-2 border-2 border-primary-fixed text-primary-fixed px-8 py-3 font-headline font-bold uppercase tracking-tighter hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="automation.cta">
+            class="inline-flex items-center gap-2 border-2 border-primary-fixed text-primary-fixed px-8 py-3 font-headline font-bold uppercase tracking-tighter hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition duration-75" data-i18n="automation.cta">
             Voir les packs →
           </a>
         </div>
@@ -1203,7 +1203,7 @@
               </li>
             </ul>
             <a href="#simulator" data-magnetic="0.2"
-              class="block text-center border-2 border-outline text-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:border-primary-fixed hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75"
+              class="block text-center border-2 border-outline text-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:border-primary-fixed hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition duration-75"
               data-i18n="pricing.tiers.starter.cta">
               Sélectionner
             </a>
@@ -1247,7 +1247,7 @@
               </li>
             </ul>
             <a href="#simulator" data-magnetic="0.25"
-              class="block text-center bg-primary-fixed text-on-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75"
+              class="block text-center bg-primary-fixed text-on-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition duration-75"
               data-i18n="pricing.tiers.business.cta">
               Propulser
             </a>
@@ -1285,7 +1285,7 @@
               </li>
             </ul>
             <a href="#simulator" data-magnetic="0.2"
-              class="block text-center border-2 border-outline text-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:border-primary-fixed hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75"
+              class="block text-center border-2 border-outline text-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:border-primary-fixed hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition duration-75"
               data-i18n="pricing.tiers.premium.cta">
               Sélectionner
             </a>
@@ -1319,7 +1319,7 @@
               </li>
             </ul>
             <a href="#" data-config="calendlyUrl" target="_blank" data-magnetic="0.25"
-              class="block text-center border-2 border-primary-fixed text-primary-fixed px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75"
+              class="block text-center border-2 border-primary-fixed text-primary-fixed px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition duration-75"
               data-i18n="pricing.tiers.surmesure.cta">
               Contacter
             </a>
@@ -1353,7 +1353,7 @@
                   <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.connect.features.2">Hébergement n8n 3 mois</span></li>
                   <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.connect.features.3">Documentation + 1h formation</span></li>
                 </ul>
-                <a href="#simulator" data-magnetic="0.2" class="block text-center border-2 border-outline text-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:border-primary-fixed hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="pricing.packs.connect.cta">Sélectionner</a>
+                <a href="#simulator" data-magnetic="0.2" class="block text-center border-2 border-outline text-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:border-primary-fixed hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition duration-75" data-i18n="pricing.packs.connect.cta">Sélectionner</a>
               </div>
 
               <!-- COMMERCE (recommandé) -->
@@ -1374,7 +1374,7 @@
                   <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.commerce.features.3">Synchronisation CRM</span></li>
                   <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.commerce.features.4">Hébergement 6 mois</span></li>
                 </ul>
-                <a href="#simulator" data-magnetic="0.25" class="block text-center bg-primary-fixed text-on-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="pricing.packs.commerce.cta">Propulser</a>
+                <a href="#simulator" data-magnetic="0.25" class="block text-center bg-primary-fixed text-on-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition duration-75" data-i18n="pricing.packs.commerce.cta">Propulser</a>
               </div>
 
               <!-- SYSTÈME -->
@@ -1394,7 +1394,7 @@
                   <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.systeme.features.3">Intégration sur-mesure 3 outils</span></li>
                   <li class="flex items-start gap-2 font-body text-sm text-on-surface"><span class="material-symbols-outlined text-primary-fixed text-base mt-0.5">check_circle</span><span data-i18n="pricing.packs.systeme.features.4">Hébergement 12 mois + monitoring</span></li>
                 </ul>
-                <a href="#simulator" data-magnetic="0.2" class="block text-center border-2 border-outline text-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:border-primary-fixed hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="pricing.packs.systeme.cta">Sélectionner</a>
+                <a href="#simulator" data-magnetic="0.2" class="block text-center border-2 border-outline text-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:border-primary-fixed hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition duration-75" data-i18n="pricing.packs.systeme.cta">Sélectionner</a>
               </div>
 
               <!-- SUR-MESURE IA -->
@@ -1412,7 +1412,7 @@
                   <li class="flex items-start gap-2 font-body text-sm text-on-surface-variant"><span class="material-symbols-outlined text-outline text-base mt-0.5">arrow_right</span><span data-i18n="pricing.tiers.surmesure.features.1">Développement sur-mesure</span></li>
                   <li class="flex items-start gap-2 font-body text-sm text-on-surface-variant"><span class="material-symbols-outlined text-outline text-base mt-0.5">arrow_right</span><span data-i18n="pricing.tiers.surmesure.features.2">Intégrations complexes</span></li>
                 </ul>
-                <a href="#" data-config="calendlyUrl" target="_blank" data-magnetic="0.25" class="block text-center border-2 border-primary-fixed text-primary-fixed px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75" data-i18n="pricing.tiers.surmesure.cta">Contacter</a>
+                <a href="#" data-config="calendlyUrl" target="_blank" data-magnetic="0.25" class="block text-center border-2 border-primary-fixed text-primary-fixed px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:bg-primary-fixed hover:text-on-primary hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition duration-75" data-i18n="pricing.tiers.surmesure.cta">Contacter</a>
               </div>
 
             </div>
@@ -1825,7 +1825,7 @@
                     class="w-full bg-surface-container-low border-2 border-outline text-on-surface font-body px-4 py-3 focus:outline-none focus:border-primary-fixed resize-none placeholder:text-on-surface-variant/50"></textarea>
                 </div>
                 <button type="submit"
-                  class="w-full bg-primary-fixed text-on-primary px-8 py-4 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75 flex items-center justify-center gap-2">
+                  class="w-full bg-primary-fixed text-on-primary px-8 py-4 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition duration-75 flex items-center justify-center gap-2">
                   <span data-i18n="simulator.nav.submit">Réserver mon créneau</span>
                   <span class="material-symbols-outlined">calendar_today</span>
                 </button>
@@ -1843,7 +1843,7 @@
             </button>
             <div class="flex-1"></div>
             <button id="sim-next" onclick="simNext()"
-              class="flex items-center gap-2 bg-primary-fixed text-on-primary px-8 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75">
+              class="flex items-center gap-2 bg-primary-fixed text-on-primary px-8 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition duration-75">
               <span data-i18n="simulator.nav.next">Continuer</span> <span
                 class="material-symbols-outlined">arrow_forward</span>
             </button>
@@ -1963,7 +1963,7 @@
               délais contractuels. Pénalité en cas de retard de notre côté.</p>
           </div>
           <a href="#simulator" data-magnetic="0.3"
-            class="md:ml-auto flex-shrink-0 inline-flex items-center gap-2 bg-primary-fixed text-on-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-75">
+            class="md:ml-auto flex-shrink-0 inline-flex items-center gap-2 bg-primary-fixed text-on-primary px-6 py-3 font-headline font-bold uppercase tracking-tighter hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[4px_4px_0px_0px_#FFFFFF] transition duration-75">
             <span data-i18n="process.guarantee.cta">Démarrer</span> <span
               class="material-symbols-outlined">arrow_forward</span>
           </a>
