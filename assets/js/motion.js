@@ -117,27 +117,27 @@
 
     if (REDUCED) {
       [eyebrow, tagline, badge, visual, chevron].forEach(function (el) {
-        if (el) g.set(el, { autoAlpha: 1, clearProps: 'transform' });
+        if (el) g.set(el, { opacity: 1, clearProps: 'transform' });
       });
-      ctas.forEach(function (el) { g.set(el, { autoAlpha: 1, clearProps: 'transform' }); });
-      statRows.forEach(function (el) { g.set(el, { autoAlpha: 1 }); });
+      ctas.forEach(function (el) { g.set(el, { opacity: 1, clearProps: 'transform' }); });
+      statRows.forEach(function (el) { g.set(el, { opacity: 1 }); });
       document.querySelectorAll('.word-inner').forEach(function (el) {
         g.set(el, { yPercent: 0 });
       });
       return;
     }
 
-    if (eyebrow)  g.set(eyebrow,  { autoAlpha: 0, y: 12 });
-    if (tagline)  g.set(tagline,  { autoAlpha: 0, y: 16 });
-    if (badge)    g.set(badge,    { autoAlpha: 0, scale: 0.9 });
-    if (visual)   g.set(visual,   { autoAlpha: 0, scale: 0.94 });
-    if (chevron)  g.set(chevron,  { autoAlpha: 0, y: -10 });
-    ctas.forEach(function (el) { g.set(el, { autoAlpha: 0, y: 14 }); });
-    statRows.forEach(function (el) { g.set(el, { autoAlpha: 0, y: 12 }); });
+    if (eyebrow)  g.set(eyebrow,  { opacity: 0, y: 12 });
+    if (tagline)  g.set(tagline,  { opacity: 0, y: 16 });
+    if (badge)    g.set(badge,    { opacity: 0, scale: 0.9 });
+    if (visual)   g.set(visual,   { opacity: 0, scale: 0.94 });
+    if (chevron)  g.set(chevron,  { opacity: 0, y: -10 });
+    ctas.forEach(function (el) { g.set(el, { opacity: 0, y: 14 }); });
+    statRows.forEach(function (el) { g.set(el, { opacity: 0, y: 12 }); });
 
     var tl = g.timeline({ defaults: { ease: 'power3.out' } });
 
-    if (eyebrow) tl.to(eyebrow, { autoAlpha: 1, y: 0, duration: 0.5 }, 0);
+    if (eyebrow) tl.to(eyebrow, { opacity: 1, y: 0, duration: 0.5 }, 0);
 
     var words = document.querySelectorAll('.word-inner');
     if (words.length) {
@@ -148,10 +148,10 @@
       }, 0.15);
     }
 
-    if (tagline) tl.to(tagline, { autoAlpha: 1, y: 0, duration: 0.6 }, 0.55);
+    if (tagline) tl.to(tagline, { opacity: 1, y: 0, duration: 0.6 }, 0.55);
 
     if (statRows.length) {
-      tl.to(statRows, { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.08 }, 0.7);
+      tl.to(statRows, { opacity: 1, y: 0, duration: 0.5, stagger: 0.08 }, 0.7);
     }
     if (stats.length) {
       stats.forEach(function (el) {
@@ -173,12 +173,12 @@
       });
     }
 
-    if (ctas.length) tl.to(ctas, { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.08 }, 0.9);
-    if (visual)  tl.to(visual,  { autoAlpha: 1, scale: 1, duration: 0.7 }, 1.0);
-    if (badge)   tl.to(badge,   { autoAlpha: 1, scale: 1, duration: 0.5 }, 1.15);
+    if (ctas.length) tl.to(ctas, { opacity: 1, y: 0, duration: 0.5, stagger: 0.08 }, 0.9);
+    if (visual)  tl.to(visual,  { opacity: 1, scale: 1, duration: 0.7 }, 1.0);
+    if (badge)   tl.to(badge,   { opacity: 1, scale: 1, duration: 0.5 }, 1.15);
 
     if (chevron) {
-      tl.to(chevron, { autoAlpha: 0.6, y: 0, duration: 0.4 }, 1.3);
+      tl.to(chevron, { opacity: 0.6, y: 0, duration: 0.4 }, 1.3);
       chevron.classList.remove('animate-bounce');
       g.to(chevron, {
         y: 6, duration: 0.8, ease: 'sine.inOut',
@@ -190,35 +190,34 @@
   /* ---------- 4. Section reveal pattern ---------- */
   function preStateFor(kind) {
     switch (kind) {
-      case 'fade':         return { autoAlpha: 0 };
-      case 'scale-in':     return { autoAlpha: 0, scale: 0.94 };
-      case 'reveal-left':  return { autoAlpha: 0, x: -40 };
-      case 'reveal-right': return { autoAlpha: 0, x: 40 };
+      case 'fade':         return { opacity: 0 };
+      case 'scale-in':     return { opacity: 0, scale: 0.94 };
+      case 'reveal-left':  return { opacity: 0, x: -40 };
+      case 'reveal-right': return { opacity: 0, x: 40 };
       case 'fade-up':
-      default:             return { autoAlpha: 0, y: 32 };
+      default:             return { opacity: 0, y: 32 };
     }
   }
 
   function postStateFor(kind) {
     switch (kind) {
-      case 'fade':         return { autoAlpha: 1 };
-      case 'scale-in':     return { autoAlpha: 1, scale: 1 };
+      case 'fade':         return { opacity: 1 };
+      case 'scale-in':     return { opacity: 1, scale: 1 };
       case 'reveal-left':
-      case 'reveal-right': return { autoAlpha: 1, x: 0 };
+      case 'reveal-right': return { opacity: 1, x: 0 };
       case 'fade-up':
-      default:             return { autoAlpha: 1, y: 0 };
+      default:             return { opacity: 1, y: 0 };
     }
   }
 
-  function bindReveals() {
-    if (!ST) return;
-
-    // Set pre-state on every reveal candidate so they don't flash.
+  // Set reveal pre-states synchronously (cheap, no layout read) so nothing
+  // flashes before the ScrollTriggers are wired on window load. In reduced
+  // mode, jump straight to the post-state (everything visible).
+  function setRevealPreStates() {
     var roots = Array.prototype.slice.call(document.querySelectorAll('[data-anim]'));
     roots.forEach(function (el) {
       var kind = el.getAttribute('data-anim') || 'fade-up';
-      var staggerParent = el.hasAttribute('data-anim-stagger');
-      if (staggerParent) {
+      if (el.hasAttribute('data-anim-stagger')) {
         el.querySelectorAll('[data-anim-child]').forEach(function (c) {
           g.set(c, preStateFor(kind));
         });
@@ -226,7 +225,6 @@
         g.set(el, preStateFor(kind));
       }
     });
-
     if (REDUCED) {
       roots.forEach(function (el) {
         var kind = el.getAttribute('data-anim') || 'fade-up';
@@ -238,9 +236,14 @@
           g.set(el, postStateFor(kind));
         }
       });
-      return;
     }
+  }
 
+  // ScrollTrigger wiring — deferred to window load (forced reflow off the
+  // critical path). Pre-states are already set by setRevealPreStates().
+  function bindReveals() {
+    if (!ST || REDUCED) return;
+    var roots = Array.prototype.slice.call(document.querySelectorAll('[data-anim]'));
     roots.forEach(function (el) {
       var kind = el.getAttribute('data-anim') || 'fade-up';
       var stagger = parseFloat(el.getAttribute('data-anim-stagger')) || 0;
@@ -340,8 +343,8 @@
     document.querySelectorAll('[data-pricing-recommended]').forEach(function (tier) {
       var badge = tier.querySelector('[data-pricing-badge]') || tier.firstElementChild;
       if (badge) {
-        g.fromTo(badge, { scale: 0, rotate: -8, autoAlpha: 0 },
-          { scale: 1, rotate: 0, autoAlpha: 1, duration: 0.6, ease: 'back.out(1.7)',
+        g.fromTo(badge, { scale: 0, rotate: -8, opacity: 0 },
+          { scale: 1, rotate: 0, opacity: 1, duration: 0.6, ease: 'back.out(1.7)',
             scrollTrigger: ST ? { trigger: tier, start: 'top 80%', once: true } : undefined });
         g.to(badge, {
           y: -4, duration: 2.2, ease: 'sine.inOut',
@@ -365,17 +368,17 @@
       var current = document.querySelector('.sim-step.active');
       if (current && current !== document.getElementById('step-' + n)) {
         g.to(current, {
-          autoAlpha: 0, y: -8, duration: 0.18, ease: 'power2.in',
+          opacity: 0, y: -8, duration: 0.18, ease: 'power2.in',
           onComplete: function () {
             orig(n, opts);
             var next = document.getElementById('step-' + n);
             if (next) {
-              g.set(next, { autoAlpha: 0, y: 12 });
-              g.to(next, { autoAlpha: 1, y: 0, duration: 0.4, ease: 'power3.out' });
+              g.set(next, { opacity: 0, y: 12 });
+              g.to(next, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' });
               if (n === 4) {
                 var rows = next.querySelectorAll('[data-anim-recap]');
                 if (rows.length) {
-                  g.from(rows, { autoAlpha: 0, y: 10, duration: 0.4,
+                  g.from(rows, { opacity: 0, y: 10, duration: 0.4,
                     stagger: 0.07, ease: 'power3.out', delay: 0.1 });
                 }
               }
@@ -483,12 +486,24 @@
 
   /* ---------- 11. Init ---------- */
   function init() {
-    splashHandoff();
-    bindReveals();
+    splashHandoff();          // hero choreography — must stay off the load gate (LCP)
+    setRevealPreStates();     // immediate, prevents flash
     bindCards();
-    bindRecommendedBadge();
     bindSmoothScroll();
-    bindNav();
+
+    // Defer ScrollTrigger creation (the ~56ms forced reflow) until after load,
+    // keeping it off the critical render path.
+    var wireScrollTriggers = function () {
+      bindReveals();
+      bindRecommendedBadge();
+      bindNav();
+      if (ST) ST.refresh();
+    };
+    if (document.readyState === 'complete') {
+      wireScrollTriggers();
+    } else {
+      window.addEventListener('load', wireScrollTriggers, { once: true });
+    }
 
     // Wrap simulator once its globals exist.
     if (typeof window.showSimStep === 'function') {
