@@ -6,8 +6,9 @@
   "scripts": {
     "build:css": "tailwindcss -i ./src/input.css -o ./assets/styles.css --minify",
     "watch:css": "tailwindcss -i ./src/input.css -o ./assets/styles.css --watch",
+    "inline:css": "node scripts/inline-css.js",
     "sync:en": "./sync-en.sh",
-    "build": "npm run build:css && npm run sync:en"
+    "build": "npm run build:css && npm run inline:css && npm run sync:en"
   },
   "devDependencies": {
     "@tailwindcss/container-queries": "^0.1.1",

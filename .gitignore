@@ -2,3 +2,8 @@
 *.env
 *.env.local
 node_modules/
+.DS_Store
+.playwright-mcp/
+.superpowers/
+docs/superpowers/
+assets/fonts/_text-fonts.css

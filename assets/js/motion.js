@@ -392,12 +392,13 @@
       window.updateSimProgress = function () {
         var label = document.getElementById('sim-progress-label');
         var bar = document.getElementById('sim-progress-bar');
-        var prevWidth = bar ? bar.style.width : '0%';
+        // Animate the composited transform (scaleX) instead of width.
+        var prevScale = bar ? (g.getProperty(bar, 'scaleX') || 0) : 0;
         origProg();
         if (bar) {
-          var target = bar.style.width;
-          bar.style.width = prevWidth;
-          g.to(bar, { width: target, duration: 0.55, ease: 'power2.out' });
+          var match = /scaleX\(([\d.]+)\)/.exec(bar.style.transform);
+          var target = match ? parseFloat(match[1]) : 1;
+          g.fromTo(bar, { scaleX: prevScale }, { scaleX: target, duration: 0.55, ease: 'power2.out' });
         }
         if (label) {
           g.fromTo(label, { scale: 1.2, color: '#c3f400' },
