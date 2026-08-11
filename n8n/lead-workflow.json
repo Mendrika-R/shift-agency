@@ -19,7 +19,7 @@
         "sendTo": "setrynyaina@gmail.com",
         "subject": "=🔔 Nouveau Lead Velos — {{ $json.name }}",
         "emailType": "html",
-        "message": "=<h2>Nouveau lead capturé via le chatbot Velos</h2><table border='1' cellpadding='6'><tr><td><b>Nom</b></td><td>{{ $json.name }}</td></tr><tr><td><b>Contact</b></td><td>{{ $json.contact }}</td></tr><tr><td><b>Projet</b></td><td>{{ $json.project_type }}</td></tr><tr><td><b>Langue</b></td><td>{{ $json.lang }}</td></tr><tr><td><b>Session</b></td><td>{{ $json.session_id }}</td></tr><tr><td><b>Date</b></td><td>{{ $json.received_at }}</td></tr></table>",
+        "message": "=<h2>Nouveau lead capturé sur Velos</h2><table border='1' cellpadding='6'><tr><td><b>Nom</b></td><td>{{ $json.name }}</td></tr><tr><td><b>Contact</b></td><td>{{ $json.contact }}</td></tr><tr><td><b>Projet</b></td><td>{{ $json.project_type }}</td></tr><tr><td><b>Origine</b></td><td>{{ $json.source || 'chatbot' }}</td></tr><tr><td><b>Langue</b></td><td>{{ $json.lang }}</td></tr><tr><td><b>Session</b></td><td>{{ $json.session_id }}</td></tr><tr><td><b>Date</b></td><td>{{ $json.received_at }}</td></tr></table><h3>Message du visiteur</h3><pre style='white-space:pre-wrap;font-family:inherit'>{{ $json.message || '—' }}</pre>",
         "options": {}
       },
       "id": "gmail-send",
@@ -41,7 +41,9 @@
             "Contact": "={{ $json.contact }}",
             "Projet": "={{ $json.project_type }}",
             "Langue": "={{ $json.lang }}",
-            "Session": "={{ $json.session_id }}"
+            "Session": "={{ $json.session_id }}",
+            "Origine": "={{ $json.source || 'chatbot' }}",
+            "Message": "={{ $json.message || '' }}"
           }
         },
         "options": {}
