@@ -333,6 +333,7 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: name, contact: contact, project_type: project, session_id: sessionId, lang: lang }),
     }).catch(function () {});
+    track('generate_lead', { lead_source: 'chatbot', project_type: project });
     leadForm.innerHTML = '<div style="padding:8px 0;font-family:JetBrains Mono,monospace;font-size:12px;color:#CCFF00;font-weight:700">' + T.thanks + '</div>';
     setTimeout(function () { leadForm.classList.add('hidden'); }, 3000);
   });
@@ -342,8 +343,18 @@
     leadSubmitted = true;
   });
 
+  var panelOpenedOnce = false;
+
+  function track(event, params) {
+    try {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push(Object.assign({ event: event }, params || {}));
+    } catch (err) { /* analytics must never break the widget */ }
+  }
+
   function openPanel() {
     isOpen = true;
+    if (!panelOpenedOnce) { panelOpenedOnce = true; track('chat_opened'); }
     panel.classList.add('open');
     toggle.setAttribute('aria-expanded', 'true');
     if (messages.length === 0) {
